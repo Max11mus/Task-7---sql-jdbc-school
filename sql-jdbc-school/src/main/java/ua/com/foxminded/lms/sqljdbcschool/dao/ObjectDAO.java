@@ -1,14 +1,6 @@
 package ua.com.foxminded.lms.sqljdbcschool.dao;
 
-import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
-import java.util.logging.Logger;
-
 import javax.sql.DataSource;
-
-import ua.com.foxminded.lms.sqljdbcschool.entities.Course;
 
 abstract class ObjectDAO<Entity>  implements CRUD<Entity> {
 	private String query;
@@ -16,10 +8,9 @@ abstract class ObjectDAO<Entity>  implements CRUD<Entity> {
 	
 	
 
-	public ObjectDAO() {
+	public ObjectDAO(DataSource datasource) {
 		query="";
-		datasource = new DataSource();
-		
+		this.datasource=datasource;
 	}
 
 	public void ExecuteSQL() {
