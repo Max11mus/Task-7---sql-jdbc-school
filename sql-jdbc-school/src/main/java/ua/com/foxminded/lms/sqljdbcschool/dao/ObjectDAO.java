@@ -1,22 +1,37 @@
 package ua.com.foxminded.lms.sqljdbcschool.dao;
 
-import javax.sql.DataSource;
+import java.sql.Connection;
+import java.util.ArrayList;
 
-abstract class ObjectDAO<Entity>  implements CRUD<Entity> {
-	private String query;
-	private DataSource datasource;
+abstract class ObjectDAO<Entity> implements CRUD<Entity> {
+	protected String query;
+	protected Connection connection;
+	protected String tableName;
+	protected ArrayList<String> columnNames;
 	
 	
 
-	public ObjectDAO(DataSource datasource) {
-		query="";
-		this.datasource=datasource;
+	public ObjectDAO(Connection connection) {
+		query = "";
+		tableName = "";
+		columnNames = new ArrayList<String>();
+		this.connection = connection;
 	}
 
-	public void ExecuteSQL() {
-		
+	public String getTableName() {
+		return tableName;
 	}
 
-	
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
+	}
 
+	public ArrayList<String> getColumnNames() {
+		return columnNames;
+	}
+
+	public void setColumnNames(ArrayList<String> columnNames) {
+		this.columnNames = columnNames;
+	}
+	
 }
