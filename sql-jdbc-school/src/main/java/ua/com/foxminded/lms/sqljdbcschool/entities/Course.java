@@ -1,27 +1,30 @@
 package ua.com.foxminded.lms.sqljdbcschool.entities;
 
-public class Course {
-	private int id;
-	private String courseName;
-	private String coursedescription;
+import java.util.Objects;
+import java.util.UUID;
 
-	public Course(int id, String courseName, String coursedescription) {
-		this.id = id;
-		this.courseName = courseName;
-		this.coursedescription = coursedescription;
-	}
+public class Course {
+	private UUID id;
+	private String courseName;
+	private String courseDescription;
 
 	public Course() {
-		id = 0;
+		id = UUID.randomUUID();
 		courseName = "";
-		coursedescription = "";
+		courseDescription = "";
+	}
+	
+	public Course(UUID id, String courseName, String courseDescription) {
+		this.id = id;
+		this.courseName = courseName;
+		this.courseDescription = courseDescription;
 	}
 
-	public int getId() {
+	public UUID getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 
@@ -33,12 +36,35 @@ public class Course {
 		this.courseName = courseName;
 	}
 
-	public String getCoursedescription() {
-		return coursedescription;
+	public String getCourseDescription() {
+		return courseDescription;
 	}
 
-	public void setCoursedescription(String coursedescription) {
-		this.coursedescription = coursedescription;
+	public void setCourseDescription(String courseDescription) {
+		this.courseDescription = courseDescription;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(courseDescription, courseName, id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Course other = (Course) obj;
+		return Objects.equals(courseDescription, other.courseDescription)
+				&& Objects.equals(courseName, other.courseName) && Objects.equals(id, other.id);
+	}
+
+	@Override
+	public String toString() {
+		return "Course [id=" + id + ", courseName=" + courseName + ", courseDescription=" + courseDescription + "]";
 	}
 
 }

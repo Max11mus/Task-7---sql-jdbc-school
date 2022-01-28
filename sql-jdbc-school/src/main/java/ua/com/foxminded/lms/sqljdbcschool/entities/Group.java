@@ -1,34 +1,62 @@
 package ua.com.foxminded.lms.sqljdbcschool.entities;
 
+import java.util.Objects;
+import java.util.UUID;
+
 public class Group {
-	private int id;
+	private UUID id;
 	private String groupName;
 
 	public Group() {
-		id = 0;
+		id = UUID.randomUUID();
 		groupName = "";
 	}
 
-	public Group(int id, String studentName) {
+	public Group(UUID id, String groupName) {
 		super();
 		this.id = id;
-		this.groupName = studentName;
+		this.groupName = groupName;
 	}
-
-	public int getId() {
+ 
+	
+	
+	public UUID getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 
-	public String getStudentName() {
+	public String getGroupName() {
 		return groupName;
 	}
 
-	public void setStudentName(String studentName) {
-		this.groupName = studentName;
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(groupName, id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Group other = (Group) obj;
+		return Objects.equals(groupName, other.groupName) && Objects.equals(id, other.id);
+	}
+
+	@Override
+	public String toString() {
+		return "Group [id=" + id + ", groupName=" + groupName + "]";
+	}
+
+	
 }

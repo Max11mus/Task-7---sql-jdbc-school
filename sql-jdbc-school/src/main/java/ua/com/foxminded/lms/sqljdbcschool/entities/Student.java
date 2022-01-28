@@ -1,19 +1,22 @@
 package ua.com.foxminded.lms.sqljdbcschool.entities;
 
+import java.util.Objects;
+import java.util.UUID;
+
 public class Student {
-	private int id;
-	private int groupId;
+	private UUID id;
+	private UUID groupId;
 	private String studentFirstName;
 	private String studentLastName;
 
 	public Student() {
-		id = 0;
-		groupId = 0;
+		groupId = UUID.randomUUID();
+		id = UUID.randomUUID();
 		studentFirstName = "";
 		studentLastName = "";
 	}
 
-	public Student(int id, int groupId, String studentFirstName, String studentLastName) {
+	public Student(UUID id, UUID groupId, String studentFirstName, String studentLastName) {
 		super();
 		this.id = id;
 		this.groupId = groupId;
@@ -21,19 +24,19 @@ public class Student {
 		this.studentLastName = studentLastName;
 	}
 
-	public int getId() {
+	public UUID getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 
-	public int getGroupId() {
+	public UUID getGroupId() {
 		return groupId;
 	}
 
-	public void setGroupId(int groupId) {
+	public void setGroupId(UUID groupId) {
 		this.groupId = groupId;
 	}
 
@@ -51,6 +54,31 @@ public class Student {
 
 	public void setStudentLastName(String studentLastName) {
 		this.studentLastName = studentLastName;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(groupId, id, studentFirstName, studentLastName);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Student other = (Student) obj;
+		return Objects.equals(groupId, other.groupId) && Objects.equals(id, other.id)
+				&& Objects.equals(studentFirstName, other.studentFirstName)
+				&& Objects.equals(studentLastName, other.studentLastName);
+	}
+
+	@Override
+	public String toString() {
+		return "Student [id=" + id + ", groupId=" + groupId + ", studentFirstName=" + studentFirstName
+				+ ", studentLastName=" + studentLastName + "]";
 	}
 
 }

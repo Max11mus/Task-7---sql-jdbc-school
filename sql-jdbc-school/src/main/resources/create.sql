@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS courses(id uuid NOT NULL UNIQUE PRIMARY KEY, coursename varchar(255) NOT NULL, coursedescription varchar(1024) NOT NULL);
+CREATE TABLE IF NOT EXISTS groups(id uuid NOT NULL UNIQUE PRIMARY KEY, groupname varchar(100) NOT NULL);
+CREATE TABLE IF NOT EXISTS students(id uuid NOT NULL UNIQUE PRIMARY KEY, studentfirstname varchar(20) NOT NULL, studentlastname varchar(20) NOT NULL, groupId uuid REFERENCES groups(id));
+CREATE TABLE IF NOT EXISTS studentsoncourse(studentid uuid NOT NULL REFERENCES students(id), courseid uuid NOT NULL REFERENCES courses(id), PRIMARY KEY(studentid, courseid)); 
