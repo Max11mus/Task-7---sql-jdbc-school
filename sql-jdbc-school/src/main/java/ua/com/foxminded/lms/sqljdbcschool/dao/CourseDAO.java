@@ -1,38 +1,15 @@
 package ua.com.foxminded.lms.sqljdbcschool.dao;
 
 import java.sql.Connection;
-import java.util.ArrayList;
+import java.sql.SQLException;
 
-import ua.com.foxminded.lms.sqljdbcschool.entities.Course;
+import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 
-public class CourseDAO extends ObjectDAO<Course> {
+public class CourseDAO extends TableDAO<Course> {
 
-	public CourseDAO(Connection connection) {
-		super(connection);
-	}
-
-	@Override
-	public ArrayList<Course> getAllEntities() {
-		
-		return null;
-	}
-
-	@Override
-	public void createEntity(Course object) {
-		
-		
-	}
-
-	@Override
-	public void updateEntity(Course object) {
-		
-		
-	}
-
-	@Override
-	public void deleteEntity(Course object) {
-		
-		
+	public CourseDAO(String DBName, Connection connection) throws SQLException {
+		super(DBName, connection);
+		// TODO Auto-generated constructor stub
 	}
 
 }
