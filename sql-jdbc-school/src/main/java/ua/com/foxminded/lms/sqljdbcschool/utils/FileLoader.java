@@ -2,13 +2,18 @@ package ua.com.foxminded.lms.sqljdbcschool.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FileLoader {
 	public List<String> loadLines(URL url) throws IOException {
@@ -26,17 +31,48 @@ public class FileLoader {
 		return lines;
 	}
 
-	public InputStream load(URL url) throws IOException {
+	public InputStream load(URL url) {
+
 		InputStream stream = null;
 		try {
-			Path path;
-			path = Paths.get(url.toURI());
-			stream = Files.newInputStream(path, StandardOpenOption.READ);
+			Path path=null;
 
-		} catch (URISyntaxException e) {
+			if (url.toString().substring(0,4).equals("jar:")) {
+				Map<String, String> env = new HashMap<>();
+				String[] pathSplited = url.toString().split("!");
+				FileSystem fs = FileSystems.newFileSystem(URI.create(pathSplited[0]), env);
+				path = fs.getPath(pathSplited[1]);
+			}
+			
+			if (path == null) {
+				path = Paths.get(url.toURI());
+			}
+
+			stream = Files.newInputStream(path, StandardOpenOption.READ);
+			
+		} catch (URISyntaxException | IOException e) {
 			e.printStackTrace();
 		}
 		return stream;
-	}
 
-}
+		
+		
+		
+//		InputStream stream = null;
+//
+//		Map<String, String> env = new HashMap<>();
+//		String fileName = url.getFile();
+//		String Path = url.getPath();
+//		System.out.println(fileName);
+//		System.out.println(Path);
+//		
+//		String[] pathSplited = url.toString().split("!");
+//		FileSystem fs = FileSystems.newFileSystem(URI.create(pathSplited[0]), env);
+//		Path path = fs.getPath(pathSplited[pathSplited.length - 1]);
+//		System.out.println(url.toString());
+//		System.out.println(path.toString());
+//		stream = Files.newInputStream(path, StandardOpenOption.READ);
+//		
+//			return stream;
+		}
+	}

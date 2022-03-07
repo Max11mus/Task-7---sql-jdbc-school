@@ -3,18 +3,36 @@ package ua.com.foxminded.lms.sqljdbcschool.dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 public class DBConnectionPool {
 	private long expirationTime;
-	private Hashtable<Connection, Long> locked;
+	private Hashtable<Connection, Long> locked; 
 	private Hashtable<Connection, Long> unlocked;
 	private Properties properties;
 
+	public DBConnectionPool(Properties properties, int initialSize) throws SQLException {
+		this(properties);
+		ArrayList<Connection> temp = new ArrayList<Connection>() ;
+		for (int i = 0; i<initialSize; i++) {
+			temp.add(checkOut());
+		}
+		
+		for (Iterator<Connection> iterator = temp.iterator(); iterator.hasNext();) {
+			Connection connection = (Connection) iterator.next();
+			checkIn(connection);
+		}
+		
+	}
+	
 	public DBConnectionPool(Properties properties) {
-		expirationTime = 100000; // 100 seconds
+		expirationTime = 360000; // 360 milliseconds - 360 seconds
 		locked = new Hashtable<Connection, Long>();
 		unlocked = new Hashtable<Connection, Long>();
 		this.properties = properties;
@@ -31,17 +49,17 @@ public class DBConnectionPool {
 		}
 	}
 
-	public void expire(Connection o) {
+	public void expire(Connection connection) {
 		try {
-			o.close();
+			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public boolean validate(Connection o) {
+	public boolean validate(Connection connection) {
 		try {
-			return (!((Connection) o).isClosed());
+			return !connection.isClosed();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return (false);
@@ -50,34 +68,34 @@ public class DBConnectionPool {
 
 	public synchronized Connection checkOut() throws SQLException {
 		long now = System.currentTimeMillis();
-		Connection t;
+		Connection connection;
 		if (unlocked.size() > 0) {
-			Enumeration<Connection> e = unlocked.keys();
-			while (e.hasMoreElements()) {
-				t = e.nextElement();
-				if ((now - unlocked.get(t)) > expirationTime) {
+			Enumeration<Connection> unlockedConnections = unlocked.keys();
+			while (unlockedConnections.hasMoreElements()) {
+				connection = unlockedConnections.nextElement();
+				if ((now - unlocked.get(connection)) > expirationTime) {
 					// object has expired
-					unlocked.remove(t);
-					expire(t);
-					t = null;
+					unlocked.remove(connection);
+					expire(connection);
+					connection = null;
 				} else {
-					if (validate(t)) {
-						unlocked.remove(t);
-						locked.put(t, now);
-						return (t);
+					if (validate(connection)) {
+						unlocked.remove(connection);
+						locked.put(connection, now);
+						return (connection);
 					} else {
 						// object failed validation
-						unlocked.remove(t);
-						expire(t);
-						t = null;
+						unlocked.remove(connection);
+						expire(connection);
+						connection = null;
 					}
 				}
 			}
 		}
 		// no objects available, create a new one
-		t = create();
-		locked.put(t, now);
-		return (t);
+		connection = create();
+		locked.put(connection, now);
+		return (connection);
 	}
 
 	public synchronized void checkIn(Connection t) {
@@ -99,5 +117,21 @@ public class DBConnectionPool {
 
 	public String getPassword() {
 		return properties.getProperty("password");
+	}
+	
+	public void closeConnections() throws SQLException{
+		
+		Iterator<Entry<Connection, Long>> iterator = locked.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Map.Entry<Connection, Long> entry = (Map.Entry<Connection, Long>) iterator.next();
+			entry.getKey().close();
+		}
+		
+		iterator = unlocked.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Map.Entry<Connection, Long> entry = (Map.Entry<Connection, Long>) iterator.next();
+			entry.getKey().close();
+		}
+		
 	}
 }
