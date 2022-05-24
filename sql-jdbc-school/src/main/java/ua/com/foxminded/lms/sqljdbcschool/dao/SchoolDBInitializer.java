@@ -7,12 +7,12 @@ import java.sql.Statement;
 
 import ua.com.foxminded.lms.sqljdbcschool.utils.SQLQueryUtils;
 
-public class SchoolDBIntializer {
+public class SchoolDBInitializer {
 	static protected String EOF = System.lineSeparator();
 	private DBConnectionPool connectionPool;
 	protected SQLQueryUtils SQLName = new SQLQueryUtils();
 
-	public SchoolDBIntializer(DBConnectionPool connectionPool) {
+	public SchoolDBInitializer(DBConnectionPool connectionPool) {
 		this.connectionPool = connectionPool;
 	}
 

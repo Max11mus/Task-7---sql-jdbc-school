@@ -60,8 +60,7 @@ public class Course implements Comparable<Course> {
 
 	@Override
 	public String toString() {
-		return "Course [id=" + id + ", courseName=" + courseName + ", courseDescription=" + courseDescription
-				+ ", enrolledStudents=" + enrolledStudents + "]";
+		return "Course [id=" + id + ", courseName=" + courseName + ", courseDescription=" + courseDescription + "]";
 	}
 
 	public void enroll(Student student) {

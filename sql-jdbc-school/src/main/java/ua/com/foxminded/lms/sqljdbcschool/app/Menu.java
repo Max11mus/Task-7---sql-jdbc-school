@@ -1,86 +1,45 @@
 package ua.com.foxminded.lms.sqljdbcschool.app;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Menu extends MenuItem {
-	private ArrayList<MenuItem> commands;
-	static private Scanner keyInput = new Scanner(System.in);
-
-	public Menu(String greetings) {
-		this();
-		this.greetings = greetings;
-	}
-
-	public Menu() {
+public class Menu {
+	private ArrayList<Command> menuOptions = new ArrayList<Command>();
+	protected Scanner input;
+	protected PrintWriter output;
+	protected String name="";
+	
+	public Menu(Scanner input, PrintWriter output, String name) {
 		super();
-		commands = new ArrayList<MenuItem>();
-		execute = () -> {
-			System.out.println();
-			commands.forEach((command) -> System.out.println(commands.indexOf(command) + ". " + command.greetings));
-			System.out.println(commands.size() + ". Exit");
-			System.out.println("   Select command:");
-		};
-	}
-
-	public void runCommandThenExit() {
-
-		try {
-			int exitChoice = commands.size();
-			int choice = -1;
-			while (choice != exitChoice) {
-				System.out.println();
-				System.out.println(greetings);
-				execute.run();
-
-				try {
-					choice = Integer.parseInt(keyInput.nextLine());
-
-					if (choice < 0 || choice > commands.size()) {
-						System.out.println("Choice outside of range. Please chose again.");
-					} else if (choice != exitChoice) {
-						if (commands.get(choice) instanceof Menu) {
-							((Menu) commands.get(choice)).runCycle();
-						} else if (commands.get(choice) instanceof MenuItem) {
-							commands.get(choice).run();
-						}
-						choice = exitChoice;
-					}
-
-				} catch (NumberFormatException e) {
-					System.out.println("Invalid selection. Numbers only please.");
-					choice = -1;
-				}
-			}
-		} finally {
-		}
-
+		this.input = input;
+		this.output = output;
+		this.name = name;
 	}
 
 	public void runCycle() {
 		try {
-			int exitChoice = commands.size();
+			int exitChoice = menuOptions.size();
 			int choice = -1;
 			while (choice != exitChoice) {
-				System.out.println();
-				System.out.println(greetings);
-				execute.run();
+				
+				output.println();
+				output.println(name);
+				menuOptions.forEach(command -> output.println(menuOptions.indexOf(command) + ". " + command.getName()));
+				output.println(menuOptions.size() + ". Exit");
+				output.println("   Select option:");
 
 				try {
-					choice = Integer.parseInt(keyInput.nextLine());
+					choice = Integer.parseInt(input.nextLine());
 
-					if (choice < 0 || choice > commands.size()) {
-						System.out.println("Choice outside of range. Please chose again.");
+					if (choice < 0 || choice > menuOptions.size()) {
+						output.println("Choice outside of range. Please choose again.");
 					} else if (choice != exitChoice) {
-						if (commands.get(choice) instanceof Menu) {
-							((Menu) commands.get(choice)).runCycle();
-						} else if (commands.get(choice) instanceof MenuItem) {
-							commands.get(choice).run();
-						}
+						menuOptions.get(choice).run();
 					}
 
 				} catch (NumberFormatException e) {
-					System.out.println("Invalid selection. Numbers only please.");
+					output.println("Invalid selection. Numbers only please.");
 					choice = -1;
 				}
 			}
@@ -88,16 +47,13 @@ public class Menu extends MenuItem {
 		}
 	}
 
-	public void addCommand(MenuItem command) {
-		commands.add(command);
+	public void addMenuOption(Command command) {
+		menuOptions.add(command);
 	}
 
-	public void clearCommands() {
-		commands.clear();
+	public void clearMenuOptions() {
+		menuOptions.clear();
 	}
+
 	
-	public void closeInput() {
-		keyInput.close();
-	}
-
 }
