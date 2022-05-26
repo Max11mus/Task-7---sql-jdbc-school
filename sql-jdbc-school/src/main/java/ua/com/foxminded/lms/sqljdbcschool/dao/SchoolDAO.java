@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import java.util.function.Function;
 
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
@@ -17,41 +15,30 @@ import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 public class SchoolDAO{
 	static private String EOL = System.lineSeparator();
 	private DBConnectionPool connectionPool;
-	private  String queryResultLog="";
-	private boolean enableLogging = false;
-	private  Function<UUID, UUID> nullToZeroAndVersa = (uuid) -> {
-		UUID result = uuid;
-		if (uuid == null) {
-			result = UUID.fromString("00000000-0000-0000-0000-000000000000");
-		} else 
-		if (uuid.equals(UUID.fromString("00000000-0000-0000-0000-000000000000"))) {
-			result = null;
-		}
-		return result;
-	};
+	private boolean enableOutputToConsole = false;
 	
 	public SchoolDAO(DBConnectionPool connectionPool) {
 		super();
 		this.connectionPool = connectionPool;
 	}
 
-	public void insertGroups(ArrayList<Group> groups) {
+	public void insertGroups(List<Group> groups) {
 		if (groups == null) {
 			throw new IllegalArgumentException("ERROR: Null Pointer Arguments.");
 		}
-		boolean saveEnableLogging = enableLogging;
-		enableLogging = false;
-		groups.parallelStream().forEach(this::insert);
-		enableLogging = saveEnableLogging;
+		boolean saveEnableLogging = enableOutputToConsole;
+		enableOutputToConsole = false;
+		groups.parallelStream().forEach(this::insertGroup);
+		enableOutputToConsole = saveEnableLogging;
 	}
 
-	public void insert(Group group) {
+	public void insertGroup(Group group) {
 		if (group == null) {
 			throw new IllegalArgumentException("ERROR: Null Pointer Arguments.");
 		}
 		
-		String query = "INSERT INTO \"group\" " + EOL  
-				+ " ( id, group_name) " + EOL
+		String query = "INSERT INTO group_1" + EOL  
+				+ " ( uuid, group_name) " + EOL
 				+ " VALUES ( ?, ? );" + EOL;
 			
 			Connection connection = null;
@@ -62,21 +49,20 @@ public class SchoolDAO{
 				statement = connection.prepareStatement(query);
 				int iteratorIndex = 1;
 				
-					statement.setObject(iteratorIndex++, group.getId());
-					statement.setObject(iteratorIndex++, group.getGroupName());
+				statement.setObject(iteratorIndex++, group.getUuid());
+				statement.setObject(iteratorIndex++, group.getGroupName());
 				
 				statement.executeUpdate();
 				connection.commit();
 				
-				if (enableLogging) {
-					queryResultLog = "Query executed:" + EOL;
-					queryResultLog += statement.toString() + EOL;
-					queryResultLog += "Results:" + EOL;
-					queryResultLog += "1 row inserted." + EOL;
+				if (enableOutputToConsole) {
+					System.out.println("Query executed:");
+					System.out.println(statement.toString());
+					System.out.println("Results:");
+					System.out.println("1 row inserted.");
 				}
-				
 			} catch (SQLException e) {
-				rollbackConnection(connection);
+				rollbackTransaction(connection);
 				e.printStackTrace();
 			}
 			finally {
@@ -85,23 +71,23 @@ public class SchoolDAO{
 			}
 	}
 
-	public void insertStudents(ArrayList<Student> students) {
+	public void insertStudents(List<Student> students) {
 		if (students == null) {
 			throw new IllegalArgumentException("ERROR: Null Pointer Arguments.");
 		}
-		boolean saveEnableLogging = enableLogging;
-		enableLogging = false;
-		students.parallelStream().forEach(this::insert);
-		enableLogging = saveEnableLogging;
+		boolean saveEnableLogging = enableOutputToConsole;
+		enableOutputToConsole = false;
+		students.parallelStream().forEach(this::insertStudent);
+		enableOutputToConsole = saveEnableLogging;
 	}
 	
-	public void insert(Student student) {
+	public void insertStudent(Student student) {
 		if (student == null) {
 			throw new IllegalArgumentException("ERROR: Null Pointer Arguments.");
 		}
 		
 		String query = "INSERT INTO student" + EOL  
-				+ " ( id, group_id, student_first_name, student_last_name ) " + EOL
+				+ " ( uuid, group_uuid, first_name, last_name ) " + EOL
 				+ " VALUES ( ?, ?, ?, ? );" + EOL;
 			
 			Connection connection = null;
@@ -112,23 +98,22 @@ public class SchoolDAO{
 				statement = connection.prepareStatement(query);
 				int iteratorIndex = 1;
 				
-					statement.setObject(iteratorIndex++, student.getId());
-					statement.setObject(iteratorIndex++, nullToZeroAndVersa.apply(student.getGroupId()));
-					statement.setObject(iteratorIndex++, student.getStudentFirstName());
-					statement.setObject(iteratorIndex++, student.getStudentLastName());
+					statement.setObject(iteratorIndex++, student.getUuid());
+					statement.setObject(iteratorIndex++, student.getGroupUuid());
+					statement.setObject(iteratorIndex++, student.getFirstName());
+					statement.setObject(iteratorIndex++, student.getLastName());
 				
 				statement.executeUpdate();
 				connection.commit();
 				
-				if (enableLogging) {
-					queryResultLog = "Query executed:" + EOL;
-					queryResultLog += statement.toString() + EOL;
-					queryResultLog += "Results:" + EOL;
-					queryResultLog += "1 row inserted." + EOL;
+				if (enableOutputToConsole) {
+					System.out.println("Query executed:");
+					System.out.println(statement.toString());
+					System.out.println("Results:");
+					System.out.println("1 row inserted.");
 				}
-				
 			} catch (SQLException e) {
-				rollbackConnection(connection);
+				rollbackTransaction(connection);
 				e.printStackTrace();
 			}
 			finally {
@@ -137,25 +122,23 @@ public class SchoolDAO{
 			}
 		}
 	
-	public void insertCourses(ArrayList<Course> courses) {
+	public void insertCourses(List<Course> courses) {
 		if (courses == null) {
 			throw new IllegalArgumentException("ERROR: Null Pointer Arguments.");
 		}
-		boolean saveEnableLogging = enableLogging;
-		enableLogging = false;
-		courses.parallelStream().forEach(this::insert);
-		courses.parallelStream().forEach(course -> course.getEnrolledStudents().parallelStream()
-				.forEach(student -> addStudentToCourse(student.getId(), course.getId())));
-		enableLogging = saveEnableLogging;
+		boolean saveEnableLogging = enableOutputToConsole;
+		enableOutputToConsole = false;
+		courses.parallelStream().forEach(this::insertCourse);
+		enableOutputToConsole = saveEnableLogging;
 	}
 	
-	private void insert(Course course) {
+	private void insertCourse(Course course) {
 		if (course == null) {
 			throw new IllegalArgumentException("ERROR: Null Pointer Arguments.");
 		}
 		
 		String query = "INSERT INTO course " + EOL  
-				+ " ( id, course_name, course_description) " + EOL
+				+ " ( uuid, course_name, course_description) " + EOL
 				+ " VALUES ( ?, ?, ?);" + EOL;
 			
 			Connection connection = null;
@@ -166,25 +149,21 @@ public class SchoolDAO{
 				statement = connection.prepareStatement(query);
 				int iteratorIndex = 1;
 				
-					statement.setObject(iteratorIndex++, course.getId());
+					statement.setObject(iteratorIndex++, course.getUuid());
 					statement.setObject(iteratorIndex++, course.getCourseName());
 					statement.setObject(iteratorIndex++, course.getCourseDescription());
 				
 				statement.executeUpdate();
 				connection.commit();
 				
-				if (enableLogging) {
-					queryResultLog = "Query executed:" + EOL;
-					queryResultLog += statement.toString() + EOL;
-					queryResultLog += "Results:" + EOL;
-					queryResultLog += "1 row inserted." + EOL;
+				if (enableOutputToConsole) {
+					System.out.println("Query executed:");
+					System.out.println(statement.toString());
+					System.out.println("Results:");
+					System.out.println("1 row inserted.");
 				}
-				
-				course.getEnrolledStudents().parallelStream()
-						.forEach(student -> addStudentToCourse(student.getId(), course.getId()));
-				
 			} catch (SQLException e) {
-				rollbackConnection(connection);
+				rollbackTransaction(connection);
 				e.printStackTrace();
 			}
 			finally {
@@ -211,30 +190,28 @@ public class SchoolDAO{
 
 			result = statement.executeQuery();
 			connection.commit();
-			if (enableLogging) {
-				queryResultLog = statement.toString() + EOL;
-				queryResultLog += "Results:" + EOL;
+			if (enableOutputToConsole) {
+				System.out.println(statement.toString());
+				System.out.println("Results:");
 
 			}
-			
 			
 			Student student = null;
 			int rowNo = 1;
 			while (result.next()) {
 				student = new Student();
-				student.setId((UUID) result.getObject("id"));
-				student.setGroupId(nullToZeroAndVersa.apply((UUID) result.getObject("group_id")));
-				student.setStudentFirstName((String) (result.getObject("student_first_name")));
-				student.setStudentLastName((String) result.getObject("student_last_name"));
+				student.setUuid((String) result.getObject("uuid"));
+				student.setGroupUuid((String) result.getObject("group_uuid"));
+				student.setFirstName((String) (result.getObject("first_name")));
+				student.setLastName((String) result.getObject("last_name"));
 				resultStudents.add(student);
 				
-				if (enableLogging) {
-					queryResultLog += "RowNO  " + String.valueOf(rowNo++) + "  " + student.toString() + EOL;
+				if (enableOutputToConsole) {
+					System.out.println("RowNO  " + String.valueOf(rowNo++) + "  " + student.toString());
 				}
 			}
-			
 		} catch (SQLException e) {
-			rollbackConnection(connection);
+			rollbackTransaction(connection);
 			e.printStackTrace();
 		}
 		finally {
@@ -242,12 +219,11 @@ public class SchoolDAO{
 			closeResultSet(result);
 			closeStatemant(statement);
 		}
-		
 		return resultStudents;
 	}
 
-	public void deleteStudent(UUID studentUUID) {
-		if (studentUUID == null) {
+	public void deleteStudent(String studentUuid) {
+		if (studentUuid == null) {
 			throw new IllegalArgumentException("ERROR: Null Pointer Arguments.");
 		}
 
@@ -256,13 +232,13 @@ public class SchoolDAO{
 		String queryStudentsOnCourse = " DELETE FROM " + EOL
 				+ "students_on_course" + EOL
 				+ " WHERE " + EOL
-				+ "student_id" + EOL 
+				+ "student_uuid" + EOL 
 				+ " IN ( ? ); " + EOL;
 			
 		String queryStudents = " DELETE FROM " + EOL
 				+ "student" + EOL 
 				+ " WHERE" + EOL
-				+ "id" + EOL 
+				+ "uuid" + EOL 
 				+ " IN ( ? ); " + EOL;
 
 		Connection connection = null;
@@ -272,33 +248,31 @@ public class SchoolDAO{
 			connection.setAutoCommit(false);
 
 			statement = connection.prepareStatement(queryStudentsOnCourse);
-			statement.setObject(1, studentUUID);
+			statement.setObject(1, studentUuid);
 			result = statement.executeUpdate();
-			if (enableLogging) {
-				queryResultLog = "Query executed:" + EOL;
-				queryResultLog += statement.toString() + EOL;
-				queryResultLog += "Results:" + EOL;
-				queryResultLog += result + " rows deleted." + EOL;
+			if (enableOutputToConsole) {
+				System.out.println("Query executed:");
+				System.out.println(statement.toString());
+				System.out.println("Results:" + EOL);
+				System.out.println(result + " rows deleted.");
 			}
 			statement.close();
 
 			statement = connection.prepareStatement(queryStudents);
-			statement.setObject(1, studentUUID);
-
-			result = statement.executeUpdate();
+			statement.setObject(1, studentUuid);
 			result = statement.executeUpdate();
 
-			if (enableLogging) {
-				queryResultLog += "Query executed:" + EOL;
-				queryResultLog += statement.toString() + EOL;
-				queryResultLog += "Results:" + EOL;
-				queryResultLog += "1 row deleted." + EOL;
+			if (enableOutputToConsole) {
+				System.out.println("Query executed:");
+				System.out.println(statement.toString());
+				System.out.println("Results:");
+				System.out.println("1 row deleted.");
 			}
 
 			connection.commit();
 
 		} catch (SQLException e) {
-			rollbackConnection(connection);
+			rollbackTransaction(connection);
 			e.printStackTrace();
 		} finally {
 			connectionPool.checkIn(connection);
@@ -308,13 +282,13 @@ public class SchoolDAO{
 
 	public void findGroupsStudentCountLessOrEquals(int studentCount) {
 		String query =  "SELECT " + EOL
-				+ "\"group\".id," + EOL
-				+ "\"group\".group_name,"
+				+ "group_1.uuid," + EOL
+				+ "group_1.group_name,"
 				+ "COUNT(*) AS \"Student Count\"" + EOL
-				+ "FROM \"group\"" + EOL
+				+ "FROM group_1" + EOL
 				+ "INNER JOIN student" + EOL
-				+ "ON  student.group_id = \"group\".id" + EOL
-				+ "GROUP BY \"group\".id" + EOL
+				+ "ON  student.group_uuid = group_1.uuid" + EOL
+				+ "GROUP BY group_1.uuid" + EOL
 				+ "HAVING COUNT(*) <= CAST( ? AS INT) ;"; 
 		
 		ResultSet result = null;
@@ -329,10 +303,10 @@ public class SchoolDAO{
 			statement.setObject(1, studentCount);
 			result = statement.executeQuery();
 			connection.commit();
-			if (enableLogging) {
-				queryResultLog = statement.toString() + EOL;
-				queryResultLog += "Results:" + EOL;
-
+			
+			if (enableOutputToConsole) {
+				System.out.println(statement.toString());
+				System.out.println("Results:");
 			}
 			
 			Group group = null;
@@ -340,17 +314,16 @@ public class SchoolDAO{
 			String curentStudentCount = "";
 			while (result.next()) {
 				group = new Group();
-				group.setId((UUID) result.getObject("id"));
+				group.setUuid(result.getString("uuid"));
 				group.setGroupName(((String) (result.getObject("group_name"))));
 				curentStudentCount = (((String) (result.getString("Student Count"))));
-				if (enableLogging) {
-					queryResultLog += "RowNO  " + String.valueOf(rowNo++) + "  " + group.toString()
-							+ " Student Count = " + curentStudentCount + EOL;
+				if (enableOutputToConsole) {
+					System.out.println("RowNO  " + String.valueOf(rowNo++) + "  " + group.toString()
+							+ " Student Count = " + curentStudentCount);
 				}
 			}
-
 		} catch (SQLException e) {
-			rollbackConnection(connection);
+			rollbackTransaction(connection);
 			e.printStackTrace();
 		} finally {
 			connectionPool.checkIn(connection);
@@ -378,28 +351,28 @@ public class SchoolDAO{
 
 			result = statement.executeQuery();
 			
-			if (enableLogging) {
-				queryResultLog = statement.toString() + EOL;
-				queryResultLog += "Results:" + EOL;
+			if (enableOutputToConsole) {
+				System.out.println(statement.toString());
+				System.out.println("Results:");
 			}
 			
 			Course course = null;
 			int rowNo = 1;
 			while (result.next()) {
 				course = new Course();
-				course.setId((UUID) result.getObject("id"));
+				course.setUuid(result.getString("uuid"));
 				course.setCourseName((String) (result.getObject("course_name")));
 				course.setCourseDescription((String) result.getObject("course_description"));
 				resultCourses.add(course);
 			
-				if (enableLogging) {
-					queryResultLog += "RowNO  " + String.valueOf(rowNo++) + "  " + course.toString() + EOL;
+				if (enableOutputToConsole) {
+					System.out.println("RowNO  " + String.valueOf(rowNo++) + "  " + course.toString());
 				}
 			}
 			connection.commit();
 			
 		} catch (SQLException e) {
-			rollbackConnection(connection);
+			rollbackTransaction(connection);
 			e.printStackTrace();
 		}
 		finally {
@@ -408,24 +381,23 @@ public class SchoolDAO{
 			closeStatemant(statement);
 		}
 		return resultCourses;
-
 	}
 
-	public void FindStudentsByCourseID(UUID courseId) {
-		if (courseId == null) {
+	public void FindStudentsByCourseID(String courseUuid) {
+		if (courseUuid == null) {
 			throw new IllegalArgumentException("ERROR: Null Pointer Arguments.");
 		}
 		
 		String query =  "SELECT " + EOL
-				+ "students_on_course.course_id, "+ EOL
-				+ "student.id,"+ EOL
-				+ "student.group_id," + EOL
-				+ "student.student_first_name," + EOL
-				+ "student.student_last_name" + EOL
+				+ "students_on_course.course_uuid, "+ EOL
+				+ "student.uuid,"+ EOL
+				+ "student.group_uuid," + EOL
+				+ "student.first_name," + EOL
+				+ "student.last_name" + EOL
 				+ "FROM students_on_course" + EOL
 				+ "INNER JOIN student" + EOL
-				+ "ON student.id = students_on_course.student_id" + EOL
-				+ "WHERE course_id IN ( ? );" + EOL;
+				+ "ON student.uuid = students_on_course.student_uuid" + EOL
+				+ "WHERE course_uuid IN ( ? );" + EOL;
 		
 		Connection connection = null;
 		PreparedStatement statement = null;
@@ -436,33 +408,31 @@ public class SchoolDAO{
 			connection.setAutoCommit(false);
 			statement = connection.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_READ_ONLY);
-			statement.setObject(1, courseId);
+			statement.setObject(1, courseUuid);
 			result = statement.executeQuery();
 			
-			if (enableLogging) {
-				queryResultLog = statement.toString() + EOL;
-				queryResultLog += "Results:" + EOL;
-
+			if (enableOutputToConsole) {
+				System.out.println(statement.toString());
+				System.out.println("Results:");
 			}
 			
 			Student student = null;
 			int rowNo = 1;
 			while (result.next()) {
 				student = new Student();
-				student.setId((UUID) result.getObject("id"));
-				student.setGroupId(nullToZeroAndVersa.apply((UUID) result.getObject("group_id")));
-				student.setStudentFirstName((String) (result.getObject("student_first_name")));
-				student.setStudentLastName((String) result.getObject("student_last_name"));
+				student.setUuid(result.getString("uuid"));
+				student.setGroupUuid(result.getString("group_uuid"));
+				student.setFirstName((String) (result.getObject("first_name")));
+				student.setLastName((String) result.getObject("last_name"));
 								
-				if (enableLogging) {
-					queryResultLog += "RowNO  " + String.valueOf(rowNo++) + " "
-							+ " " + student.toString() + EOL;
+				if (enableOutputToConsole) {
+					System.out.println("RowNO  " + String.valueOf(rowNo++) + " "
+							+ " " + student.toString());
 				}
 			}
 			connection.commit();
-			
 		} catch (SQLException e) {
-			rollbackConnection(connection);
+			rollbackTransaction(connection);
 			e.printStackTrace();
 		}
 		finally {
@@ -470,21 +440,26 @@ public class SchoolDAO{
 			closeResultSet(result);
 			closeStatemant(statement);
 		}
-		
 	}
 
-	public void addStudentToCourse(UUID studentId, UUID courseId) {
+	public void addStudentToCourse(String studentId, String courseId) {
 		if (courseId == null || studentId == null) {
 			throw new IllegalArgumentException("ERROR: Null Pointer Arguments.");
 		}
 
 		int result = 0;
-		String query = "INSERT INTO" + EOL
-				+ "students_on_course" + EOL
-				+ " ( student_id," + EOL
-				+ "course_id)" + EOL
-				 + "VALUES ( ?, ?) " + EOL
-				 + " ON CONFLICT (student_id, course_id) DO NOTHING ;" + EOL;
+		String querySelect = "SELECT * FROM " + EOL
+				+ "students_on_course " + EOL
+				+ "WHERE " + EOL
+				+ "student_uuid = ? " + EOL
+				+ "AND" + EOL
+				+ " course_uuid = ?;" + EOL;
+		
+		String queryInsert = "INSERT INTO " + EOL
+				+ "students_on_course " + EOL
+				+ "(student_uuid, course_uuid)" + EOL
+				+ "VALUES " + EOL
+				+ "( ?, ? ) ;" + EOL;
 	
 		Connection connection = null;
 		PreparedStatement statement = null;
@@ -492,24 +467,45 @@ public class SchoolDAO{
 		try {
 			connection = connectionPool.checkOut();
 			connection.setAutoCommit(false);
-			statement = connection.prepareStatement(query);
-
+			statement = connection.prepareStatement(querySelect);
 			statement.setObject(1, studentId);
 			statement.setObject(2, courseId);
+			ResultSet resultSet = statement.executeQuery();
+			
+			if (enableOutputToConsole) {
+				System.out.println("Query executed:");
+				System.out.println(statement.toString());
+				System.out.println("Results:");
+			}
+			
+			if (resultSet.next()) {
+				if (enableOutputToConsole) {
+					System.out.println("student_uuid = " + resultSet.getString("student_uuid"));
+					System.out.println("course_uuid = " + resultSet.getString("course_uuid"));
+				}
+				resultSet.close();
+				connection.commit();
+			} else {
+				if (enableOutputToConsole) {
+					System.out.println("0 rows affected");
+				}
+				statement.close(); 
+				statement = connection.prepareStatement(queryInsert);
+				statement.setObject(1, studentId);
+				statement.setObject(2, courseId);
 			
 			result = statement.executeUpdate();
 			
-			if (enableLogging) {
-				queryResultLog = "Query executed:" + EOL;
-				queryResultLog += statement.toString() + EOL;
-				queryResultLog += "Results:" + EOL;
-				queryResultLog += result + " row inserted." + EOL;
+			if (enableOutputToConsole) {
+				System.out.println("Query executed:");
+				System.out.println(statement.toString());
+				System.out.println("Results:");
+				System.out.println(result + " row inserted.");
 			}
-
 			connection.commit();
-
+			}
 		} catch (SQLException e) {
-			rollbackConnection(connection);
+			rollbackTransaction(connection);
 			e.printStackTrace();
 		} finally {
 			connectionPool.checkIn(connection);
@@ -517,27 +513,26 @@ public class SchoolDAO{
 		}
 	}
 		
-	public List<Course> findStudentCourses(UUID studentUUID) {
-		if (studentUUID == null) {
+	public List<Course> findStudentCourses(String studentUuid) {
+		if (studentUuid == null) {
 			throw new IllegalArgumentException("ERROR: Null Pointer Arguments.");
 		}
 		ResultSet result = null;
 		List<Course> studentCourses = new ArrayList<Course>();
 		
 		String query = "SELECT " + EOL
-				+ "course.id," + EOL
+				+ "course.uuid," + EOL
 				+ "course.course_name," + EOL 
 				+ "course.course_description," + EOL
-				+ "students_on_course.student_id" + EOL
+				+ "students_on_course.student_uuid" + EOL
 				+ "FROM" + EOL
 				+ "course" + EOL
 				+ "RIGHT JOIN" + EOL 
 				+ "students_on_course" + EOL
 				+ "ON" + EOL
-				+ " course.id = students_on_course.course_id " + EOL
+				+ " course.uuid = students_on_course.course_uuid " + EOL
 				+ "WHERE" + EOL
-				+ " students_on_course.student_id = ? " + EOL; 
-
+				+ " students_on_course.student_uuid = ? " + EOL; 
 
 		Connection connection = null;
 		PreparedStatement statement = null;
@@ -545,44 +540,45 @@ public class SchoolDAO{
 			connection = connectionPool.checkOut();
 			connection.setAutoCommit(false);
 
-			statement = connection.prepareStatement(query);
-			statement.setObject(1, studentUUID);
+			statement = connection.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_READ_ONLY);
+			statement.setObject(1, studentUuid.toString());
 			result = statement.executeQuery();
 			
-			if (enableLogging) {
-				queryResultLog = "Query executed:" + EOL;
-				queryResultLog += statement.toString() + EOL;
-				queryResultLog += "Results:" + EOL;
-				queryResultLog += result + " rows deleted." + EOL;
+			if (enableOutputToConsole) {
+				System.out.println("Query executed:");
+				System.out.println(statement.toString());
+				System.out.println("Results:");
 			}
+			
+			if (result.first()) {
+				Course course = null;
+				int rowNo = 1;
+				while (result.next()) {
+					course = new Course();
+					course.setUuid(result.getString("uuid"));
+					course.setCourseName((String) (result.getObject("course_name")));
+					course.setCourseDescription((String) result.getObject("course_description"));
+					studentCourses.add(course);
 
-			Course course = null;
-			int rowNo = 1;
-			while (result.next()) {
-				course = new Course();
-				course.setId((UUID) result.getObject("id"));
-				course.setCourseName((String) (result.getObject("course_name")));
-				course.setCourseDescription((String) result.getObject("course_description"));
-				studentCourses.add(course);
-
-				if (enableLogging) {
-					queryResultLog += "RowNO  " + String.valueOf(rowNo++) + "  " + course.toString() + EOL;
+					if (enableOutputToConsole) {
+						System.out.println("RowNO  " + String.valueOf(rowNo++) + "  " + course.toString());
+					}
 				}
 				connection.commit();
 			}
 		} catch (SQLException e) {
-			rollbackConnection(connection);
+			rollbackTransaction(connection);
 			e.printStackTrace();
 		} finally {
 			connectionPool.checkIn(connection);
 			closeStatemant(statement);
 		}
-		
 		return studentCourses;
 	}
 
-	public void dropoutStudentFromCourse(UUID studentId, UUID courseId) {
-		if (courseId == null || studentId == null) {
+	public void dropoutStudentFromCourse(String studentUuid, String courseUuid) {
+		if (courseUuid == null || studentUuid == null) {
 			throw new IllegalArgumentException("ERROR: Null Pointer Arguments.");
 		}
 
@@ -590,9 +586,9 @@ public class SchoolDAO{
 		String query = "DELETE FROM" + EOL
 				+ "students_on_course" + EOL
 				 + "WHERE"
-				 + " student_id = ? "
+				 + " student_uuid = ? "
 				 + "AND "
-				 + "course_id = ? ;" + EOL;
+				 + "course_uuid = ? ;" + EOL;
 	
 		Connection connection = null;
 		PreparedStatement statement = null;
@@ -601,49 +597,42 @@ public class SchoolDAO{
 			connection = connectionPool.checkOut();
 			connection.setAutoCommit(false);
 			statement = connection.prepareStatement(query);
-
-			statement.setObject(1, studentId);
-			statement.setObject(2, courseId);
+			statement.setObject(1, studentUuid.toString());
+			statement.setObject(2, courseUuid.toString());
 			
 			result = statement.executeUpdate();
 			
-			if (enableLogging) {
-				queryResultLog = "Query executed:" + EOL;
-				queryResultLog += statement.toString() + EOL;
-				queryResultLog += "Results:" + EOL;
-				queryResultLog += result + " row deleted." + EOL;
+			if (enableOutputToConsole) {
+				System.out.println("Query executed:");
+				System.out.println(statement.toString());
+				System.out.println("Results:");
+				System.out.println(result + " row deleted.");
 			}
 
 			connection.commit();
 
 		} catch (SQLException e) {
-			rollbackConnection(connection);
+			rollbackTransaction(connection);
 			e.printStackTrace();
 		} finally {
 			connectionPool.checkIn(connection);
 			closeStatemant(statement);
 		}
-		
 	}
 
-	public String getQueryResultLog() {
-		return queryResultLog;
+	public boolean isenableOutputToConsole() {
+		return enableOutputToConsole;
 	}
 
-	public boolean isEnableLogging() {
-		return enableLogging;
-	}
-
-	public void setEnableLogging(boolean enableLogging) {
-		this.enableLogging = enableLogging;
+	public void setEnableOutputToConsole(boolean enableLogging) {
+		this.enableOutputToConsole = enableLogging;
 	}
 	
-	private void rollbackConnection(Connection connection) {
+	private void rollbackTransaction(Connection connection) {
 		if (connection != null) {
 			try {
 				connection.rollback();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -654,7 +643,6 @@ public class SchoolDAO{
 			try {
 				statement.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -665,13 +653,9 @@ public class SchoolDAO{
 			try {
 				resultSet.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
-
-	
-
 
 }

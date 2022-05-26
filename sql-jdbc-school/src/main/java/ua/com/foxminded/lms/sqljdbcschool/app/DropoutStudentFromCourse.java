@@ -8,7 +8,7 @@ import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 
-public class DropoutStudentFromCourse extends Command {
+public class DropoutStudentFromCourse extends ConsoleMenuCommand {
 	public DropoutStudentFromCourse(Scanner input, PrintWriter output, SchoolDAO dao) {
 		super(input, output, dao);
 		// TODO Auto-generated constructor stub
@@ -18,50 +18,30 @@ public class DropoutStudentFromCourse extends Command {
 	public void run() {
 		
 		int rowNo = 0;
-		dao.setEnableLogging(true);
+		dao.setEnableOutputToConsole(true);
 		output.println();
 		
 		List<Student> allStudents = dao.getAllStudents();
-		output.println(dao.getQueryResultLog());
 		
 		System.out.println("Choose student - enter RowNo:");
 		
-		try {
-			rowNo = Integer.parseInt(input.nextLine());
-		} catch (NumberFormatException e) {
-			output.println("Invalid selection. Numbers only please.");
-			return;
-		}
-
-		if (rowNo < 1 || rowNo > allStudents.size()) {
-			output.println("RowNo outside of range.");
-			return;
-		}
-
+		rowNo = inputIntFromRange(1, allStudents.size());
+		
 		Student student = allStudents.get(rowNo - 1); 
 
-		List<Course> studentCourses = dao.findStudentCourses(student.getId());
-		output.println(dao.getQueryResultLog());
+		List<Course> studentCourses = dao.findStudentCourses(student.getUuid());
+		
+		if (studentCourses.isEmpty()) {
+			return;
+		}
 		
 		output.println("Choose course - enter RowNo:");
 		
-		try {
-			rowNo = Integer.parseInt(input.nextLine());
-
-		} catch (NumberFormatException e) {
-			output.println("Invalid selection. Numbers only please.");
-			return;
-		}
-
-		if (rowNo < 1 || rowNo > studentCourses.size()) {
-			output.println("RowNo outside of range.");
-			return;
-		}
-
+		rowNo = inputIntFromRange(1, studentCourses.size());
+		
 		Course course = studentCourses.get(rowNo - 1);
 		
-		dao.dropoutStudentFromCourse(student.getId(), course.getId());
-		output.println(dao.getQueryResultLog());
+		dao.dropoutStudentFromCourse(student.getUuid(), course.getUuid());
 	}
 
 }

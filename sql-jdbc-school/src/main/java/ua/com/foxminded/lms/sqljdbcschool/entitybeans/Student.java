@@ -1,66 +1,64 @@
 package ua.com.foxminded.lms.sqljdbcschool.entitybeans;
 
-import java.util.ArrayList;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.IntStream;
 
 public class Student implements Comparable<Student>{
-	private UUID id;
-	private UUID groupId;
-	private String studentFirstName;
-	private String studentLastName;
+	private String uuid;
+	private String groupUuid;
+	private String firstName;
+	private String lastName;
 
 	public Student() {
-		groupId = new UUID(0, 0);
-		id = UUID.randomUUID();
-		studentFirstName = "";
-		studentLastName = "";
+		uuid = UUID.randomUUID().toString();
+		groupUuid = null;
+		firstName = "";
+		lastName = "";
 	}
 
-	public Student(UUID id, UUID groupId, String studentFirstName, String studentLastName) {
+	public Student(String id, String groupId, String studentFirstName, String studentLastName) {
 		super();
-		this.id = id;
-		this.groupId = groupId;
-		this.studentFirstName = studentFirstName;
-		this.studentLastName = studentLastName;
+		this.uuid = id;
+		this.groupUuid = groupId;
+		this.firstName = studentFirstName;
+		this.lastName = studentLastName;
 	}
 
-	public UUID getId() {
-		return id;
+	public String getUuid() {
+		return uuid;
 	}
 
-	public void setId(UUID id) {
-		this.id = id;
+	public void setUuid(String id) {
+		this.uuid = id;
 	}
 
-	public UUID getGroupId() {
-		return groupId;
+	public String getGroupUuid() {
+		return groupUuid;
 	}
 
-	public void setGroupId(UUID groupId) {
-		this.groupId = groupId;
+	public void setGroupUuid(String groupId) {
+			this.groupUuid = groupId;
+	}
+	
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public String getStudentFirstName() {
-		return studentFirstName;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public void setStudentFirstName(String studentFirstName) {
-		this.studentFirstName = studentFirstName;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public String getStudentLastName() {
-		return studentLastName;
-	}
-
-	public void setStudentLastName(String studentLastName) {
-		this.studentLastName = studentLastName;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id);
+		return Objects.hash(uuid);
 	}
 
 	@Override
@@ -72,72 +70,20 @@ public class Student implements Comparable<Student>{
 		if (getClass() != obj.getClass())
 			return false;
 		Student other = (Student) obj;
-		return Objects.equals(groupId, other.groupId) && Objects.equals(id, other.id)
-				&& Objects.equals(studentFirstName, other.studentFirstName)
-				&& Objects.equals(studentLastName, other.studentLastName);
+		return Objects.equals(groupUuid, other.groupUuid) && Objects.equals(uuid, other.uuid)
+				&& Objects.equals(firstName, other.firstName)
+				&& Objects.equals(lastName, other.lastName);
 	}
 
 	@Override
 	public String toString() {
-		return "Student [id=" + id + ", groupId=" + groupId + ", studentFirstName=" + studentFirstName
-				+ ", studentLastName=" + studentLastName + "]";
+		return "Student [uuid=" + uuid + ", groupUuid=" + groupUuid + ", studentFirstName=" + firstName
+				+ ", studentLastName=" + lastName + "]";
 	}
 
-	public void enrollTo(Group group) {
-		if (group == null) {
-			throw new IllegalArgumentException("ERROR: Null Pointer Argument.");
-		}
-		this.groupId=group.getId();
-	}
-
-	public void dropOutFromAnyGroup() {
-		this.groupId= new UUID(0, 0);
-	}
-	
-	public void dropOutFrom(Group group) {
-		if (group == null) {
-			throw new IllegalArgumentException("ERROR: Null Pointer Argument.");
-		}
-		if (this.groupId.equals(group.getId())) {
-			this.groupId = new UUID(0, 0);
-		}
-	}
-
-	static public void enrollTo(ArrayList<Student> students, Group group) {
-		if (students == null || group == null) {
-			throw new IllegalArgumentException("ERROR: Null Pointer Argument.");
-		}
-		IntStream.iterate(0, i -> i + 1).limit(students.size())
-				.forEach(i -> students.get(i).enrollTo(group));
-	}
-	
-	static public void enrollTo(ArrayList<Student> students, ArrayList<Group> groups) {
-		if (students == null || groups == null) {
-			throw new IllegalArgumentException("ERROR: Null Pointer Argument.");
-		}
-		IntStream.iterate(0, i -> i + 1).limit(groups.size())
-		.forEach(i -> enrollTo(students, groups.get(i)));
-	}
-	
-	static public void dropoutFrom(ArrayList<Student> students, Group group) {
-		if (students == null || group == null) {
-			throw new IllegalArgumentException("ERROR: Null Pointer Argument.");
-		}
-		IntStream.iterate(0, i -> i + 1).limit(students.size())
-				.forEach(i -> students.get(i).dropOutFrom(group));
-	}
-	
-	static public void dropoutFrom(ArrayList<Student> students, ArrayList<Group> groups) {
-		if (students == null || groups == null) {
-			throw new IllegalArgumentException("ERROR: Null Pointer Argument.");
-		}
-		IntStream.iterate(0, i -> i + 1).limit(groups.size())
-				.forEach(i -> dropoutFrom(students, groups.get(i)));
-	}
-	
 	@Override
 	public int compareTo(Student o) {
-		return id.compareTo(o.getId());
+		return uuid.compareTo(o.getUuid().toString());
 	}
 	
 }

@@ -8,7 +8,7 @@ import java.util.Scanner;
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 
-public class FindGroupsStudentCountLessOrEquals extends Command {
+public class FindGroupsStudentCountLessOrEquals extends ConsoleMenuCommand {
 	public FindGroupsStudentCountLessOrEquals(Scanner input, PrintWriter output, SchoolDAO dao) {
 		super(input, output, dao);
 		// TODO Auto-generated constructor stub
@@ -17,7 +17,7 @@ public class FindGroupsStudentCountLessOrEquals extends Command {
 	@Override
 	public void run() {
 		output.println();
-		dao.setEnableLogging(true);
+		dao.setEnableOutputToConsole(true);
 		int studentCount = 0;
 		
 		output.println("Enter student count: ");
@@ -33,7 +33,6 @@ public class FindGroupsStudentCountLessOrEquals extends Command {
 			return;
 		} else {
 			dao.findGroupsStudentCountLessOrEquals(studentCount); 
-			output.println(dao.getQueryResultLog());
 
 		}
 	}

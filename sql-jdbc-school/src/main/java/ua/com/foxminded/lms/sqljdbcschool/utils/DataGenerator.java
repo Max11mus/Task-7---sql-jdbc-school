@@ -80,7 +80,7 @@ public class DataGenerator {
 		private ArrayList<String> loadFromPlainTextFile(String fileName) throws IOException {
 			URL namesUrl = ClassLoader.getSystemResource(fileName);
 			FileLoader fileLoader = new FileLoader();
-			return new ArrayList<String>(fileLoader.loadLines(namesUrl).stream().collect(Collectors.toList()));
+			return new ArrayList<String>(fileLoader.loadTextLines(namesUrl).stream().collect(Collectors.toList()));
 	}	
 		
 }

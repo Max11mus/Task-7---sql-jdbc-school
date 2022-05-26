@@ -6,7 +6,7 @@ import java.util.Scanner;
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 
-public class AddStudent extends Command {
+public class AddStudent extends ConsoleMenuCommand {
 	public AddStudent(Scanner input, PrintWriter output, SchoolDAO dao) {
 		super(input, output, dao);
 		// TODO Auto-generated constructor stub
@@ -17,19 +17,18 @@ public class AddStudent extends Command {
 		output.println();
 		Student student = new Student();
 		output.println("Insert new student:");
-		output.println("ID = " + student.getId().toString());
-		output.println("GroupID = " + student.getGroupId().toString());
+		output.println("UUID = " + student.getUuid().toString());
+		output.println("GroupID = " + student.getGroupUuid());
 
 		output.println("Enter first name: ");
-		student.setStudentFirstName(input.nextLine());
+		student.setFirstName(input.nextLine());
 
 		output.println("Enter last name: ");
-		student.setStudentLastName(input.nextLine());
+		student.setLastName(input.nextLine());
 
 		output.println();
-		dao.setEnableLogging(true);
-		dao.insert(student);
-		output.println(dao.getQueryResultLog());
+		dao.setEnableOutputToConsole(true);
+		dao.insertStudent(student);
 
 	}
 

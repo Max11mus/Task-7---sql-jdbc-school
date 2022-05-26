@@ -7,7 +7,7 @@ import java.util.Scanner;
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 
-public class FindStudentsByCourseName extends Command {
+public class FindStudentsByCourseName extends ConsoleMenuCommand {
 	public FindStudentsByCourseName(Scanner input, PrintWriter output, SchoolDAO dao) {
 		super(input, output, dao);
 		// TODO Auto-generated constructor stub
@@ -18,10 +18,9 @@ public class FindStudentsByCourseName extends Command {
 		output.println();
 		String courseName;
 		Course course = null;
-		dao.setEnableLogging(true);
+		dao.setEnableOutputToConsole(true);
 		
 		List<Course> allCourses = dao.getAllCourses();
-		output.println(dao.getQueryResultLog());
 		output.println();
 		
 		output.println("Enter course name:");
@@ -34,8 +33,7 @@ public class FindStudentsByCourseName extends Command {
 		if (course == null) {
 			output.println("Course with name " + courseName + " not present.");
 		} else {
-			dao.FindStudentsByCourseID(course.getId());
-			output.println(dao.getQueryResultLog());
+			dao.FindStudentsByCourseID(course.getUuid());
 		}
 		
 	}

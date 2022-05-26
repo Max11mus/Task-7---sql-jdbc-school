@@ -132,6 +132,6 @@ public class DBConnectionPool {
 			Map.Entry<Connection, Long> entry = (Map.Entry<Connection, Long>) iterator.next();
 			entry.getKey().close();
 		}
-		
 	}
+	
 }

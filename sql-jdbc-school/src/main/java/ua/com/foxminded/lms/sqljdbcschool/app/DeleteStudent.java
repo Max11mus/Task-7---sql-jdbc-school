@@ -7,7 +7,7 @@ import java.util.Scanner;
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 
-public class DeleteStudent extends Command {
+public class DeleteStudent extends ConsoleMenuCommand {
 	public DeleteStudent(Scanner input, PrintWriter output, SchoolDAO dao) {
 		super(input, output, dao);
 		// TODO Auto-generated constructor stub
@@ -19,31 +19,18 @@ public class DeleteStudent extends Command {
 		int rowNo = 0;
 		output.println();
 		
-		dao.setEnableLogging(true);
+		dao.setEnableOutputToConsole(true);
 		List<Student> allStudents = dao.getAllStudents();
-		output.println(dao.getQueryResultLog());
 
 		if (!allStudents.isEmpty()) {
 
 			output.println("Enter RowNo: ");
 
-			try {
-				rowNo = Integer.parseInt(input.nextLine());
-
-			} catch (NumberFormatException e) {
-				output.println("Invalid selection. Numbers only please.");
-				return;
-			}
-
-			if (rowNo < 1 || rowNo > allStudents.size()) {
-				System.out.println("RowNo outside of range.");
-				return;
-			}
+			rowNo = inputIntFromRange(1, allStudents.size());
 
 			output.println();
 			student = allStudents.get(rowNo - 1);
-			dao.deleteStudent(student.getId());
-			output.println(dao.getQueryResultLog());
+			dao.deleteStudent(student.getUuid());
 			
 		}
 	}

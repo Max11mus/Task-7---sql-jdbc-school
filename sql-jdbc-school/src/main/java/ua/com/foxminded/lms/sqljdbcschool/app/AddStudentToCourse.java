@@ -8,7 +8,7 @@ import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 
-public class AddStudentToCourse extends Command {
+public class AddStudentToCourse extends ConsoleMenuCommand {
 	public AddStudentToCourse(Scanner input, PrintWriter output, SchoolDAO dao) {
 		super(input, output, dao);
 		// TODO Auto-generated constructor stub
@@ -18,52 +18,26 @@ public class AddStudentToCourse extends Command {
 	public void run() {
 		
 		int rowNo = 0;
-		dao.setEnableLogging(true);
+		dao.setEnableOutputToConsole(true);
 		output.println();
 		
 		List<Student> allStudents = dao.getAllStudents();
-		output.println(dao.getQueryResultLog());
 		
 		System.out.println("Choose student - enter RowNo:");
 		
-		try {
-			rowNo = Integer.parseInt(input.nextLine());
-		} catch (NumberFormatException e) {
-			output.println("Invalid selection. Numbers only please.");
-			return;
-		}
-
-		if (rowNo < 1 || rowNo > allStudents.size()) {
-			output.println("RowNo outside of range.");
-			return;
-		}
+		rowNo = inputIntFromRange(1, allStudents.size());
 
 		Student student = allStudents.get(rowNo - 1); 
 
 		List<Course> allCourses = dao.getAllCourses();
-		output.println(dao.getQueryResultLog());
-		
 		
 		output.println("Choose course - enter RowNo:");
 		
-		try {
-			rowNo = Integer.parseInt(input.nextLine());
-
-		} catch (NumberFormatException e) {
-			output.println("Invalid selection. Numbers only please.");
-			return;
-		}
-
-		if (rowNo < 1 || rowNo > allStudents.size()) {
-			output.println("RowNo outside of range.");
-			return;
-		}
-
+		rowNo = inputIntFromRange(1, allCourses.size());
+		
 		Course course = allCourses.get(rowNo - 1);
 		
-		course.enroll(student);
-		dao.addStudentToCourse(student.getId(), course.getId());
-		output.println(dao.getQueryResultLog());
+		dao.addStudentToCourse(student.getUuid(), course.getUuid());
 	}
 
 }

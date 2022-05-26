@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Menu {
-	private ArrayList<Command> menuOptions = new ArrayList<Command>();
+	private ArrayList<ConsoleMenuCommand> menuOptions = new ArrayList<ConsoleMenuCommand>();
 	protected Scanner input;
 	protected PrintWriter output;
 	protected String name="";
@@ -18,7 +18,6 @@ public class Menu {
 	}
 
 	public void runCycle() {
-		try {
 			int exitChoice = menuOptions.size();
 			int choice = -1;
 			while (choice != exitChoice) {
@@ -37,17 +36,14 @@ public class Menu {
 					} else if (choice != exitChoice) {
 						menuOptions.get(choice).run();
 					}
-
 				} catch (NumberFormatException e) {
 					output.println("Invalid selection. Numbers only please.");
 					choice = -1;
 				}
 			}
-		} finally {
-		}
 	}
 
-	public void addMenuOption(Command command) {
+	public void addMenuOption(ConsoleMenuCommand command) {
 		menuOptions.add(command);
 	}
 
@@ -55,5 +51,4 @@ public class Menu {
 		menuOptions.clear();
 	}
 
-	
 }

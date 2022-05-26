@@ -4,6 +4,7 @@ import javax.sql.DataSource;
 
 import org.dbunit.DataSourceBasedDBTestCase;
 import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.BeforeAll;
@@ -31,8 +32,12 @@ class DBUnitTest extends DataSourceBasedDBTestCase {
 	}
 
 	@Test
-	void testInsertGroups() {
-		fail("Not yet implemented");
+	void testInsertGroups() throws Exception {
+		 	IDataSet expectedDataSet = getDataSet();
+		    ITable expectedTable = expectedDataSet.getTable("Group");
+		    IDataSet databaseDataSet = getConnection().createDataSet();
+		    ITable actualTable = databaseDataSet.getTable("CLIENTS");
+		    assertEquals(expectedTable, actualTable);
 	}
 
 	@Test

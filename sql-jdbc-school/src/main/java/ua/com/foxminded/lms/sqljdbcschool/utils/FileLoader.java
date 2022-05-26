@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class FileLoader {
-	public List<String> loadLines(URL url) throws IOException {
+	public List<String> loadTextLines(URL url) throws IOException {
 		List<String> lines;
 		lines = null;
 
@@ -24,7 +24,6 @@ public class FileLoader {
 			Path path;
 			path = Paths.get(url.toURI());
 			lines = Files.readAllLines(path);
-
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
@@ -49,30 +48,9 @@ public class FileLoader {
 			}
 
 			stream = Files.newInputStream(path, StandardOpenOption.READ);
-			
 		} catch (URISyntaxException | IOException e) {
 			e.printStackTrace();
 		}
 		return stream;
-
-		
-		
-		
-//		InputStream stream = null;
-//
-//		Map<String, String> env = new HashMap<>();
-//		String fileName = url.getFile();
-//		String Path = url.getPath();
-//		System.out.println(fileName);
-//		System.out.println(Path);
-//		
-//		String[] pathSplited = url.toString().split("!");
-//		FileSystem fs = FileSystems.newFileSystem(URI.create(pathSplited[0]), env);
-//		Path path = fs.getPath(pathSplited[pathSplited.length - 1]);
-//		System.out.println(url.toString());
-//		System.out.println(path.toString());
-//		stream = Files.newInputStream(path, StandardOpenOption.READ);
-//		
-//			return stream;
-		}
 	}
+}
