@@ -15,10 +15,10 @@ import org.dbunit.dataset.xml.FlatDtdDataSet;
 public class ExportDBSchema {
 
 	public static void main(String[] args) throws SQLException, DatabaseUnitException, FileNotFoundException, IOException {
-		Connection jdbcConnection = DriverManager.getConnection("jdbc:postgresql://maxcloud.sytes.net:5432/school_db",
-				"schooluser", "1199");
+		Connection jdbcConnection = DriverManager.getConnection("jdbc:h2:~/test",
+				"sa", "sa");
 	        IDatabaseConnection connection = new DatabaseConnection(jdbcConnection);
-
+	        
 	        // write DTD file
 	        FlatDtdDataSet.write(connection.createDataSet(), new FileOutputStream("schema.sql"));
 

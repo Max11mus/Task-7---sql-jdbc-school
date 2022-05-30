@@ -11,14 +11,11 @@ import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 public class AddStudentToCourse extends ConsoleMenuCommand {
 	public AddStudentToCourse(Scanner input, PrintWriter output, SchoolDAO dao) {
 		super(input, output, dao);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void run() {
-		
 		int rowNo = 0;
-		dao.setEnableOutputToConsole(true);
 		output.println();
 		
 		List<Student> allStudents = dao.getAllStudents();

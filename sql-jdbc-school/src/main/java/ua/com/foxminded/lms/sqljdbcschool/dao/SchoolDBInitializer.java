@@ -43,6 +43,7 @@ public class SchoolDBInitializer {
 		}
 
 	}
+
 	public void createTables() throws SQLException, IOException {
 		String query = String.join(" ",
 				new FileLoader().loadTextLines(ClassLoader.getSystemResource("create.sql")));
@@ -69,7 +70,6 @@ public class SchoolDBInitializer {
 				connectionPool.checkIn(connection);
 			}
 		}
-		
 		connection.commit();
 	}
 

@@ -18,7 +18,6 @@ public class DropoutStudentFromCourse extends ConsoleMenuCommand {
 	public void run() {
 		
 		int rowNo = 0;
-		dao.setEnableOutputToConsole(true);
 		output.println();
 		
 		List<Student> allStudents = dao.getAllStudents();

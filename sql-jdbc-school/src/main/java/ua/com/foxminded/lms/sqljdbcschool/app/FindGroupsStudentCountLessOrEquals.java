@@ -17,7 +17,6 @@ public class FindGroupsStudentCountLessOrEquals extends ConsoleMenuCommand {
 	@Override
 	public void run() {
 		output.println();
-		dao.setEnableOutputToConsole(true);
 		int studentCount = 0;
 		
 		output.println("Enter student count: ");

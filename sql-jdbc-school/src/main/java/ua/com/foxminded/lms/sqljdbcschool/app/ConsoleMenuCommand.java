@@ -11,11 +11,6 @@ public abstract class ConsoleMenuCommand implements Command {
 	protected SchoolDAO dao;
 	protected String name="";
 	
-	public ConsoleMenuCommand(String name) {
-		super();
-		this.name = name;
-	}
-
 	public ConsoleMenuCommand(Scanner input, PrintWriter output, SchoolDAO dao) {
 		super();
 		this.input = input;

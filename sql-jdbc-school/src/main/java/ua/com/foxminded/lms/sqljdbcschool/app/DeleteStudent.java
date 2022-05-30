@@ -19,7 +19,6 @@ public class DeleteStudent extends ConsoleMenuCommand {
 		int rowNo = 0;
 		output.println();
 		
-		dao.setEnableOutputToConsole(true);
 		List<Student> allStudents = dao.getAllStudents();
 
 		if (!allStudents.isEmpty()) {

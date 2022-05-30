@@ -20,11 +20,11 @@ import ua.com.foxminded.lms.sqljdbcschool.utils.FileLoader;
 
 public class SchoolDBApp {
 	private static FileLoader fileLoader = new FileLoader();
-	private static URL DBPropertiesUrl = ClassLoader.getSystemResource("db.posgresql.properties");;
+	private static URL propertiesURL = ClassLoader.getSystemResource("db.posgresql.properties");
 	private static Properties conectionProperties = new Properties();
 	private static Function<Properties, DBConnectionPool> initPool = (properties) -> {
 		try {
-			properties.load(fileLoader.load(DBPropertiesUrl));
+			properties.load(fileLoader.loadProperties(propertiesURL));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -18,7 +18,6 @@ public class FindStudentsByCourseName extends ConsoleMenuCommand {
 		output.println();
 		String courseName;
 		Course course = null;
-		dao.setEnableOutputToConsole(true);
 		
 		List<Course> allCourses = dao.getAllCourses();
 		output.println();

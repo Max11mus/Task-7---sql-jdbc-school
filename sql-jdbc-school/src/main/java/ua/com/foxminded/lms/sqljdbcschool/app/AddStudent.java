@@ -27,7 +27,6 @@ public class AddStudent extends ConsoleMenuCommand {
 		student.setLastName(input.nextLine());
 
 		output.println();
-		dao.setEnableOutputToConsole(true);
 		dao.insertStudent(student);
 
 	}

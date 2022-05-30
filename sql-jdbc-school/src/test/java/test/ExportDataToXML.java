@@ -19,7 +19,7 @@ public class ExportDataToXML {
 			throws ClassNotFoundException, SQLException, DatabaseUnitException, FileNotFoundException, IOException {
 		 // database connection
 			Connection jdbcConnection = DriverManager
-					.getConnection("jdbc:postgresql://maxcloud.sytes.net:5432/school_db", "schooluser", "1199");
+					.getConnection("jdbc:h2:~/test", "sa", "sa");
 			IDatabaseConnection connection = new DatabaseConnection(jdbcConnection);
 
         // full database export
