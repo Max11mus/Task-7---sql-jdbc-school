@@ -4,7 +4,6 @@ import javax.sql.DataSource;
 
 import org.dbunit.DataSourceBasedDBTestCase;
 import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.BeforeAll;
@@ -27,78 +26,74 @@ class DBUnitTest extends DataSourceBasedDBTestCase {
 	}
 
 	
-//	@BeforeAll
-//	static void setUpBeforeClass() throws Exception {
-//	}
-//
-//	@Test
-//	void testInsertGroups() throws Exception {
-//		 	IDataSet expectedDataSet = getDataSet();
-//		    ITable expectedTable = expectedDataSet.getTable("Group");
-//		    IDataSet databaseDataSet = getConnection().createDataSet();
-//		    ITable actualTable = databaseDataSet.getTable("CLIENTS");
-//		    assertEquals(expectedTable, actualTable);
-//	}
-//
-//	@Test
-//	void testInsertGroup() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testInsertStudents() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testInsertStudent() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testInsertCourses() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testGetAllStudents() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testDeleteStudent() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testFindGroupsStudentCountLessOrEquals() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testGetAllCourses() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testFindStudentsByCourseID() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testAddStudentToCourse() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testFindStudentCourses() {
-//		fail("Not yet implemented");
-//	}
-//
-//	@Test
-//	void testDropoutStudentFromCourse() {
-//		fail("Not yet implemented");
-//	}
+	@BeforeAll
+	static void setUpBeforeClass() throws Exception {
+	}
+
+	@Test
+	void testInsertGroups() throws Exception {
+			fail("Not yet implemented");
+	}
+
+	@Test
+	void testInsertGroup() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	void testInsertStudents() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	void testInsertStudent() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	void testInsertCourses() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	void testGetAllStudents() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	void testDeleteStudent() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	void testFindGroupsStudentCountLessOrEquals() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	void testGetAllCourses() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	void testFindStudentsByCourseID() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	void testAddStudentToCourse() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	void testFindStudentCourses() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	void testDropoutStudentFromCourse() {
+		fail("Not yet implemented");
+	}
 
 	
 }

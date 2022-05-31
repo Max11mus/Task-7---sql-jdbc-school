@@ -1,0 +1,53 @@
+{
+"course": [
+	{
+		"uuid" : "fb17aed3-199d-4a6c-851c-14c5aaa937f8",
+		"course_name" : "Finance -B.Com\/CA",
+		"course_description" : "Finance -B.Com\/CA"
+	},
+	{
+		"uuid" : "d22f9edf-310d-4f56-b3b8-c2ba37271322",
+		"course_name" : "Mass-communication\/Journalism BJMC",
+		"course_description" : "Mass-communication\/Journalism BJMC"
+	},
+	{
+		"uuid" : "bdbef3b7-9c29-442a-b5d2-b76901bf0313",
+		"course_name" : "Education Teaching-B.Ed\/M.Ed",
+		"course_description" : "Education Teaching-B.Ed\/M.Ed"
+	},
+	{
+		"uuid" : "0201a29d-7303-48ea-a5c0-1d6e80c6f14f",
+		"course_name" : "Management MBA\/BBA",
+		"course_description" : "Management MBA\/BBA"
+	},
+	{
+		"uuid" : "2b1e1788-7b15-4421-8628-22283e918303",
+		"course_name" : "Computer Application-BCA\/MCA",
+		"course_description" : "Computer Application-BCA\/MCA"
+	},
+	{
+		"uuid" : "0cc40d02-fd80-4739-96ed-c0937c7cd400",
+		"course_name" : "Engineering B.Tech and B.Arch, M.Tech, ME, BE",
+		"course_description" : "Engineering B.Tech and B.Arch, M.Tech, ME, BE"
+	},
+	{
+		"uuid" : "78af4cc3-d2be-406b-8d4c-bc47324fa241",
+		"course_name" : "Arts Psychology and Sociology",
+		"course_description" : "Arts Psychology and Sociology"
+	},
+	{
+		"uuid" : "630c4ef5-73a2-43c9-9cb6-dde77a96d664",
+		"course_name" : "Medical-BDS and MBBS",
+		"course_description" : "Medical-BDS and MBBS"
+	},
+	{
+		"uuid" : "dec13a80-44b8-4363-93b6-8216f42b1aa0",
+		"course_name" : "Nursing B.Sc. and M.Sc. in Nursing",
+		"course_description" : "Nursing B.Sc. and M.Sc. in Nursing"
+	},
+	{
+		"uuid" : "b96d5c25-b67f-4f54-abc2-758e64a78e39",
+		"course_name" : "Designing - Fashion\/Interior\/Web",
+		"course_description" : "Designing - Fashion\/Interior\/Web"
+	}
+]}
