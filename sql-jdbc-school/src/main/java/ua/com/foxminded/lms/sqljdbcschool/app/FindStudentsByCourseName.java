@@ -10,7 +10,6 @@ import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 public class FindStudentsByCourseName extends ConsoleMenuCommand {
 	public FindStudentsByCourseName(Scanner input, PrintWriter output, SchoolDAO dao) {
 		super(input, output, dao);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -18,24 +17,20 @@ public class FindStudentsByCourseName extends ConsoleMenuCommand {
 		output.println();
 		String courseName;
 		Course course = null;
-		
+
 		List<Course> allCourses = dao.getAllCourses();
 		output.println();
-		
+
 		output.println("Enter course name:");
 		courseName = input.nextLine().trim();
-		course = allCourses.stream()
-				.filter(e -> e.getCourseName()
-						.equals(courseName))
-				.findAny().orElse(null);
-		
+		course = allCourses.stream().filter(e -> e.getCourseName().equals(courseName)).findAny().orElse(null);
+
 		if (course == null) {
 			output.println("Course with name " + courseName + " not present.");
 		} else {
 			dao.FindStudentsByCourseID(course.getUuid());
 		}
-		
+
 	}
 
-	
 }

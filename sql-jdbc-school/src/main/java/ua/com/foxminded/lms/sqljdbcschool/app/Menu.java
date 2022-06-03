@@ -8,8 +8,8 @@ public class Menu {
 	private ArrayList<ConsoleMenuCommand> menuOptions = new ArrayList<ConsoleMenuCommand>();
 	protected Scanner input;
 	protected PrintWriter output;
-	protected String name="";
-	
+	protected String name = "";
+
 	public Menu(Scanner input, PrintWriter output, String name) {
 		super();
 		this.input = input;
@@ -18,29 +18,29 @@ public class Menu {
 	}
 
 	public void runCycle() {
-			int exitChoice = menuOptions.size();
-			int choice = -1;
-			while (choice != exitChoice) {
-				
-				output.println();
-				output.println(name);
-				menuOptions.forEach(command -> output.println(menuOptions.indexOf(command) + ". " + command.getName()));
-				output.println(menuOptions.size() + ". Exit");
-				output.println("   Select option:");
+		int exitChoice = menuOptions.size();
+		int choice = -1;
+		while (choice != exitChoice) {
 
-				try {
-					choice = Integer.parseInt(input.nextLine());
+			output.println();
+			output.println(name);
+			menuOptions.forEach(command -> output.println(menuOptions.indexOf(command) + ". " + command.getName()));
+			output.println(menuOptions.size() + ". Exit");
+			output.println("   Select option:");
 
-					if (choice < 0 || choice > menuOptions.size()) {
-						output.println("Choice outside of range. Please choose again.");
-					} else if (choice != exitChoice) {
-						menuOptions.get(choice).run();
-					}
-				} catch (NumberFormatException e) {
-					output.println("Invalid selection. Numbers only please.");
-					choice = -1;
+			try {
+				choice = Integer.parseInt(input.nextLine());
+
+				if (choice < 0 || choice > menuOptions.size()) {
+					output.println("Choice outside of range. Please choose again.");
+				} else if (choice != exitChoice) {
+					menuOptions.get(choice).run();
 				}
+			} catch (NumberFormatException e) {
+				output.println("Invalid selection. Numbers only please.");
+				choice = -1;
 			}
+		}
 	}
 
 	public void addMenuOption(ConsoleMenuCommand command) {

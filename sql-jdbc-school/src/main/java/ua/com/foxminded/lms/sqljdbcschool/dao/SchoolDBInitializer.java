@@ -16,8 +16,7 @@ public class SchoolDBInitializer {
 	}
 
 	public void dropTables() throws SQLException, IOException {
-		String query = String.join(" ",
-				new FileLoader().loadTextLines(ClassLoader.getSystemResource("drop.sql")));
+		String query = String.join(" ", new FileLoader().loadTextLines(ClassLoader.getSystemResource("drop.sql")));
 
 		Connection connection = null;
 		Statement statement = null;
@@ -28,7 +27,7 @@ public class SchoolDBInitializer {
 			statement = connection.createStatement();
 			statement.execute(query);
 			connection.commit();
-			
+
 		} catch (SQLException e) {
 			System.out.println("Drop Tables failure.");
 			connection.rollback();
@@ -45,8 +44,7 @@ public class SchoolDBInitializer {
 	}
 
 	public void createTables() throws SQLException, IOException {
-		String query = String.join(" ",
-				new FileLoader().loadTextLines(ClassLoader.getSystemResource("create.sql")));
+		String query = String.join(" ", new FileLoader().loadTextLines(ClassLoader.getSystemResource("create.sql")));
 
 		Connection connection = null;
 		Statement statement = null;
@@ -57,7 +55,7 @@ public class SchoolDBInitializer {
 			statement = connection.createStatement();
 			statement.execute(query);
 			connection.commit();
-			
+
 		} catch (SQLException e) {
 			System.out.println("Create Tables failure.");
 			connection.rollback();

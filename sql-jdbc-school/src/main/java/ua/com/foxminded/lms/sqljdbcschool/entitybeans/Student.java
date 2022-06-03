@@ -3,7 +3,7 @@ package ua.com.foxminded.lms.sqljdbcschool.entitybeans;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Student implements Comparable<Student>{
+public class Student implements Comparable<Student> {
 	private String uuid;
 	private String groupUuid;
 	private String firstName;
@@ -37,9 +37,9 @@ public class Student implements Comparable<Student>{
 	}
 
 	public void setGroupUuid(String groupId) {
-			this.groupUuid = groupId;
+		this.groupUuid = groupId;
 	}
-	
+
 	public String getFirstName() {
 		return firstName;
 	}
@@ -71,8 +71,7 @@ public class Student implements Comparable<Student>{
 			return false;
 		Student other = (Student) obj;
 		return Objects.equals(groupUuid, other.groupUuid) && Objects.equals(uuid, other.uuid)
-				&& Objects.equals(firstName, other.firstName)
-				&& Objects.equals(lastName, other.lastName);
+				&& Objects.equals(firstName, other.firstName) && Objects.equals(lastName, other.lastName);
 	}
 
 	@Override
@@ -85,5 +84,5 @@ public class Student implements Comparable<Student>{
 	public int compareTo(Student o) {
 		return uuid.compareTo(o.getUuid().toString());
 	}
-	
+
 }

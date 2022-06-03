@@ -18,7 +18,7 @@ public class DeleteStudent extends ConsoleMenuCommand {
 		Student student = null;
 		int rowNo = 0;
 		output.println();
-		
+
 		List<Student> allStudents = dao.getAllStudents();
 
 		if (!allStudents.isEmpty()) {
@@ -30,7 +30,7 @@ public class DeleteStudent extends ConsoleMenuCommand {
 			output.println();
 			student = allStudents.get(rowNo - 1);
 			dao.deleteStudent(student.getUuid());
-			
+
 		}
 	}
 

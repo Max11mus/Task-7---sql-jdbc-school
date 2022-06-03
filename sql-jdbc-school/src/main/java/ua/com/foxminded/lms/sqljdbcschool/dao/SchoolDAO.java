@@ -13,9 +13,10 @@ import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 import ua.com.foxminded.lms.sqljdbcschool.utils.CheckForNull;
 
-public class SchoolDAO{
+public class SchoolDAO {
 	static private String EOL = System.lineSeparator();
 	private DBConnectionPool connectionPool;
+
 	public SchoolDAO(DBConnectionPool connectionPool) {
 		super();
 		this.connectionPool = connectionPool;
@@ -29,40 +30,39 @@ public class SchoolDAO{
 
 	public void insertGroup(Group group) {
 		CheckForNull.check(group);
-		
-		String query = "INSERT INTO group_1" + EOL  
-				+ " ( uuid, group_name) " + EOL
+
+		String query = "INSERT INTO group_1" + EOL
+				+ " ( uuid, group_name) " + EOL 
 				+ " VALUES ( ?, ? );" + EOL;
-			
-			Connection connection = null;
-			PreparedStatement statement = null; 
-			try  {
-				connection = connectionPool.checkOut();
-				connection.setAutoCommit(false);
-				statement = connection.prepareStatement(query);
-				int iteratorIndex = 1;
 
-				statement.setObject(iteratorIndex++, group.getUuid());
-				statement.setObject(iteratorIndex++, group.getGroupName());
+		Connection connection = null;
+		PreparedStatement statement = null;
+		try {
+			connection = connectionPool.checkOut();
+			connection.setAutoCommit(false);
+			statement = connection.prepareStatement(query);
+			int iteratorIndex = 1;
 
-				statement.executeUpdate();
-				connection.commit();
-				
-				synchronized (System.out) {
-					System.out.println("Query executed:");
-					System.out.println(statement.toString());
-					System.out.println("Results:");
-					System.out.println("1 row inserted.");
-				}
+			statement.setObject(iteratorIndex++, group.getUuid());
+			statement.setObject(iteratorIndex++, group.getGroupName());
 
-			} catch (SQLException e) {
-				rollbackTransaction(connection);
-				e.printStackTrace();
+			statement.executeUpdate();
+			connection.commit();
+
+			synchronized (System.out) {
+				System.out.println("Query executed:");
+				System.out.println(statement.toString());
+				System.out.println("Results:");
+				System.out.println("1 row inserted.");
 			}
-			finally {
-				connectionPool.checkIn(connection);
-				closeStatemant(statement);
-			}
+
+		} catch (SQLException e) {
+			rollbackTransaction(connection);
+			e.printStackTrace();
+		} finally {
+			connectionPool.checkIn(connection);
+			closeStatemant(statement);
+		}
 	}
 
 	public void insertStudents(List<Student> students) {
@@ -70,97 +70,95 @@ public class SchoolDAO{
 
 		students.parallelStream().forEach(this::insertStudent);
 	}
-	
+
 	public void insertStudent(Student student) {
 		CheckForNull.check(student);
-		
-		String query = "INSERT INTO student" + EOL  
+
+		String query = "INSERT INTO student" + EOL 
 				+ " ( uuid, group_uuid, first_name, last_name ) " + EOL
 				+ " VALUES ( ?, ?, ?, ? );" + EOL;
-			
-			Connection connection = null;
-			PreparedStatement statement = null; 
-			try  {
-				connection = connectionPool.checkOut();
-				connection.setAutoCommit(false);
-				statement = connection.prepareStatement(query);
-				int iteratorIndex = 1;
-				
-				statement.setObject(iteratorIndex++, student.getUuid());
-				statement.setObject(iteratorIndex++, student.getGroupUuid());
-				statement.setObject(iteratorIndex++, student.getFirstName());
-				statement.setObject(iteratorIndex++, student.getLastName());
 
-				statement.executeUpdate();
-				connection.commit();
-				
-				synchronized (System.out) {
-					System.out.println("Query executed:");
-					System.out.println(statement.toString());
-					System.out.println("Results:");
-					System.out.println("1 row inserted.");
-				}
+		Connection connection = null;
+		PreparedStatement statement = null;
+		try {
+			connection = connectionPool.checkOut();
+			connection.setAutoCommit(false);
+			statement = connection.prepareStatement(query);
+			int iteratorIndex = 1;
 
-			} catch (SQLException e) {
-				rollbackTransaction(connection);
-				e.printStackTrace();
+			statement.setObject(iteratorIndex++, student.getUuid());
+			statement.setObject(iteratorIndex++, student.getGroupUuid());
+			statement.setObject(iteratorIndex++, student.getFirstName());
+			statement.setObject(iteratorIndex++, student.getLastName());
+
+			statement.executeUpdate();
+			connection.commit();
+
+			synchronized (System.out) {
+				System.out.println("Query executed:");
+				System.out.println(statement.toString());
+				System.out.println("Results:");
+				System.out.println("1 row inserted.");
 			}
-			finally {
-				connectionPool.checkIn(connection);
-				closeStatemant(statement);
-			}
+
+		} catch (SQLException e) {
+			rollbackTransaction(connection);
+			e.printStackTrace();
+		} finally {
+			connectionPool.checkIn(connection);
+			closeStatemant(statement);
 		}
-	
+	}
+
 	public void insertCourses(List<Course> courses) {
 		CheckForNull.check(courses);
-		
+
 		courses.parallelStream().forEach(this::insertCourse);
 	}
-	
+
 	private void insertCourse(Course course) {
 		CheckForNull.check(course);
-		
-		String query = "INSERT INTO course " + EOL  
+
+		String query = "INSERT INTO course " + EOL 
 				+ " ( uuid, course_name, course_description) " + EOL
 				+ " VALUES ( ?, ?, ?);" + EOL;
-			
-			Connection connection = null;
-			PreparedStatement statement = null; 
-			try  {
-				connection = connectionPool.checkOut();
-				connection.setAutoCommit(false);
-				statement = connection.prepareStatement(query);
-				int iteratorIndex = 1;
 
-				statement.setObject(iteratorIndex++, course.getUuid());
-				statement.setObject(iteratorIndex++, course.getCourseName());
-				statement.setObject(iteratorIndex++, course.getCourseDescription());
+		Connection connection = null;
+		PreparedStatement statement = null;
+		try {
+			connection = connectionPool.checkOut();
+			connection.setAutoCommit(false);
+			statement = connection.prepareStatement(query);
+			int iteratorIndex = 1;
 
-				statement.executeUpdate();
-				connection.commit();
-				
-				synchronized (System.out) {
-					System.out.println("Query executed:");
-					System.out.println(statement.toString());
-					System.out.println("Results:");
-					System.out.println("1 row inserted.");
-				}
+			statement.setObject(iteratorIndex++, course.getUuid());
+			statement.setObject(iteratorIndex++, course.getCourseName());
+			statement.setObject(iteratorIndex++, course.getCourseDescription());
 
-			} catch (SQLException e) {
-				rollbackTransaction(connection);
-				e.printStackTrace();
+			statement.executeUpdate();
+			connection.commit();
+
+			synchronized (System.out) {
+				System.out.println("Query executed:");
+				System.out.println(statement.toString());
+				System.out.println("Results:");
+				System.out.println("1 row inserted.");
 			}
-			finally {
-				connectionPool.checkIn(connection);
-				closeStatemant(statement);
-			}
+
+		} catch (SQLException e) {
+			rollbackTransaction(connection);
+			e.printStackTrace();
+		} finally {
+			connectionPool.checkIn(connection);
+			closeStatemant(statement);
+		}
 	}
-	
+
 	public List<Student> getAllStudents() {
-		String query = "SELECT *" + EOL
-				+ " FROM " + EOL
+		String query = "SELECT *" + EOL 
+				+ " FROM " + EOL 
 				+ "student" + EOL;
-		
+
 		ResultSet result = null;
 		ArrayList<Student> resultStudents = new ArrayList<Student>();
 
@@ -190,13 +188,12 @@ public class SchoolDAO{
 					resultStudents.add(student);
 
 					System.out.println("RowNO  " + String.valueOf(rowNo++) + "  " + student.toString());
-				}			
+				}
 			}
 		} catch (SQLException e) {
 			rollbackTransaction(connection);
 			e.printStackTrace();
-		}
-		finally {
+		} finally {
 			connectionPool.checkIn(connection);
 			closeResultSet(result);
 			closeStatemant(statement);
@@ -209,17 +206,16 @@ public class SchoolDAO{
 
 		int result = 0;
 
-		String queryStudentsOnCourse = " DELETE FROM " + EOL
-				+ "students_on_course" + EOL
+		String queryStudentsOnCourse = " DELETE FROM " + EOL 
+				+ "students_on_course" + EOL 
 				+ " WHERE " + EOL
 				+ "student_uuid" + EOL 
 				+ " IN ( ? ); " + EOL;
-			
-		String queryStudents = " DELETE FROM " + EOL
+
+		String queryStudents = " DELETE FROM " + EOL 
 				+ "student" + EOL 
-				+ " WHERE" + EOL
-				+ "uuid" + EOL 
-				+ " IN ( ? ); " + EOL;
+				+ " WHERE" + EOL 
+				+ "uuid" + EOL + " IN ( ? ); " + EOL;
 
 		Connection connection = null;
 		PreparedStatement statement = null;
@@ -261,16 +257,14 @@ public class SchoolDAO{
 	}
 
 	public void findGroupsStudentCountLessOrEquals(int studentCount) {
-		String query =  "SELECT " + EOL
-				+ "group_1.uuid," + EOL
-				+ "group_1.group_name,"
-				+ "COUNT(*) AS \"Student Count\"" + EOL
-				+ "FROM group_1" + EOL
-				+ "INNER JOIN student" + EOL
-				+ "ON  student.group_uuid = group_1.uuid" + EOL
-				+ "GROUP BY group_1.uuid" + EOL
-				+ "HAVING COUNT(*) <= CAST( ? AS INT) ;"; 
-		
+		String query = "SELECT " + EOL 
+				+ "group_1.uuid," + EOL 
+				+ "group_1.group_name," + "COUNT(*) AS \"Student Count\"" + EOL 
+				+ "FROM group_1" + EOL + "INNER JOIN student" + EOL 
+				+ "ON  student.group_uuid = group_1.uuid" + EOL 
+				+ "GROUP BY group_1.uuid" + EOL 
+				+ "HAVING COUNT(*) <= CAST( ? AS INT) ;";
+
 		ResultSet result = null;
 
 		Connection connection = null;
@@ -283,7 +277,7 @@ public class SchoolDAO{
 			statement.setObject(1, studentCount);
 			result = statement.executeQuery();
 			connection.commit();
-			
+
 			synchronized (System.out) {
 				System.out.println(statement.toString());
 				System.out.println("Results:");
@@ -312,16 +306,16 @@ public class SchoolDAO{
 	}
 
 	public List<Course> getAllCourses() {
-		String query = "SELECT * " + EOL
-				+ "FROM" + EOL
+		String query = "SELECT * " + EOL 
+				+ "FROM" + EOL 
 				+ "course ;";
 
 		ResultSet result = null;
 		List<Course> resultCourses = new ArrayList<Course>();
-		
+
 		Connection connection = null;
 		PreparedStatement statement = null;
-		
+
 		try {
 			connection = connectionPool.checkOut();
 			connection.setAutoCommit(false);
@@ -329,30 +323,29 @@ public class SchoolDAO{
 					ResultSet.CONCUR_READ_ONLY);
 
 			result = statement.executeQuery();
-			
-			 synchronized (System.out) {
-					System.out.println(statement.toString());
-					System.out.println("Results:");
 
-					Course course = null;
-					int rowNo = 1;
-					while (result.next()) {
-						course = new Course();
-						course.setUuid(result.getString("uuid"));
-						course.setCourseName((String) (result.getObject("course_name")));
-						course.setCourseDescription((String) result.getObject("course_description"));
-						resultCourses.add(course);
+			synchronized (System.out) {
+				System.out.println(statement.toString());
+				System.out.println("Results:");
 
-						System.out.println("RowNO  " + String.valueOf(rowNo++) + "  " + course.toString());
-					}
+				Course course = null;
+				int rowNo = 1;
+				while (result.next()) {
+					course = new Course();
+					course.setUuid(result.getString("uuid"));
+					course.setCourseName((String) (result.getObject("course_name")));
+					course.setCourseDescription((String) result.getObject("course_description"));
+					resultCourses.add(course);
+
+					System.out.println("RowNO  " + String.valueOf(rowNo++) + "  " + course.toString());
 				}
+			}
 			connection.commit();
-			
+
 		} catch (SQLException e) {
 			rollbackTransaction(connection);
 			e.printStackTrace();
-		}
-		finally {
+		} finally {
 			connectionPool.checkIn(connection);
 			closeResultSet(result);
 			closeStatemant(statement);
@@ -362,22 +355,22 @@ public class SchoolDAO{
 
 	public void FindStudentsByCourseID(String courseUuid) {
 		CheckForNull.check(courseUuid);
-		
-		String query =  "SELECT " + EOL
-				+ "students_on_course.course_uuid, "+ EOL
-				+ "student.uuid,"+ EOL
-				+ "student.group_uuid," + EOL
-				+ "student.first_name," + EOL
+
+		String query = "SELECT " + EOL 
+				+ "students_on_course.course_uuid, " + EOL 
+				+ "student.uuid," + EOL
+				+ "student.group_uuid," + EOL 
+				+ "student.first_name," + EOL 
 				+ "student.last_name" + EOL
-				+ "FROM students_on_course" + EOL
+				+ "FROM students_on_course" + EOL 
 				+ "INNER JOIN student" + EOL
-				+ "ON student.uuid = students_on_course.student_uuid" + EOL
+				+ "ON student.uuid = students_on_course.student_uuid" + EOL 
 				+ "WHERE course_uuid IN ( ? );" + EOL;
-		
+
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
-		
+
 		try {
 			connection = connectionPool.checkOut();
 			connection.setAutoCommit(false);
@@ -385,7 +378,7 @@ public class SchoolDAO{
 					ResultSet.CONCUR_READ_ONLY);
 			statement.setObject(1, courseUuid);
 			result = statement.executeQuery();
-			
+
 			synchronized (System.out) {
 				System.out.println(statement.toString());
 				System.out.println("Results:");
@@ -406,8 +399,7 @@ public class SchoolDAO{
 		} catch (SQLException e) {
 			rollbackTransaction(connection);
 			e.printStackTrace();
-		}
-		finally {
+		} finally {
 			connectionPool.checkIn(connection);
 			closeResultSet(result);
 			closeStatemant(statement);
@@ -418,22 +410,20 @@ public class SchoolDAO{
 		CheckForNull.check(studentId, courseId);
 
 		int result = 0;
-		String querySelect = "SELECT * FROM " + EOL
-				+ "students_on_course " + EOL
-				+ "WHERE " + EOL
-				+ "student_uuid = ? " + EOL
-				+ "AND" + EOL
+		String querySelect = "SELECT * FROM " + EOL 
+				+ "students_on_course " + EOL 
+				+ "WHERE " + EOL + "student_uuid = ? " + EOL 
+				+ "AND" + EOL 
 				+ " course_uuid = ?;" + EOL;
-		
-		String queryInsert = "INSERT INTO " + EOL
-				+ "students_on_course " + EOL
+
+		String queryInsert = "INSERT INTO " + EOL 
+				+ "students_on_course " + EOL 
 				+ "(student_uuid, course_uuid)" + EOL
-				+ "VALUES " + EOL
-				+ "( ?, ? ) ;" + EOL;
-	
+				+ "VALUES " + EOL + "( ?, ? ) ;" + EOL;
+
 		Connection connection = null;
 		PreparedStatement statement = null;
-				
+
 		try {
 			connection = connectionPool.checkOut();
 			connection.setAutoCommit(false);
@@ -441,7 +431,7 @@ public class SchoolDAO{
 			statement.setObject(1, studentId);
 			statement.setObject(2, courseId);
 			ResultSet resultSet = statement.executeQuery();
-			 
+
 			synchronized (System.out) {
 				System.out.println("Query executed:");
 				System.out.println(statement.toString());
@@ -479,26 +469,26 @@ public class SchoolDAO{
 			closeStatemant(statement);
 		}
 	}
-		
+
 	public List<Course> findStudentCourses(String studentUuid) {
 		CheckForNull.check(studentUuid);
-		
+
 		ResultSet result = null;
 		List<Course> studentCourses = new ArrayList<Course>();
-		
-		String query = "SELECT " + EOL
-				+ "course.uuid," + EOL
-				+ "course.course_name," + EOL 
-				+ "course.course_description," + EOL
-				+ "students_on_course.student_uuid" + EOL
-				+ "FROM" + EOL
-				+ "course" + EOL
+
+		String query = "SELECT " + EOL 
+				+ "course.uuid," + EOL 
+				+ "course.course_name," + EOL
+				+ "course.course_description," + EOL 
+				+ "students_on_course.student_uuid" + EOL 
+				+ "FROM" + EOL 
+				+ "course" + EOL 
 				+ "RIGHT JOIN" + EOL 
-				+ "students_on_course" + EOL
+				+ "students_on_course" + EOL 
 				+ "ON" + EOL
-				+ " course.uuid = students_on_course.course_uuid " + EOL
+				+ " course.uuid = students_on_course.course_uuid " + EOL 
 				+ "WHERE" + EOL
-				+ " students_on_course.student_uuid = ? " + EOL; 
+				+ " students_on_course.student_uuid = ? " + EOL;
 
 		Connection connection = null;
 		PreparedStatement statement = null;
@@ -530,7 +520,7 @@ public class SchoolDAO{
 					}
 				}
 			}
-				connection.commit();
+			connection.commit();
 		} catch (SQLException e) {
 			rollbackTransaction(connection);
 			e.printStackTrace();
@@ -545,23 +535,23 @@ public class SchoolDAO{
 		CheckForNull.check(studentUuid, courseUuid);
 
 		int result = 0;
-		String query = "DELETE FROM" + EOL
-				+ "students_on_course" + EOL
-				 + "WHERE"
-				 + " student_uuid = ? "
-				 + "AND "
-				 + "course_uuid = ? ;" + EOL;
-	
+		String query = "DELETE FROM" + EOL 
+				+ "students_on_course" + EOL 
+				+ "WHERE" + EOL 
+				+ " student_uuid = ? " + EOL
+				+ "AND " + EOL
+				+ " course_uuid = ? ;" + EOL;
+
 		Connection connection = null;
 		PreparedStatement statement = null;
-				
+
 		try {
 			connection = connectionPool.checkOut();
 			connection.setAutoCommit(false);
 			statement = connection.prepareStatement(query);
 			statement.setObject(1, studentUuid.toString());
 			statement.setObject(2, courseUuid.toString());
-			
+
 			result = statement.executeUpdate();
 
 			synchronized (System.out) {
@@ -600,7 +590,7 @@ public class SchoolDAO{
 			}
 		}
 	}
-	
+
 	private void closeResultSet(ResultSet resultSet) {
 		if (resultSet != null) {
 			try {

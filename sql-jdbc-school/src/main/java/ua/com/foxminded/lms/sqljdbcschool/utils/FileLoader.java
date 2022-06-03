@@ -14,7 +14,7 @@ public class FileLoader {
 	public List<String> loadTextLines(URL url) {
 		List<String> lines = new ArrayList<String>();
 		URLConnection connection;
-		
+
 		try {
 			connection = url.openConnection();
 			InputStream is = connection.getInputStream();
@@ -33,7 +33,7 @@ public class FileLoader {
 	public InputStream loadProperties(URL url) {
 		InputStream stream = null;
 		URLConnection connection;
-		
+
 		try {
 			connection = url.openConnection();
 			stream = connection.getInputStream();

@@ -13,24 +13,24 @@ import java.util.Properties;
 
 public class DBConnectionPool {
 	private long expirationTime;
-	private Hashtable<Connection, Long> locked; 
+	private Hashtable<Connection, Long> locked;
 	private Hashtable<Connection, Long> unlocked;
 	private Properties properties;
 
 	public DBConnectionPool(Properties properties, int initialSize) throws SQLException {
 		this(properties);
-		ArrayList<Connection> temp = new ArrayList<Connection>() ;
-		for (int i = 0; i<initialSize; i++) {
+		ArrayList<Connection> temp = new ArrayList<Connection>();
+		for (int i = 0; i < initialSize; i++) {
 			temp.add(checkOut());
 		}
-		
+
 		for (Iterator<Connection> iterator = temp.iterator(); iterator.hasNext();) {
 			Connection connection = (Connection) iterator.next();
 			checkIn(connection);
 		}
-		
+
 	}
-	
+
 	public DBConnectionPool(Properties properties) {
 		expirationTime = 360000; // 360 milliseconds - 360 seconds
 		locked = new Hashtable<Connection, Long>();
@@ -39,7 +39,7 @@ public class DBConnectionPool {
 	}
 
 	protected Connection create() throws SQLException {
-		try  {
+		try {
 			Connection connection = DriverManager.getConnection(getUrl() + getDBname(), getUser(), getPassword());
 			return (connection);
 		} catch (SQLException e) {
@@ -106,7 +106,7 @@ public class DBConnectionPool {
 	public String getUrl() {
 		return properties.getProperty("url");
 	}
-	
+
 	public String getDBname() {
 		return properties.getProperty("dbname");
 	}
@@ -118,20 +118,20 @@ public class DBConnectionPool {
 	public String getPassword() {
 		return properties.getProperty("password");
 	}
-	
-	public void closeConnections() throws SQLException{
-		
+
+	public void closeConnections() throws SQLException {
+
 		Iterator<Entry<Connection, Long>> iterator = locked.entrySet().iterator();
 		while (iterator.hasNext()) {
 			Map.Entry<Connection, Long> entry = (Map.Entry<Connection, Long>) iterator.next();
 			entry.getKey().close();
 		}
-		
+
 		iterator = unlocked.entrySet().iterator();
 		while (iterator.hasNext()) {
 			Map.Entry<Connection, Long> entry = (Map.Entry<Connection, Long>) iterator.next();
 			entry.getKey().close();
 		}
 	}
-	
+
 }

@@ -3,7 +3,7 @@ package ua.com.foxminded.lms.sqljdbcschool.entitybeans;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Group implements Comparable<Group>{
+public class Group implements Comparable<Group> {
 	private String uuid;
 	private String groupName;
 
@@ -19,7 +19,7 @@ public class Group implements Comparable<Group>{
 	}
 
 	public String getUuid() {
-		return  uuid;
+		return uuid;
 	}
 
 	public void setUuid(String id) {

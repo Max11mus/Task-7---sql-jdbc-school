@@ -7,12 +7,13 @@ public class Course implements Comparable<Course> {
 	private String uuid;
 	private String courseName;
 	private String courseDescription;
+
 	public Course() {
 		uuid = UUID.randomUUID().toString();
 		courseName = "";
 		courseDescription = "";
 	}
-	
+
 	public Course(String id, String courseName, String courseDescription) {
 		this.uuid = id;
 		this.courseName = courseName;
@@ -63,8 +64,7 @@ public class Course implements Comparable<Course> {
 			return false;
 		Course other = (Course) obj;
 		return Objects.equals(courseDescription, other.courseDescription)
-				&& Objects.equals(courseName, other.courseName)
-				&& Objects.equals(uuid, other.uuid); 
+				&& Objects.equals(courseName, other.courseName) && Objects.equals(uuid, other.uuid);
 	}
 
 	@Override

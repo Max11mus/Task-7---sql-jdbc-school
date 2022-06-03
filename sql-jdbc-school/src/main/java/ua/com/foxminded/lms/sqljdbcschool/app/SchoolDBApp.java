@@ -37,7 +37,7 @@ public class SchoolDBApp {
 	private static PrintWriter out = new PrintWriter(System.out, true);
 
 	public static void main(String[] args) throws IOException, SQLException {
-		
+
 		out.println();
 		out.println("Using connection properties");
 		conectionProperties.forEach((k, v) -> out.println(k + " =  " + v));
@@ -98,7 +98,7 @@ public class SchoolDBApp {
 		entitiesGenerator.randomEnrollStudentsToGroups(students, groups);
 		ConcurrentHashMap<String, List<Student>> enrolledStudents = entitiesGenerator
 				.randomEnrollStudentsToCourses(students, courses);
-		
+
 		schoolDAO.insertGroups(groups);
 		schoolDAO.insertStudents(students);
 		schoolDAO.insertCourses(courses);
