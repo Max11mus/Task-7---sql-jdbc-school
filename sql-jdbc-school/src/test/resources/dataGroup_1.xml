@@ -1,10 +1,5 @@
 <!DOCTYPE dataset SYSTEM "schema.dtd">
 <dataset>
-	<GROUP_1 UUID="0f7ac00c-9cee-4b68-8d2d-1268d8ee2752"
-	GROUP_NAME="KG-21" />
-	<GROUP_1 UUID="1395df38-f289-41ac-ad5d-29355f320e9a"
-		GROUP_NAME="TK-79" />
-	
 	<GROUP_1 UUID="346fbf4d-14e9-4a6f-a5e5-9845f4c7cb11"
 		GROUP_NAME="XP-20" />
 	<GROUP_1 UUID="cccf6335-771a-45e0-8353-09746968b5aa"

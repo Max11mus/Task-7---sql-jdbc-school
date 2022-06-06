@@ -1,0 +1,13 @@
+<!DOCTYPE dataset SYSTEM "schema.dtd">
+<dataset>
+	<STUDENTS_ON_COURSE
+		STUDENT_UUID="dd81e8f9-4b79-44b7-9bfb-e9e874560faf"
+		COURSE_UUID="72497b35-9ccb-4e8d-a773-bbf4d06463c9" />
+
+	<STUDENTS_ON_COURSE
+		STUDENT_UUID="4a350a4e-68ff-452a-add0-0da4df4a2fe3"
+		COURSE_UUID="bfde4ec7-7b71-459e-a27d-3377d0f4cc08" />
+	<STUDENTS_ON_COURSE
+		STUDENT_UUID="4a350a4e-68ff-452a-add0-0da4df4a2fe3"
+		COURSE_UUID="72497b35-9ccb-4e8d-a773-bbf4d06463c9" />
+</dataset>

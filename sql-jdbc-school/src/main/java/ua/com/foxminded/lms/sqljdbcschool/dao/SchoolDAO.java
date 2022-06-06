@@ -509,6 +509,7 @@ public class SchoolDAO {
 				if (result.first()) {
 					Course course = null;
 					int rowNo = 1;
+					result.beforeFirst();
 					while (result.next()) {
 						course = new Course();
 						course.setUuid(result.getString("uuid"));
