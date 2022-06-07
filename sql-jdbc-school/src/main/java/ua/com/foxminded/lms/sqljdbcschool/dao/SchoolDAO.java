@@ -353,7 +353,7 @@ public class SchoolDAO {
 		return resultCourses;
 	}
 
-	public void FindStudentsByCourseID(String courseUuid) {
+	public void findStudentsByCourseID(String courseUuid) {
 		CheckForNull.check(courseUuid);
 
 		String query = "SELECT " + EOL 

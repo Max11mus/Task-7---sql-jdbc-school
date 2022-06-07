@@ -10,7 +10,6 @@ import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 public class DeleteStudent extends ConsoleMenuCommand {
 	public DeleteStudent(Scanner input, PrintWriter output, SchoolDAO dao) {
 		super(input, output, dao);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

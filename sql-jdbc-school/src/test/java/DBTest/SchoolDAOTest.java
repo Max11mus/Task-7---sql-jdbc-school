@@ -34,7 +34,7 @@ import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 import ua.com.foxminded.lms.sqljdbcschool.utils.FileLoader;
 
-class DBUnitTest extends DataSourceBasedDBTestCase {
+class SchoolDAOTest extends DataSourceBasedDBTestCase {
 	static Properties dbProperties;
 	static DBConnectionPool pool;
 	static SchoolDAO dao;
@@ -98,7 +98,7 @@ class DBUnitTest extends DataSourceBasedDBTestCase {
 	}
 
 	@Test
-	void testInsertGroups() throws Exception {
+	void insertGroups__AfterInsert_DataMustBeSameAsExpected() throws Exception {
 
 		IDataSet databaseDataSet = getConnection().createDataSet();
 
@@ -130,7 +130,7 @@ class DBUnitTest extends DataSourceBasedDBTestCase {
 	}
 
 	@Test
-	void testInsertStudents() throws Exception {
+	void insertStudents__AfterInsert_DataMustBeSameAsExpected() throws Exception {
 
 		IDataSet databaseDataSet = getConnection().createDataSet();
 
@@ -171,7 +171,7 @@ class DBUnitTest extends DataSourceBasedDBTestCase {
 	}
 
 	@Test
-	void testInsertCourses() throws Exception {
+	void insertCourses_AfterInsert_DataMustBeSameAsExpected() throws Exception {
 
 		IDataSet databaseDataSet = getConnection().createDataSet();
 		
@@ -201,7 +201,7 @@ class DBUnitTest extends DataSourceBasedDBTestCase {
 	}
 
 	@Test
-	void testGetAllStudents() throws SQLException, Exception {
+	void getAllStudents__AfterReading_DataMustBeSameAsExpected() throws SQLException, Exception {
 		
 		List<Student> students = dao.getAllStudents();
 		Collections.sort(students);
@@ -226,7 +226,7 @@ class DBUnitTest extends DataSourceBasedDBTestCase {
 	}
 
 	@Test
-	void testGetAllCourses() throws Exception {
+	void getAllCourses_AfterReading_DataMustBeSameAsExpected() throws Exception {
 
 		List<Course> Courses = dao.getAllCourses();
 		Collections.sort(Courses);
@@ -250,7 +250,7 @@ class DBUnitTest extends DataSourceBasedDBTestCase {
 	}
 
 	@Test
-	void testFindStudentCourses() throws SQLException {
+	void findStudentCourses_AfterFinding_DataMustBeSameAsExpected() throws SQLException {
 		
 		String studentUUID = "4a350a4e-68ff-452a-add0-0da4df4a2fe3";
 		List<Course> studentCousres = dao.findStudentCourses(studentUUID);
@@ -280,7 +280,7 @@ class DBUnitTest extends DataSourceBasedDBTestCase {
 	}
 
 	@Test
-	void testDeleteStudent() throws SQLException, Exception {
+	void deleteStudent_AfterDeleting_DataMustBeSameAsExpected() throws SQLException, Exception {
 		
 		IDataSet databaseDataSet = getConnection().createDataSet();
 		
@@ -310,7 +310,7 @@ class DBUnitTest extends DataSourceBasedDBTestCase {
 	}
 	
 	@Test
-	void testAddStudentToCourse() throws SQLException, Exception {
+	void addStudentToCourse_AfterAdding_DataMustBeSameAsExpected() throws SQLException, Exception {
 
 		IDataSet databaseDataSet = getConnection().createDataSet();
 
@@ -333,7 +333,7 @@ class DBUnitTest extends DataSourceBasedDBTestCase {
 	}
 
 	@Test
-	void testDropoutStudentFromCourse() throws SQLException, Exception {
+	void dropoutStudentFromCourse_AfterDropout_DataMustBeSameAsExpected() throws SQLException, Exception {
 		
 		IDataSet databaseDataSet = getConnection().createDataSet();
 

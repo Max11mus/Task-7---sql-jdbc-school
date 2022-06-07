@@ -11,7 +11,6 @@ import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 public class DropoutStudentFromCourse extends ConsoleMenuCommand {
 	public DropoutStudentFromCourse(Scanner input, PrintWriter output, SchoolDAO dao) {
 		super(input, output, dao);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

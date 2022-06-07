@@ -28,7 +28,7 @@ public class FindStudentsByCourseName extends ConsoleMenuCommand {
 		if (course == null) {
 			output.println("Course with name " + courseName + " not present.");
 		} else {
-			dao.FindStudentsByCourseID(course.getUuid());
+			dao.findStudentsByCourseID(course.getUuid());
 		}
 
 	}
