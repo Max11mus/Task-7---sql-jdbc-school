@@ -21,7 +21,7 @@ public class DropoutStudentFromCourse extends ConsoleMenuCommand {
 
 		List<Student> allStudents = dao.getAllStudents();
 
-		System.out.println("Choose student - enter RowNo:");
+		output.println("Choose student - enter RowNo:");
 
 		rowNo = inputIntFromRange(1, allStudents.size());
 
