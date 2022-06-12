@@ -1,5 +1,7 @@
 package ua.com.foxminded.lms.sqljdbcschool.dao;
 
+import java.io.IOException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,11 +9,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+import java.util.function.Function;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 import ua.com.foxminded.lms.sqljdbcschool.utils.CheckForNull;
+import ua.com.foxminded.lms.sqljdbcschool.utils.FileLoader;
 
 public class SchoolDAO {
 	static private String EOL = System.lineSeparator();
@@ -599,6 +607,41 @@ public class SchoolDAO {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+		}
+	}
+
+	@PostConstruct
+	private void init() {
+		int initPoolSize = 5;
+		FileLoader fileLoader = new FileLoader();
+		URL propertiesURL = ClassLoader.getSystemResource("db.posgresql.properties");
+		Properties conectionProperties = new Properties();
+		Function<Properties, DBConnectionPool> initPool = (properties) -> {
+			try {
+				properties.load(fileLoader.loadProperties(propertiesURL));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return new DBConnectionPool(properties, initPoolSize);
+		};
+		DBConnectionPool connectionPool = initPool.apply(conectionProperties);
+
+		SchoolDBInitializer schoolDBInitializer = new SchoolDBInitializer(connectionPool);
+		try {
+			schoolDBInitializer.dropTables();
+			schoolDBInitializer.createTables();
+		} catch (SQLException | IOException e) {
+			e.printStackTrace();
+		}
+		this.connectionPool = connectionPool;
+	}	
+
+	@PreDestroy
+	private void destroy() {
+		try {
+			this.connectionPool.closeConnections();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 

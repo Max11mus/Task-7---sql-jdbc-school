@@ -17,11 +17,15 @@ public class DBConnectionPool {
 	private Hashtable<Connection, Long> unlocked;
 	private Properties properties;
 
-	public DBConnectionPool(Properties properties, int initialSize) throws SQLException {
+	public DBConnectionPool(Properties properties, int initialSize) {
 		this(properties);
 		ArrayList<Connection> temp = new ArrayList<Connection>();
 		for (int i = 0; i < initialSize; i++) {
-			temp.add(checkOut());
+			try {
+				temp.add(checkOut());
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 
 		for (Iterator<Connection> iterator = temp.iterator(); iterator.hasNext();) {

@@ -3,11 +3,16 @@ package ua.com.foxminded.lms.sqljdbcschool.app;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component
+@Scope("prototype")
 public class FindGroupsStudentCountLessOrEquals extends ConsoleMenuCommand {
-	public FindGroupsStudentCountLessOrEquals(Scanner input, PrintWriter output, SchoolDAO dao) {
-		super(input, output, dao);
+	@Autowired
+	public FindGroupsStudentCountLessOrEquals(Scanner input, PrintWriter output) {
+		super(input, output);
 	}
 
 	@Override

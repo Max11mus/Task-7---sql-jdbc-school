@@ -2,67 +2,54 @@ package ua.com.foxminded.lms.sqljdbcschool.app;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Properties;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
-import ua.com.foxminded.lms.sqljdbcschool.dao.DBConnectionPool;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
-import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDBInitializer;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
-import ua.com.foxminded.lms.sqljdbcschool.utils.FileLoader;
+import ua.com.foxminded.lms.sqljdbcschool.spring.SpringContextConfig;
 
 public class SchoolDBApp {
-	private static FileLoader fileLoader = new FileLoader();
-	private static URL propertiesURL = ClassLoader.getSystemResource("db.posgresql.properties");
-	private static Properties conectionProperties = new Properties();
-	private static Function<Properties, DBConnectionPool> initPool = (properties) -> {
-		try {
-			properties.load(fileLoader.loadProperties(propertiesURL));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return new DBConnectionPool(properties);
-	};
-	private static DBConnectionPool connectionPool = initPool.apply(conectionProperties);
-	private static SchoolDBInitializer schoolDBInit;
-	private static SchoolDAO schoolDAO = new SchoolDAO(connectionPool);
+	private static SchoolDAO  schoolDAO = null;
 	private static Scanner in = new Scanner(System.in);
 	private static PrintWriter out = new PrintWriter(System.out, true);
 
 	public static void main(String[] args) throws IOException, SQLException {
 
-		out.println();
-		out.println("Using connection properties");
-		conectionProperties.forEach((k, v) -> out.println(k + " =  " + v));
+		AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
+		applicationContext.register(SpringContextConfig.class);
+		applicationContext.refresh();
 
+		schoolDAO = applicationContext.getBean("dao", SchoolDAO.class);
 		prepareDB();
 
 		Menu appMenu = new Menu(in, out, "Choose an option");
 
-		FindGroupsStudentCountLessOrEquals findGroupsStudentCountLessOrEquals = new FindGroupsStudentCountLessOrEquals(
-				in, out, schoolDAO);
+		FindGroupsStudentCountLessOrEquals findGroupsStudentCountLessOrEquals = applicationContext
+				.getBean(FindGroupsStudentCountLessOrEquals.class, in, out);
 		findGroupsStudentCountLessOrEquals.setName("Find all groups with less or equals student count");
 
-		FindStudentsByCourseName findStudentsByCourseName = new FindStudentsByCourseName(in, out, schoolDAO);
+		FindStudentsByCourseName findStudentsByCourseName = applicationContext.getBean(FindStudentsByCourseName.class,
+				in, out);
 		findStudentsByCourseName.setName("Find all students related to course with given name");
 
-		AddStudent addStudent = new AddStudent(in, out, schoolDAO);
+		AddStudent addStudent = applicationContext.getBean(AddStudent.class, in, out);
 		addStudent.setName("Add new student");
 
-		DeleteStudent deleteStudent = new DeleteStudent(in, out, schoolDAO);
+		DeleteStudent deleteStudent = applicationContext.getBean(DeleteStudent.class, in, out);
 		deleteStudent.setName("Delete student by STUDENT_ID");
 
-		AddStudentToCourse addStudentToCourse = new AddStudentToCourse(in, out, schoolDAO);
+		AddStudentToCourse addStudentToCourse = applicationContext.getBean(AddStudentToCourse.class, in, out);
 		addStudentToCourse.setName("Add a student to the course (from a list)");
 
-		DropoutStudentFromCourse dropoutStudentFromCourse = new DropoutStudentFromCourse(in, out, schoolDAO);
+		DropoutStudentFromCourse dropoutStudentFromCourse = applicationContext.getBean(DropoutStudentFromCourse.class,
+				in, out);
 		dropoutStudentFromCourse.setName("Remove the student from one of his or her courses");
 
 		appMenu.addMenuOption(findGroupsStudentCountLessOrEquals);
@@ -76,20 +63,11 @@ public class SchoolDBApp {
 
 		out.close();
 		in.close();
-		connectionPool.closeConnections();
-
+		
+		applicationContext.close();
 	}
 
 	private static void prepareDB() throws SQLException, IOException {
-
-		out.println();
-		out.println("Preparing Database");
-
-		schoolDBInit = new SchoolDBInitializer(connectionPool);
-		out.println("Drop Tables");
-		schoolDBInit.dropTables();
-		out.println("Create Tables");
-		schoolDBInit.createTables();
 
 		EntitiesGenerator entitiesGenerator = new EntitiesGenerator();
 		List<Group> groups = entitiesGenerator.getRandomGroups();

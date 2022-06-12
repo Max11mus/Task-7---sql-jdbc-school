@@ -3,19 +3,23 @@ package ua.com.foxminded.lms.sqljdbcschool.app;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 
-public abstract class ConsoleMenuCommand implements Command {
+public abstract class ConsoleMenuCommand implements Command, ApplicationContextAware {
 	protected Scanner input;
 	protected PrintWriter output;
 	protected SchoolDAO dao;
 	protected String name="";
-	
-	public ConsoleMenuCommand(Scanner input, PrintWriter output, SchoolDAO dao) {
+	private ApplicationContext context = null;
+
+	public ConsoleMenuCommand(Scanner input, PrintWriter output) {
 		super();
 		this.input = input;
 		this.output = output;
-		this.dao = dao;
 	}
 	
 	public String getName() {
@@ -24,6 +28,12 @@ public abstract class ConsoleMenuCommand implements Command {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		context = applicationContext;
+		this.dao = applicationContext.getBean("dao", SchoolDAO.class);
+	};
 	
 	protected int inputIntFromRange(int lowValue, int highValue) {
 		if (lowValue > highValue) {
