@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
@@ -50,6 +52,11 @@ public class DropoutStudentFromCourseTest {
 		SchoolDAO dao = Mockito.mock(SchoolDAO.class);
 
 		DropoutStudentFromCourse dropoutStudentFromCourse = new DropoutStudentFromCourse(input, output, dao);
+
+		List<String> expectedOutput = Stream
+				.of("", "Choose student - enter RowNo:", "Choose course - enter RowNo:")
+				.collect(Collectors.toList());
+		
 		when(dao.getAllStudents()).thenReturn(students);
 		when(dao.findStudentCourses(studentUuid)).thenReturn(courses);
 		
@@ -59,11 +66,11 @@ public class DropoutStudentFromCourseTest {
 		//then
 		output.flush();
 		List<String> actualOutput = Arrays.asList(outStream.toString().split(EOL));
-		assertEquals(3, actualOutput.size());
+		assertEquals(expectedOutput.size(), actualOutput.size());
 		int index = 0;
-		assertEquals("", actualOutput.get(index++));
-		assertEquals("Choose student - enter RowNo:", actualOutput.get(index++));
-		assertEquals("Choose course - enter RowNo:", actualOutput.get(index++));
+		assertEquals(expectedOutput.get(index), actualOutput.get(index++));
+		assertEquals(expectedOutput.get(index), actualOutput.get(index++));
+		assertEquals(expectedOutput.get(index), actualOutput.get(index++));
 
 		InOrder daoOrder = Mockito.inOrder(dao);
 		daoOrder.verify(dao).getAllStudents();

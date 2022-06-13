@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
@@ -42,6 +44,11 @@ public class DeleteStudentTest {
 		SchoolDAO dao = Mockito.mock(SchoolDAO.class);
 		
 		DeleteStudent deleteStudent = new DeleteStudent(input, output, dao);  
+		
+		List<String> expectedOutput = Stream
+				.of("", "Enter RowNo: ")
+				.collect(Collectors.toList());
+		
 		when(dao.getAllStudents()).thenReturn(students);
 		
 		//when
@@ -50,10 +57,10 @@ public class DeleteStudentTest {
 		//then
 		output.flush();
 		List<String> actualOutput = Arrays.asList(outStream.toString().split(EOL));
-		assertEquals(2, actualOutput.size());
+		assertEquals(expectedOutput.size(), actualOutput.size());
 		int index = 0;
-		assertEquals("", actualOutput.get(index++));
-		assertEquals("Enter RowNo: ", actualOutput.get(index++));
+		assertEquals(expectedOutput.get(index), actualOutput.get(index++));
+		assertEquals(expectedOutput.get(index), actualOutput.get(index++));
 		
 		InOrder daoOrder = Mockito.inOrder(dao);
 		daoOrder.verify(dao).getAllStudents();
