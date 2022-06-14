@@ -1,0 +1,13 @@
+<!DOCTYPE dataset SYSTEM "schema.dtd">
+<dataset>
+	<COURSE UUID="897215e9-4918-4790-a8fc-4712c6a10723"
+		COURSE_NAME="Arts Psychology and Sociology"
+		COURSE_DESCRIPTION="Arts Psychology and Sociology" />
+		
+	<COURSE UUID="72497b35-9ccb-4e8d-a773-bbf4d06463c9"
+		COURSE_NAME="Designing - Fashion/Interior/Web"
+		COURSE_DESCRIPTION="Designing - Fashion/Interior/Web" />
+	<COURSE UUID="bfde4ec7-7b71-459e-a27d-3377d0f4cc08"
+		COURSE_NAME="Nursing B.Sc. and M.Sc. in Nursing"
+		COURSE_DESCRIPTION="Nursing B.Sc. and M.Sc. in Nursing" />
+</dataset>

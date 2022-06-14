@@ -1,0 +1,11 @@
+<!DOCTYPE dataset SYSTEM "schema.dtd">
+<dataset>
+	<GROUP_1 UUID="346fbf4d-14e9-4a6f-a5e5-9845f4c7cb11"
+		GROUP_NAME="XP-20" />
+	<GROUP_1 UUID="cccf6335-771a-45e0-8353-09746968b5aa"
+		GROUP_NAME="GZ-96" />
+	<GROUP_1 UUID="38bc200d-7c7b-45d9-b703-73a5e67ad917"
+		GROUP_NAME="cA-89" />
+	<GROUP_1 UUID="cb6d931c-d21f-4af3-88c0-d8379017a464"
+		GROUP_NAME="Qs-58" />
+</dataset>
