@@ -4,13 +4,12 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Scanner;
 
-import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 
 public class DropoutStudentFromCourse extends ConsoleMenuCommand {
-	public DropoutStudentFromCourse(Scanner input, PrintWriter output, SchoolDAO dao) {
-		super(input, output, dao);
+	public DropoutStudentFromCourse(Scanner input, PrintWriter output) {
+		super(input, output);
 	}
 
 	@Override

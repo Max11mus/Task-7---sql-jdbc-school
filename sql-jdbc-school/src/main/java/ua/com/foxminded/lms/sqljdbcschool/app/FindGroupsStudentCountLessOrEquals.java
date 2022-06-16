@@ -3,11 +3,9 @@ package ua.com.foxminded.lms.sqljdbcschool.app;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
-
 public class FindGroupsStudentCountLessOrEquals extends ConsoleMenuCommand {
-	public FindGroupsStudentCountLessOrEquals(Scanner input, PrintWriter output, SchoolDAO dao) {
-		super(input, output, dao);
+	public FindGroupsStudentCountLessOrEquals(Scanner input, PrintWriter output) {
+		super(input, output);
 	}
 
 	@Override

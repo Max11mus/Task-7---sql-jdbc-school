@@ -10,18 +10,22 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-
+	
 public class DBConnectionPool {
 	private long expirationTime;
 	private Hashtable<Connection, Long> locked;
 	private Hashtable<Connection, Long> unlocked;
 	private Properties properties;
 
-	public DBConnectionPool(Properties properties, int initialSize) throws SQLException {
+	public DBConnectionPool(Properties properties, int initialSize) {
 		this(properties);
 		ArrayList<Connection> temp = new ArrayList<Connection>();
 		for (int i = 0; i < initialSize; i++) {
-			temp.add(checkOut());
+			try {
+				temp.add(checkOut());
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 
 		for (Iterator<Connection> iterator = temp.iterator(); iterator.hasNext();) {

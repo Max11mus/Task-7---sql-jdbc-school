@@ -3,12 +3,11 @@ package ua.com.foxminded.lms.sqljdbcschool.app;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 
 public class AddStudent extends ConsoleMenuCommand {
-	public AddStudent(Scanner input, PrintWriter output, SchoolDAO dao) {
-		super(input, output, dao);
+	public AddStudent(Scanner input, PrintWriter output) {
+		super(input, output);
 	}
 
 	@Override

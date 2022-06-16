@@ -4,12 +4,11 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Scanner;
 
-import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 
 public class FindStudentsByCourseName extends ConsoleMenuCommand {
-	public FindStudentsByCourseName(Scanner input, PrintWriter output, SchoolDAO dao) {
-		super(input, output, dao);
+	public FindStudentsByCourseName(Scanner input, PrintWriter output) {
+		super(input, output);
 	}
 
 	@Override

@@ -3,19 +3,21 @@ package ua.com.foxminded.lms.sqljdbcschool.app;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 
 public abstract class ConsoleMenuCommand implements Command {
 	protected Scanner input;
 	protected PrintWriter output;
+	@Autowired
 	protected SchoolDAO dao;
 	protected String name="";
-	
-	public ConsoleMenuCommand(Scanner input, PrintWriter output, SchoolDAO dao) {
+
+	public ConsoleMenuCommand(Scanner input, PrintWriter output) {
 		super();
 		this.input = input;
 		this.output = output;
-		this.dao = dao;
 	}
 	
 	public String getName() {
