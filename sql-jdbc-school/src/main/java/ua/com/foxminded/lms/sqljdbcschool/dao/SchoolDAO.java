@@ -1,7 +1,5 @@
 package ua.com.foxminded.lms.sqljdbcschool.dao;
 
-import java.io.IOException;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,22 +7,18 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
-import java.util.function.Function;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 import ua.com.foxminded.lms.sqljdbcschool.utils.CheckForNull;
-import ua.com.foxminded.lms.sqljdbcschool.utils.FileLoader;
 
 @Component
+@Lazy
 public class SchoolDAO {
 	static private String EOL = System.lineSeparator();
 	@Autowired

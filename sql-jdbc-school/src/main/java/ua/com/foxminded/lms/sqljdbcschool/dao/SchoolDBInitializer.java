@@ -6,11 +6,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import ua.com.foxminded.lms.sqljdbcschool.utils.FileLoader;
 
 @Component
+@Lazy
 public class SchoolDBInitializer {
 	static protected String EOF = System.lineSeparator();
 	@Autowired
