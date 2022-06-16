@@ -4,16 +4,9 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Scanner;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 
-@Component
-@Scope("prototype")
 public class DeleteStudent extends ConsoleMenuCommand {
-	@Autowired
 	public DeleteStudent(Scanner input, PrintWriter output) {
 		super(input, output);
 	}

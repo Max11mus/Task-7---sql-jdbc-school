@@ -4,16 +4,9 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Scanner;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 
-@Component
-@Scope("prototype")
 public class FindStudentsByCourseName extends ConsoleMenuCommand {
-	@Autowired
 	public FindStudentsByCourseName(Scanner input, PrintWriter output) {
 		super(input, output);
 	}

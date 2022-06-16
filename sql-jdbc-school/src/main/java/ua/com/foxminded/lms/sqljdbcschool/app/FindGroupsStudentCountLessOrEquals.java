@@ -3,14 +3,7 @@ package ua.com.foxminded.lms.sqljdbcschool.app;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
-@Component
-@Scope("prototype")
 public class FindGroupsStudentCountLessOrEquals extends ConsoleMenuCommand {
-	@Autowired
 	public FindGroupsStudentCountLessOrEquals(Scanner input, PrintWriter output) {
 		super(input, output);
 	}
