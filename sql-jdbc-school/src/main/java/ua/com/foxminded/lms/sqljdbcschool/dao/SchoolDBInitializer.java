@@ -7,6 +7,7 @@ import java.sql.Statement;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import ua.com.foxminded.lms.sqljdbcschool.utils.FileLoader;
@@ -23,7 +24,7 @@ public class SchoolDBInitializer {
 	}
 
 	public void dropTables() throws SQLException, IOException {
-		String query = String.join(" ", new FileLoader().loadTextLines(ClassLoader.getSystemResource("drop.sql")));
+		String query = String.join(" ", new FileLoader().loadTextLines(ClassPathResource.class.getResource("/drop.sql")));
 
 		Connection connection = null;
 		Statement statement = null;
@@ -51,7 +52,7 @@ public class SchoolDBInitializer {
 	}
 
 	public void createTables() throws SQLException, IOException {
-		String query = String.join(" ", new FileLoader().loadTextLines(ClassLoader.getSystemResource("create.sql")));
+		String query = String.join(" ", new FileLoader().loadTextLines(ClassPathResource.class.getResource("/create.sql")));
 
 		Connection connection = null;
 		Statement statement = null;

@@ -16,6 +16,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationContextEvent;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import ua.com.foxminded.lms.sqljdbcschool.app.AddStudent;
@@ -41,7 +42,7 @@ public class ApplicationEventsListener implements ApplicationListener<Applicatio
 	private PrintWriter out = new PrintWriter(System.out, true);
 	private int initPoolSize = 5;
 	private FileLoader fileLoader = new FileLoader();
-	private URL propertiesURL = ClassLoader.getSystemResource("db.posgresql.properties");
+	private URL propertiesURL = ClassPathResource.class.getResource("/db.posgresql.properties");
 	private Properties conectionProperties = new Properties();
 	private Function<Properties, DBConnectionPool> initPool = (properties) -> {
 		try {
