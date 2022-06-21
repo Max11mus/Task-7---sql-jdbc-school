@@ -1,4 +1,4 @@
-package ua.com.foxminded.lms.sqljdbcschool.spring;
+package ua.com.foxminded.lms.sqljdbcschool.app;
 
 
 import java.io.IOException;
@@ -19,27 +19,17 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
-import ua.com.foxminded.lms.sqljdbcschool.app.AddStudent;
-import ua.com.foxminded.lms.sqljdbcschool.app.AddStudentToCourse;
-import ua.com.foxminded.lms.sqljdbcschool.app.DeleteStudent;
-import ua.com.foxminded.lms.sqljdbcschool.app.DropoutStudentFromCourse;
-import ua.com.foxminded.lms.sqljdbcschool.app.EntitiesGenerator;
-import ua.com.foxminded.lms.sqljdbcschool.app.FindGroupsStudentCountLessOrEquals;
-import ua.com.foxminded.lms.sqljdbcschool.app.FindStudentsByCourseName;
-import ua.com.foxminded.lms.sqljdbcschool.app.Menu;
-import ua.com.foxminded.lms.sqljdbcschool.dao.DBConnectionPool;
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDBInitializer;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
+import ua.com.foxminded.lms.sqljdbcschool.utils.DBConnectionPool;
 import ua.com.foxminded.lms.sqljdbcschool.utils.FileLoader;
 
 
 @Component
 public class ApplicationEventsListener implements ApplicationListener<ApplicationContextEvent> {
-	private Scanner in = new Scanner(System.in);
-	private PrintWriter out = new PrintWriter(System.out, true);
 	private int initPoolSize = 5;
 	private FileLoader fileLoader = new FileLoader();
 	private URL propertiesURL = ClassPathResource.class.getResource("/db.posgresql.properties");
@@ -98,44 +88,12 @@ public class ApplicationEventsListener implements ApplicationListener<Applicatio
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		AddStudent addStudent = context.getBean(AddStudent.class, in, out);
-		addStudent.setName("Add new student");
-		
-		FindGroupsStudentCountLessOrEquals findGroupsStudentCountLessOrEquals = context
-				.getBean(FindGroupsStudentCountLessOrEquals.class, in, out);
-		findGroupsStudentCountLessOrEquals.setName("Find all groups with less or equals student count");
-
-		FindStudentsByCourseName findStudentsByCourseName = context.getBean(FindStudentsByCourseName.class,
-				in, out);
-		findStudentsByCourseName.setName("Find all students related to course with given name");
-		
-		DeleteStudent deleteStudent = context.getBean(DeleteStudent.class, in, out);
-		deleteStudent.setName("Delete student by STUDENT_ID");
-
-		AddStudentToCourse addStudentToCourse = context.getBean(AddStudentToCourse.class, in, out);
-		addStudentToCourse.setName("Add a student to the course (from a list)");
-
-		DropoutStudentFromCourse dropoutStudentFromCourse = context.getBean(DropoutStudentFromCourse.class,
-				in, out);
-		dropoutStudentFromCourse.setName("Remove the student from one of his or her courses");
-		
-		Menu appMenu = context.getBean(Menu.class, in, out, "Choose an option");
-		appMenu.addMenuOption(findGroupsStudentCountLessOrEquals);
-		appMenu.addMenuOption(findStudentsByCourseName);
-		appMenu.addMenuOption(addStudent);
-		appMenu.addMenuOption(deleteStudent);
-		appMenu.addMenuOption(addStudentToCourse);
-		appMenu.addMenuOption(dropoutStudentFromCourse);
 	}	
 
 	private void destroy(ContextClosedEvent event) {
 		try {
 			ApplicationContext context = event.getApplicationContext();
 			context.getBean(DBConnectionPool.class).closeConnections();
-			in.close();
-			out.close();
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
