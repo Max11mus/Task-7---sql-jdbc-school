@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 import ua.com.foxminded.lms.sqljdbcschool.utils.CheckForNull;
+import ua.com.foxminded.lms.sqljdbcschool.utils.DBConnectionPool;
 
 @Component
 @Lazy
@@ -263,7 +265,9 @@ public class SchoolDAO {
 		}
 	}
 
-	public void findGroupsStudentCountLessOrEquals(int studentCount) {
+	public HashMap<Group, Integer> findGroupsStudentCountLessOrEquals(int studentCount) {
+		HashMap<Group, Integer> studentCountGroups = new HashMap<Group, Integer>(); 
+		
 		String query = "SELECT " + EOL 
 				+ "group_1.uuid," + EOL 
 				+ "group_1.group_name," + "COUNT(*) AS \"Student Count\"" + EOL 
@@ -297,7 +301,9 @@ public class SchoolDAO {
 					group.setUuid(result.getString("uuid"));
 					group.setGroupName(((String) (result.getObject("group_name"))));
 					curentStudentCount = (((String) (result.getString("Student Count"))));
-
+					
+					studentCountGroups.put(group, Integer.valueOf(curentStudentCount));
+					
 					System.out.println("RowNO  " + String.valueOf(rowNo++) + "  " + group.toString()
 							+ " Student Count = " + curentStudentCount);
 				}
@@ -310,6 +316,7 @@ public class SchoolDAO {
 			closeResultSet(result);
 			closeStatemant(statement);
 		}
+		return studentCountGroups;
 	}
 
 	public List<Course> getAllCourses() {
@@ -360,7 +367,7 @@ public class SchoolDAO {
 		return resultCourses;
 	}
 
-	public void findStudentsByCourseID(String courseUuid) {
+	public List<Student> findStudentsByCourseID(String courseUuid) {
 		CheckForNull.check(courseUuid);
 
 		String query = "SELECT " + EOL 
@@ -377,6 +384,7 @@ public class SchoolDAO {
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet result = null;
+		List<Student> students = new ArrayList<Student>();
 
 		try {
 			connection = connectionPool.checkOut();
@@ -398,7 +406,7 @@ public class SchoolDAO {
 					student.setGroupUuid(result.getString("group_uuid"));
 					student.setFirstName((String) (result.getObject("first_name")));
 					student.setLastName((String) result.getObject("last_name"));
-
+					students.add(student);
 					System.out.println("RowNO  " + String.valueOf(rowNo++) + " " + " " + student.toString());
 				}
 			}
@@ -411,6 +419,7 @@ public class SchoolDAO {
 			closeResultSet(result);
 			closeStatemant(statement);
 		}
+		return students;
 	}
 
 	public void addStudentToCourse(String studentId, String courseId) {

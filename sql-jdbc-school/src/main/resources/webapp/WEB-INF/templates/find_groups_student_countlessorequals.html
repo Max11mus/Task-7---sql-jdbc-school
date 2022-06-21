@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<title>School Spring Application with ThymeLeaf</title>
+
+</head>
+<style>
+div {
+	border: 1px solid black;
+	padding-top: 50px;
+	padding-right: 30px;
+	padding-bottom: 50px;
+	padding-left: 80px;
+}
+</style>
+
+<header>
+<h6>
+		<a href="/">Home</a>
+	</h6>
+	<br/>
+</header>
+
+<body>
+
+		<div>
+			<h1>Find all groups with less or equals student count !!!!</h1>
+			<form action="#" th:action="@{/find_groups_student_countlessorequals}" method="post">
+				<label>ENTER STUDENT COUNT:</label>
+				<input
+					class="form-control form-control-sm" type="number"
+					th:name="studentcount" min="0" /><br />
+				<button type="submit">Find</button>
+			</form>
+		</div>
+	<br>
+
+</body>
+<footer>
+	<h6>
+		<a href="/">Home</a>
+	</h6>
+</footer>
+</html>

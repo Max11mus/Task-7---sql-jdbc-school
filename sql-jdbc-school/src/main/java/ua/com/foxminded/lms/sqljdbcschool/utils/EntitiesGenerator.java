@@ -1,4 +1,4 @@
-package ua.com.foxminded.lms.sqljdbcschool.app;
+package ua.com.foxminded.lms.sqljdbcschool.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
-import ua.com.foxminded.lms.sqljdbcschool.utils.DataGenerator;
 
 public class EntitiesGenerator {
 private	DataGenerator dataGenerator;
