@@ -26,7 +26,7 @@ public class FindGroupsStudentCountLessOrEqualsController {
 		posted = false;
 		model.addAttribute("studentcount", new Integer(0));
 
-		return "find_groups_student_countlessorequals";
+		return "find_groups_student_countlessorequals_tl";
 	}
 
 	@PostMapping("/find_groups_student_countlessorequals")
@@ -51,9 +51,9 @@ public class FindGroupsStudentCountLessOrEqualsController {
 		}
 
 		model.addAttribute("studentcountgroups", studentCountGroups);
-		model.addAttribute("msg", msg);
+		model.addAttribute("msg", msg.toString());
 
-		return "finded_groups_student_countlessorequals";
+		return "finded_groups_student_countlessorequals_tl";
 	}
 
 }

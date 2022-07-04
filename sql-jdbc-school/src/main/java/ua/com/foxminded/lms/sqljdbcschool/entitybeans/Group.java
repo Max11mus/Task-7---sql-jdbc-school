@@ -1,10 +1,18 @@
 package ua.com.foxminded.lms.sqljdbcschool.entitybeans;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
 import java.util.Objects;
 import java.util.UUID;
 
+@Entity
+@Table(name="group_1")
 public class Group implements Comparable<Group> {
+	@Column(name="uuid")
 	private String uuid;
+	@Column(name="group_name")
 	private String groupName;
 
 	public Group() {

@@ -35,7 +35,7 @@ public class AddStudentToCourseController {
 		model.addAttribute("studentrowno", new Integer(0));
 		model.addAttribute("courserowno", new Integer(0));
 
-		return "add_student_to_course";
+		return "add_student_to_course_tl";
 	}
 
 	@PostMapping("/add_student_to_course")
@@ -84,9 +84,9 @@ public class AddStudentToCourseController {
 
 		model.addAttribute("students", students);
 		model.addAttribute("courses", courses);
-		model.addAttribute("msg", msg);
+		model.addAttribute("msg", msg.toString());
 
-		return "student_added_to_course";
+		return "student_added_to_course_tl";
 	}
 
 }

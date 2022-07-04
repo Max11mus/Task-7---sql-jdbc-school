@@ -8,7 +8,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import ua.com.foxminded.lms.sqljdbcschool.controllers.AddStudentToCourseController;
+import ua.com.foxminded.lms.sqljdbcschool.controllers.DropoutStudentFromCourseController;
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
@@ -33,7 +35,7 @@ import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(loader=AnnotationConfigContextLoader.class, classes = {TestConfig.class})
 @WebAppConfiguration
-class AddStudentToCourseControllerTest {
+class DropoutStudentFromCourseControllerTest {
 	private MockMvc mockMvc;
 	
 	@Autowired
@@ -41,11 +43,11 @@ class AddStudentToCourseControllerTest {
 	
 	@Autowired
 	@InjectMocks
-	AddStudentToCourseController addStudentToCourseController;
+	DropoutStudentFromCourseController dropoutStudentFromCourseController;
 	
 	@BeforeEach
 	void setUpTest() {
-		mockMvc = MockMvcBuilders.standaloneSetup(addStudentToCourseController).build();
+		mockMvc = MockMvcBuilders.standaloneSetup(dropoutStudentFromCourseController).build();
 	}
 	
 	@Test
@@ -65,24 +67,17 @@ class AddStudentToCourseControllerTest {
 		Course course = new Course(courseUuid, courseName, courseDescription);
 		List<Course> courses = new ArrayList<Course>();
 		courses.add(course);
-
+		
 		String attributeStudentsName = "students";
 		List<Student> expectedStudents = students;
 
-		String attributeCoursesName = "courses";
-		List<Course> expectedCourses = courses;
-
 		String attributeStudentRowNoName = "studentrowno";
 		Integer expectedStudentRowNo = new Integer(0);
-
-		String attributeCourseRowNoName = "courserowno";
-		Integer expectedCourseRowNo = new Integer(0);
 		
-		String GETURIPath = "/add_student_to_course";
-		String expectedGETView = "add_student_to_course_tl";
+		String GETURIPath = "/dropout_student_from_course";
+		String expectedGETView = "dropout_student_from_course_choose_student_tl";
 
 		when(schoolDAO.getAllStudents()).thenReturn(students);
-		when(schoolDAO.getAllCourses()).thenReturn(courses);
 
 		// when
 		ResultActions actualGETResult = mockMvc.perform(get(GETURIPath));
@@ -93,37 +88,67 @@ class AddStudentToCourseControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(model().hasNoErrors())
 				.andExpect(model().attribute(attributeStudentsName, expectedStudents))
-				.andExpect(model().attribute(attributeCoursesName, expectedCourses))
-				.andExpect(model().attribute(attributeStudentRowNoName, expectedStudentRowNo))
-				.andExpect(model().attribute(attributeCourseRowNoName, expectedCourseRowNo));
+				.andExpect(model().attribute(attributeStudentRowNoName, expectedStudentRowNo));
 		
 		InOrder daoGETOrder = Mockito.inOrder(schoolDAO);
 		daoGETOrder.verify(schoolDAO).getAllStudents();
-		daoGETOrder.verify(schoolDAO).getAllCourses();
 
-		// POST mapping with params: StudentRowNo, CourseRowNo
+		// GET mapping with params: studentrowno
 		// given
 		String paramStudentRowNoName = "studentrowno";
 		Integer paramStudentRowNo = new Integer(1);
+		
+		String attributeCoursesName = "courses";
+		List<Course> expectedCourses = courses;
 
+		String attributeCourseRowNoName = "courserowno";
+		Integer expectedCourseRowNo = new Integer(0);
+		
+		String GETURIPathWithParam = "/dropout_student_from_course";
+		String expectedGETViewWithParam = "dropout_student_from_course_choose_course_tl";
+
+		when(schoolDAO.findStudentCourses(student.getUuid())).thenReturn(courses);
+		
+		String expectedGETMsgName = "msg";
+		String expectedGETMsg =   student.toString() + " enlisted courses";
+		
+		// when
+		ResultActions actualGETResultWithParam = mockMvc.perform(get(GETURIPathWithParam)
+				.param(paramStudentRowNoName, paramStudentRowNo.toString()));
+
+		// then
+		actualGETResultWithParam
+				.andExpect(view().name(expectedGETViewWithParam))
+				.andExpect(status().isOk())
+				.andExpect(model().hasNoErrors())
+				.andExpect(model().attribute(attributeCoursesName, expectedCourses))
+				.andExpect(model().attribute(attributeCourseRowNoName, expectedCourseRowNo))
+				.andExpect(model().attribute(expectedGETMsgName, expectedGETMsg));
+		
+		InOrder daoGETOrderWithParams = Mockito.inOrder(schoolDAO);
+		daoGETOrderWithParams.verify(schoolDAO).findStudentCourses(student.getUuid());
+		
+		// POST mapping with params: CourseRowNo
+		// given
 		String paramCourseRowNoName = "courserowno";
 		Integer paramCourseRowNo = new Integer(1);
 		
-				
+		String attributeCoursesNamePOST = "courses";
+		List<Course> attributeCoursesPOST = new ArrayList<>(courses);
+		attributeCoursesPOST.remove(course);
+		
 		String expectedMsgName = "msg";
 		StringBuilder expectedMsg = new StringBuilder(); 
-		expectedMsg.append("Student added: ")
+		expectedMsg.append("Student RowNo ")
 				.append(student.toString())
-				.append(" to course ")
-				.append(course.toString())
-				.append(" !!!");
+				.append(" dropouted from ")
+				.append(course.toString());
 
-		String POSTURIPath = "/add_student_to_course";
-		String expectedPOSTView = "student_added_to_course_tl";
+		String POSTURIPath = "/dropout_student_from_course";
+		String expectedPOSTView = "student_dropouted_from_course_choose_course_tl";
 		
 		// when
 		ResultActions actualPOSTResult = mockMvc.perform(post(POSTURIPath)
-				.flashAttr(paramStudentRowNoName, paramStudentRowNo)
 				.flashAttr(paramCourseRowNoName, paramCourseRowNo));
 
 		// then
@@ -131,14 +156,12 @@ class AddStudentToCourseControllerTest {
 				.andExpect(view().name(expectedPOSTView))
 				.andExpect(status().isOk())
 				.andExpect(model().hasNoErrors())
-				.andExpect(model().attribute(paramStudentRowNoName, paramStudentRowNo))
 				.andExpect(model().attribute(paramCourseRowNoName, paramCourseRowNo))
-				.andExpect(model().attribute(attributeStudentsName, expectedStudents))
-				.andExpect(model().attribute(attributeCoursesName, expectedCourses))
+				.andExpect(model().attribute(attributeCoursesNamePOST, attributeCoursesPOST))
 				.andExpect(model().attribute(expectedMsgName, expectedMsg.toString()));
 
 		InOrder daoPOSTOrder = Mockito.inOrder(schoolDAO);
-		daoPOSTOrder.verify(schoolDAO).addStudentToCourse(student.getUuid(), course.getUuid());
+		daoPOSTOrder.verify(schoolDAO).dropoutStudentFromCourse(student.getUuid(), course.getUuid());
 	}	
 	
 }

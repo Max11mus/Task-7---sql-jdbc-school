@@ -27,7 +27,7 @@ public class DeleteStudentController {
 		students = dao.getAllStudents();
 		model.addAttribute("students", students);
 		model.addAttribute("studentrowno", new Integer(0));
-		return "delete_student";
+		return "delete_student_tl";
 	}
 
 	@PostMapping("/delete_student")
@@ -56,9 +56,9 @@ public class DeleteStudentController {
 		}
 
 		model.addAttribute("students", students);
-		model.addAttribute("msg", msg);
+		model.addAttribute("msg", msg.toString());
 
-		return "student_deleted";
+		return "student_deleted_tl";
 	}
 
 }

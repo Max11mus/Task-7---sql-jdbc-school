@@ -32,7 +32,7 @@ public class FindStudentsByCourseNameController {
 		model.addAttribute("courses", courses);
 		model.addAttribute("courserowno", new Integer(0));
 		
-		return "find_students_by_course_name";
+		return "find_students_by_course_name_tl";
 	}
 
 	@PostMapping("/find_students_by_course_name")
@@ -63,8 +63,8 @@ public class FindStudentsByCourseNameController {
 		}
 
 		model.addAttribute("students", students);
-		model.addAttribute("msg", msg);
+		model.addAttribute("msg", msg.toString());
 
-		return "finded_students_by_course_name";
+		return "finded_students_by_course_name_tl";
 	}
 }

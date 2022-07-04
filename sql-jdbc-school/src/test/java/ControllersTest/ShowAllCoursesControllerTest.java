@@ -1,0 +1,80 @@
+package ControllersTest;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
+import org.mockito.InjectMocks;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import ua.com.foxminded.lms.sqljdbcschool.controllers.ShowAllCoursesController;
+import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
+import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
+
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(loader=AnnotationConfigContextLoader.class, classes = {TestConfig.class})
+@WebAppConfiguration
+class ShowAllCoursesControllerTest {
+	private MockMvc mockMvc;
+	
+	@Autowired
+	SchoolDAO schoolDAO;
+	
+	@Autowired
+	@InjectMocks
+	ShowAllCoursesController showAllCoursesController;
+	
+	@BeforeEach
+	void setUpTest() {
+		mockMvc = MockMvcBuilders.standaloneSetup(showAllCoursesController).build();
+	}
+	
+	@Test
+	void mustReturnExpectedView_WhenGETCalled() throws Exception {
+		String courseUuid = "7894f0de-5820-49bc-8562-b1240f0587b1";
+		String courseName = "Music Theory";
+		String courseDescription = "For Cool Guys";
+		Course course = new Course(courseUuid, courseName, courseDescription);
+		List<Course> courses = new ArrayList<Course>();
+		courses.add(course);
+
+		String attributeCoursesName = "courses";
+		List<Course> expectedCourses = courses;
+
+		String GETURIPath = "/get_all_courses";
+		String expectedGETView = "get_all_courses_tl";
+
+		when(schoolDAO.getAllCourses()).thenReturn(courses);
+
+		// when
+		ResultActions actualGETResult = mockMvc.perform(get(GETURIPath));
+
+		// then
+		actualGETResult
+				.andExpect(view().name(expectedGETView))
+				.andExpect(status().isOk())
+				.andExpect(model().hasNoErrors())
+				.andExpect(model().attribute(attributeCoursesName, expectedCourses));
+		
+		InOrder daoGETOrder = Mockito.inOrder(schoolDAO);
+		daoGETOrder.verify(schoolDAO).getAllCourses();
+	}	
+	
+}

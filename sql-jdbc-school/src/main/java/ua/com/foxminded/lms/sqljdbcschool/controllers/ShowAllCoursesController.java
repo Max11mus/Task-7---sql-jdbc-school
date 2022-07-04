@@ -17,7 +17,7 @@ public class ShowAllCoursesController {
 	@GetMapping("/get_all_courses")
 	public String getAllCources(Model model) {
 		model.addAttribute("courses", dao.getAllCourses());
-	    return "get_all_courses";
+	    return "get_all_courses_tl";
 	  }
 
 }

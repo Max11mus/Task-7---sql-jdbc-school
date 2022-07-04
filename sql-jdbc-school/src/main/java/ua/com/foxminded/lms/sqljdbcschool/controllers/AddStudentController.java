@@ -23,7 +23,7 @@ public class AddStudentController {
 		posted = false;
 		Student student = new Student();
 		model.addAttribute("student", student);
-		return "add_student";
+		return "add_student_tl";
 	}
 
 	@PostMapping("/add_student")
@@ -33,7 +33,7 @@ public class AddStudentController {
 			posted = true;
 		}
 
-		return "student_saved";
+		return "student_saved_tl";
 	}
 
 }

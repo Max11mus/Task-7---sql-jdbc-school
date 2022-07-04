@@ -25,15 +25,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import ua.com.foxminded.lms.sqljdbcschool.controllers.AddStudentToCourseController;
+import ua.com.foxminded.lms.sqljdbcschool.controllers.DeleteStudentController;
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
-import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(loader=AnnotationConfigContextLoader.class, classes = {TestConfig.class})
 @WebAppConfiguration
-class AddStudentToCourseControllerTest {
+class DeleteStudentControllerTest {
 	private MockMvc mockMvc;
 	
 	@Autowired
@@ -41,11 +40,11 @@ class AddStudentToCourseControllerTest {
 	
 	@Autowired
 	@InjectMocks
-	AddStudentToCourseController addStudentToCourseController;
+	DeleteStudentController deleteStudentController;
 	
 	@BeforeEach
 	void setUpTest() {
-		mockMvc = MockMvcBuilders.standaloneSetup(addStudentToCourseController).build();
+		mockMvc = MockMvcBuilders.standaloneSetup(deleteStudentController).build();
 	}
 	
 	@Test
@@ -59,30 +58,16 @@ class AddStudentToCourseControllerTest {
 		List<Student> students = new ArrayList<Student>();
 		students.add(student);
 
-		String courseUuid = "7894f0de-5820-49bc-8562-b1240f0587b1";
-		String courseName = "Music Theory";
-		String courseDescription = "For Cool Guys";
-		Course course = new Course(courseUuid, courseName, courseDescription);
-		List<Course> courses = new ArrayList<Course>();
-		courses.add(course);
-
 		String attributeStudentsName = "students";
 		List<Student> expectedStudents = students;
 
-		String attributeCoursesName = "courses";
-		List<Course> expectedCourses = courses;
-
 		String attributeStudentRowNoName = "studentrowno";
 		Integer expectedStudentRowNo = new Integer(0);
-
-		String attributeCourseRowNoName = "courserowno";
-		Integer expectedCourseRowNo = new Integer(0);
 		
-		String GETURIPath = "/add_student_to_course";
-		String expectedGETView = "add_student_to_course_tl";
+		String GETURIPath = "/delete_student";
+		String expectedGETView = "delete_student_tl";
 
 		when(schoolDAO.getAllStudents()).thenReturn(students);
-		when(schoolDAO.getAllCourses()).thenReturn(courses);
 
 		// when
 		ResultActions actualGETResult = mockMvc.perform(get(GETURIPath));
@@ -92,39 +77,31 @@ class AddStudentToCourseControllerTest {
 				.andExpect(view().name(expectedGETView))
 				.andExpect(status().isOk())
 				.andExpect(model().hasNoErrors())
-				.andExpect(model().attribute(attributeStudentsName, expectedStudents))
-				.andExpect(model().attribute(attributeCoursesName, expectedCourses))
-				.andExpect(model().attribute(attributeStudentRowNoName, expectedStudentRowNo))
-				.andExpect(model().attribute(attributeCourseRowNoName, expectedCourseRowNo));
+				.andExpect(model().attribute(attributeStudentRowNoName, expectedStudentRowNo));
 		
 		InOrder daoGETOrder = Mockito.inOrder(schoolDAO);
 		daoGETOrder.verify(schoolDAO).getAllStudents();
-		daoGETOrder.verify(schoolDAO).getAllCourses();
 
-		// POST mapping with params: StudentRowNo, CourseRowNo
+		// POST mapping with params: StudentRowNo
 		// given
 		String paramStudentRowNoName = "studentrowno";
 		Integer paramStudentRowNo = new Integer(1);
 
-		String paramCourseRowNoName = "courserowno";
-		Integer paramCourseRowNo = new Integer(1);
-		
-				
 		String expectedMsgName = "msg";
 		StringBuilder expectedMsg = new StringBuilder(); 
-		expectedMsg.append("Student added: ")
+		expectedMsg.append("Student Deleted: ")
 				.append(student.toString())
-				.append(" to course ")
-				.append(course.toString())
 				.append(" !!!");
 
-		String POSTURIPath = "/add_student_to_course";
-		String expectedPOSTView = "student_added_to_course_tl";
+		String POSTURIPath = "/delete_student";
+		String expectedPOSTView = "student_deleted_tl";
+		
+		List<Student> expectedPOSTStudents = new ArrayList<>(expectedStudents);
+		expectedPOSTStudents.remove(student);
 		
 		// when
 		ResultActions actualPOSTResult = mockMvc.perform(post(POSTURIPath)
-				.flashAttr(paramStudentRowNoName, paramStudentRowNo)
-				.flashAttr(paramCourseRowNoName, paramCourseRowNo));
+				.flashAttr(paramStudentRowNoName, paramStudentRowNo));
 
 		// then
 		actualPOSTResult
@@ -132,13 +109,11 @@ class AddStudentToCourseControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(model().hasNoErrors())
 				.andExpect(model().attribute(paramStudentRowNoName, paramStudentRowNo))
-				.andExpect(model().attribute(paramCourseRowNoName, paramCourseRowNo))
-				.andExpect(model().attribute(attributeStudentsName, expectedStudents))
-				.andExpect(model().attribute(attributeCoursesName, expectedCourses))
+				.andExpect(model().attribute(attributeStudentsName, expectedPOSTStudents))
 				.andExpect(model().attribute(expectedMsgName, expectedMsg.toString()));
 
 		InOrder daoPOSTOrder = Mockito.inOrder(schoolDAO);
-		daoPOSTOrder.verify(schoolDAO).addStudentToCourse(student.getUuid(), course.getUuid());
+		daoPOSTOrder.verify(schoolDAO).deleteStudent(student.getUuid());
 	}	
 	
 }

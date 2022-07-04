@@ -28,29 +28,30 @@ public class DropoutStudentFromCourseController {
 	List<Course> courses;
 
 	@GetMapping("/dropout_student_from_course")
-	public String chooseStudentCourse(@RequestParam Map<String, String> allParams, Model model) {
+	public String chooseStudent(Model model) {
+		posted = false;
+		students = dao.getAllStudents();
+
+		model.addAttribute("students", students);
+		model.addAttribute("studentrowno", new Integer(0));
+
+		return "dropout_student_from_course_choose_student_tl";
+	}
+	
+	@GetMapping(value = "/dropout_student_from_course", params = "studentrowno")
+	public String chooseStudentCourse(@RequestParam(name = "studentrowno") Integer studentRowNo, Model model) {
 		posted = false;
 
-		if (allParams.isEmpty()) {
-			students = dao.getAllStudents();
+		student = students.get(studentRowNo - 1);
 
-			model.addAttribute("students", students);
-			model.addAttribute("studentrowno", new Integer(0));
+		String msg = student.toString() + " enlisted courses";
+		courses = dao.findStudentCourses(student.getUuid());
 
-			return "dropout_student_from_course_choose_student";
-		} else {
-			Integer studentRowNo = Integer.valueOf(allParams.get("studentrowno"));
-			student = students.get(studentRowNo - 1);
+		model.addAttribute("msg", msg);
+		model.addAttribute("courses", courses);
+		model.addAttribute("courserowno", new Integer(0));
 
-			String msg = student.toString() + " enlisted courses";
-			courses = dao.findStudentCourses(student.getUuid());
-
-			model.addAttribute("msg", msg);
-			model.addAttribute("courses", courses);
-			model.addAttribute("courserowno", new Integer(0));
-
-			return "dropout_student_from_course_choose_course";
-		}
+		return "dropout_student_from_course_choose_course_tl";
 	}
 
 	@PostMapping("/dropout_student_from_course")
@@ -79,9 +80,9 @@ public class DropoutStudentFromCourseController {
 		}
 
 		model.addAttribute("courses", courses);
-		model.addAttribute("msg", msg);
+		model.addAttribute("msg", msg.toString());
 
-		return "student_dropouted_from_course_choose_course";
+		return "student_dropouted_from_course_choose_course_tl";
 	}
 
 }

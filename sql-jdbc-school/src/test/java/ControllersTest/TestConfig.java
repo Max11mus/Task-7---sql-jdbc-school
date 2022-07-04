@@ -1,21 +1,20 @@
 package ControllersTest;
 
-import org.mockito.Mockito;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import ua.com.foxminded.lms.sqljdbcschool.controllers.SpringWebControllersConfig;
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
+import ua.com.foxminded.lms.sqljdbcschool.utils.DBConnectionPool;
 
 @Configuration
-@Import({SpringWebControllersConfig.class})
+@Import({ SpringWebControllersConfig.class })
 public class TestConfig {
-	@Bean
-	public SchoolDAO schoolDAO() {
-		return Mockito.mock(SchoolDAO.class);
-	}
-	
-	
+	@MockBean
+	DBConnectionPool dBConnectionPool;
+
+	@MockBean
+	SchoolDAO schoolDAO;
 
 }
