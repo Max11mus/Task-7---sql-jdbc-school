@@ -1,5 +1,6 @@
 package ControllersTest;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -32,6 +33,8 @@ import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 
+import javax.servlet.http.HttpSession;
+
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(loader=AnnotationConfigContextLoader.class, classes = {TestConfig.class})
 @WebAppConfiguration
@@ -51,8 +54,57 @@ class DropoutStudentFromCourseControllerTest {
 	}
 	
 	@Test
-	void mustReturnExpectedView_WhenGETCalled_thenMustReturnExpectedView_WhenPOSTCalled() throws Exception {
-		// GET mapping without params
+	void chooseStudent_mustReturnExpectedView_WhenGetRequest() throws Exception {
+		// Get mapping without params
+		// given
+		String studentUuid = "9723a706-edd1-4ea9-8629-70a91504ab2a";
+		String studentFirstName = "John";
+		String studentLastName = "Lennon";
+		Student student = new Student(studentUuid, null, studentFirstName, studentLastName);
+		List<Student> students = new ArrayList<Student>();
+		students.add(student);
+
+		String courseUuid = "7894f0de-5820-49bc-8562-b1240f0587b1";
+		String courseName = "Music Theory";
+		String courseDescription = "For Cool Guys";
+		Course course = new Course(courseUuid, courseName, courseDescription);
+		List<Course> courses = new ArrayList<Course>();
+		courses.add(course);
+
+		String attributeStudentsName = "students";
+		List<Student> expectedStudents = students;
+
+		String attributeStudentRowNoName = "studentrowno";
+		Integer expectedStudentRowNo = Integer.valueOf(0);
+
+		String uriPath = "/dropout_student_from_course/choose_student";
+		String expectedView = "dropout_student_from_course_choose_student_tl";
+
+		when(schoolDAO.getAllStudents()).thenReturn(students);
+
+		// when
+		ResultActions actualResult = mockMvc.perform(get(uriPath));
+
+		// then
+		HttpSession session = actualResult
+				.andExpect(view().name(expectedView))
+				.andExpect(status().isOk())
+				.andExpect(model().hasNoErrors())
+				.andExpect(model().attribute(attributeStudentsName, expectedStudents))
+				.andReturn()
+				.getRequest()
+				.getSession();
+
+		assertEquals((List<Student>) session.getAttribute(attributeStudentsName) , expectedStudents);
+
+		InOrder daoOrder = Mockito.inOrder(schoolDAO);
+		daoOrder.verify(schoolDAO).getAllStudents();
+
+	}
+
+	@Test
+	void chooseStudentCourse_mustReturnExpectedView_WhenGetRequest() throws Exception {
+		// Get mapping with params: studentrowno
 		// given
 		String studentUuid = "9723a706-edd1-4ea9-8629-70a91504ab2a";
 		String studentFirstName = "John";
@@ -68,100 +120,99 @@ class DropoutStudentFromCourseControllerTest {
 		List<Course> courses = new ArrayList<Course>();
 		courses.add(course);
 		
-		String attributeStudentsName = "students";
-		List<Student> expectedStudents = students;
-
-		String attributeStudentRowNoName = "studentrowno";
-		Integer expectedStudentRowNo = new Integer(0);
-		
-		String GETURIPath = "/dropout_student_from_course";
-		String expectedGETView = "dropout_student_from_course_choose_student_tl";
-
-		when(schoolDAO.getAllStudents()).thenReturn(students);
-
-		// when
-		ResultActions actualGETResult = mockMvc.perform(get(GETURIPath));
-
-		// then
-		actualGETResult
-				.andExpect(view().name(expectedGETView))
-				.andExpect(status().isOk())
-				.andExpect(model().hasNoErrors())
-				.andExpect(model().attribute(attributeStudentsName, expectedStudents))
-				.andExpect(model().attribute(attributeStudentRowNoName, expectedStudentRowNo));
-		
-		InOrder daoGETOrder = Mockito.inOrder(schoolDAO);
-		daoGETOrder.verify(schoolDAO).getAllStudents();
-
-		// GET mapping with params: studentrowno
-		// given
 		String paramStudentRowNoName = "studentrowno";
-		Integer paramStudentRowNo = new Integer(1);
-		
-		String attributeCoursesName = "courses";
-		List<Course> expectedCourses = courses;
+		Integer paramStudentRowNo = Integer.valueOf(1);
 
-		String attributeCourseRowNoName = "courserowno";
-		Integer expectedCourseRowNo = new Integer(0);
-		
-		String GETURIPathWithParam = "/dropout_student_from_course";
-		String expectedGETViewWithParam = "dropout_student_from_course_choose_course_tl";
+		String attributeStudentName = "student";
+		Student expectedStudent = student;
+
+		String attributeCoursesName = "courses";
+		List<Course> expectedCourses = new ArrayList<Course>(courses);
+
+		String uriPathWithParam = "/dropout_student_from_course/choose_course";
+		String expectedView = "dropout_student_from_course_choose_course_tl";
 
 		when(schoolDAO.findStudentCourses(student.getUuid())).thenReturn(courses);
-		
-		String expectedGETMsgName = "msg";
-		String expectedGETMsg =   student.toString() + " enlisted courses";
-		
-		// when
-		ResultActions actualGETResultWithParam = mockMvc.perform(get(GETURIPathWithParam)
-				.param(paramStudentRowNoName, paramStudentRowNo.toString()));
 
+		// when
+		ResultActions actualResult = mockMvc.perform(get(uriPathWithParam)
+				.param(paramStudentRowNoName, paramStudentRowNo.toString())
+				.sessionAttr("students", students));
+		
 		// then
-		actualGETResultWithParam
-				.andExpect(view().name(expectedGETViewWithParam))
+		HttpSession session = actualResult
+				.andExpect(view().name(expectedView))
 				.andExpect(status().isOk())
 				.andExpect(model().hasNoErrors())
 				.andExpect(model().attribute(attributeCoursesName, expectedCourses))
-				.andExpect(model().attribute(attributeCourseRowNoName, expectedCourseRowNo))
-				.andExpect(model().attribute(expectedGETMsgName, expectedGETMsg));
-		
-		InOrder daoGETOrderWithParams = Mockito.inOrder(schoolDAO);
-		daoGETOrderWithParams.verify(schoolDAO).findStudentCourses(student.getUuid());
-		
-		// POST mapping with params: CourseRowNo
+				.andReturn()
+				.getRequest()
+				.getSession();
+
+		assertEquals((Student) session.getAttribute(attributeStudentName) , expectedStudent);
+		assertEquals((List<Course>) session.getAttribute(attributeCoursesName) , expectedCourses);
+
+		InOrder daoOrder = Mockito.inOrder(schoolDAO);
+		daoOrder.verify(schoolDAO).findStudentCourses(student.getUuid());
+	}
+
+	@Test
+	void dropoutStudentFromCourse_mustReturnExpectedView_WhenPostRequest() throws Exception {
+		// Post mapping with params: CourseRowNo
 		// given
+		String studentUuid = "9723a706-edd1-4ea9-8629-70a91504ab2a";
+		String studentFirstName = "John";
+		String studentLastName = "Lennon";
+		Student student = new Student(studentUuid, null, studentFirstName, studentLastName);
+
+		String courseUuid = "7894f0de-5820-49bc-8562-b1240f0587b1";
+		String courseName = "Music Theory";
+		String courseDescription = "For Cool Guys";
+		Course course = new Course(courseUuid, courseName, courseDescription);
+		List<Course> courses = new ArrayList<Course>();
+		courses.add(course);
+
 		String paramCourseRowNoName = "courserowno";
-		Integer paramCourseRowNo = new Integer(1);
-		
-		String attributeCoursesNamePOST = "courses";
-		List<Course> attributeCoursesPOST = new ArrayList<>(courses);
-		attributeCoursesPOST.remove(course);
-		
+		Integer paramCourseRowNo = Integer.valueOf(1);
+
+		String attributeCoursesNamePost = "courses";
+		List<Course> attributeCoursesPost = new ArrayList<>(courses);
+		attributeCoursesPost.remove(course);
+
+		String attributeStudentName = "student";
+		Student expectedStudent = student;
+
 		String expectedMsgName = "msg";
-		StringBuilder expectedMsg = new StringBuilder(); 
+		StringBuilder expectedMsg = new StringBuilder();
 		expectedMsg.append("Student RowNo ")
 				.append(student.toString())
 				.append(" dropouted from ")
 				.append(course.toString());
 
-		String POSTURIPath = "/dropout_student_from_course";
-		String expectedPOSTView = "student_dropouted_from_course_choose_course_tl";
-		
+		String uriPath = "/dropout_student_from_course";
+		String expectedView = "student_dropouted_from_course_choose_course_tl";
+
 		// when
-		ResultActions actualPOSTResult = mockMvc.perform(post(POSTURIPath)
-				.flashAttr(paramCourseRowNoName, paramCourseRowNo));
+		ResultActions actualResult = mockMvc.perform(post(uriPath)
+				.flashAttr(paramCourseRowNoName, paramCourseRowNo)
+				.sessionAttr(attributeStudentName, expectedStudent)
+				.sessionAttr(attributeCoursesNamePost, courses));
 
 		// then
-		actualPOSTResult
-				.andExpect(view().name(expectedPOSTView))
+		HttpSession session = actualResult
+				.andExpect(view().name(expectedView))
 				.andExpect(status().isOk())
 				.andExpect(model().hasNoErrors())
 				.andExpect(model().attribute(paramCourseRowNoName, paramCourseRowNo))
-				.andExpect(model().attribute(attributeCoursesNamePOST, attributeCoursesPOST))
-				.andExpect(model().attribute(expectedMsgName, expectedMsg.toString()));
+				.andExpect(model().attribute(attributeCoursesNamePost, attributeCoursesPost))
+				.andExpect(model().attribute(expectedMsgName, expectedMsg.toString()))
+				.andReturn()
+				.getRequest()
+				.getSession();
 
-		InOrder daoPOSTOrder = Mockito.inOrder(schoolDAO);
-		daoPOSTOrder.verify(schoolDAO).dropoutStudentFromCourse(student.getUuid(), course.getUuid());
-	}	
-	
+		assertEquals(session.getAttributeNames().hasMoreElements(), false);
+
+		InOrder daoOrder = Mockito.inOrder(schoolDAO);
+		daoOrder.verify(schoolDAO).dropoutStudentFromCourse(student.getUuid(), course.getUuid());
+	}
 }

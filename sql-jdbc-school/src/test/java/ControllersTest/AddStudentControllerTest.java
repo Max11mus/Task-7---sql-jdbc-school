@@ -44,47 +44,50 @@ class AddStudentControllerTest {
 	}
 	
 	@Test
-	void mustReturnExpectedView_WhenGETCalled_thenMustReturnExpectedView_WhenPOSTCalled() throws Exception {
+	void showAddStudentForm_mustReturnExpectedView_WhenGetRequest() throws Exception {
 		// GET mapping without params
 		// given
 		String attributeStudentName = "student";
 
-		String GETURIPath = "/add_student";
-		String expectedGETView = "add_student_tl";
+		String uriPath = "/add_student";
+		String expectedView = "add_student_tl";
 
 		// when
-		ResultActions actualGETResult = mockMvc.perform(get(GETURIPath));
+		ResultActions actualResult = mockMvc.perform(get(uriPath));
 
 		// then
-		actualGETResult.andExpect(view().name(expectedGETView))
+		actualResult.andExpect(view().name(expectedView))
 				.andExpect(status().isOk())
 				.andExpect(model().hasNoErrors())
 				.andExpect(model().attributeExists(attributeStudentName));
+	}
 
+	@Test
+	void saveStudent_mustReturnExpectedView_WhenPostRequest() throws Exception {
 		// POST mapping with params: Student
 		// given
 		String studentUuid = "9723a706-edd1-4ea9-8629-70a91504ab2a";
 		String studentFirstName = "John";
 		String studentLastName = "Lennon";
 		Student student = new Student(studentUuid, null, studentFirstName, studentLastName);
-		
+
 		String paramStudentName = "student";
-		
-		String POSTURIPath = "/add_student";
-		String expectedPOSTView = "student_saved_tl";
-		
+
+		String uriPath = "/add_student";
+		String expectedView = "student_saved_tl";
+
 		// when
-		ResultActions actualPOSTResult = mockMvc.perform(post(POSTURIPath)
+		ResultActions actualResult = mockMvc.perform(post(uriPath)
 				.flashAttr(paramStudentName, student));
 
 		// then
-		actualPOSTResult
-				.andExpect(view().name(expectedPOSTView))
+		actualResult
+				.andExpect(view().name(expectedView))
 				.andExpect(status().isOk())
 				.andExpect(model().hasNoErrors());
 
-		InOrder daoPOSTOrder = Mockito.inOrder(schoolDAO);
-		daoPOSTOrder.verify(schoolDAO).insertStudent(student);
-	}	
+		InOrder daoOrder = Mockito.inOrder(schoolDAO);
+		daoOrder.verify(schoolDAO).insertStudent(student);
+	}
 	
 }

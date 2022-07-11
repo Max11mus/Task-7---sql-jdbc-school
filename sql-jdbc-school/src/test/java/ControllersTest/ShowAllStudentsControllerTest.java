@@ -47,7 +47,7 @@ class ShowAllStudentsControllerTest {
 	}
 	
 	@Test
-	void mustReturnExpectedView_WhenGETCalled() throws Exception {
+	void getAllStudent_MustReturnExpectedView_WhenGetRequest() throws Exception {
 		// GET mapping without params
 		// given
 		String studentUuid = "9723a706-edd1-4ea9-8629-70a91504ab2a";
@@ -60,23 +60,23 @@ class ShowAllStudentsControllerTest {
 		String attributeStudentsName = "students";
 		List<Student> expectedStudents = students;
 
-		String GETURIPath = "/get_all_students";
-		String expectedGETView = "get_all_students_tl";
+		String uriPath = "/get_all_students";
+		String expectedView = "get_all_students_tl";
 
 		when(schoolDAO.getAllStudents()).thenReturn(students);
 
 		// when
-		ResultActions actualGETResult = mockMvc.perform(get(GETURIPath));
+		ResultActions actualResult = mockMvc.perform(get(uriPath));
 
 		// then
-		actualGETResult
-				.andExpect(view().name(expectedGETView))
+		actualResult
+				.andExpect(view().name(expectedView))
 				.andExpect(status().isOk())
 				.andExpect(model().hasNoErrors())
 				.andExpect(model().attribute(attributeStudentsName, expectedStudents));
 		
-		InOrder daoGETOrder = Mockito.inOrder(schoolDAO);
-		daoGETOrder.verify(schoolDAO).getAllStudents();
+		InOrder daoOrder = Mockito.inOrder(schoolDAO);
+		daoOrder.verify(schoolDAO).getAllStudents();
 	}	
 	
 }

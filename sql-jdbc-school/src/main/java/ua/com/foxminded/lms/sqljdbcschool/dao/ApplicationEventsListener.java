@@ -59,12 +59,12 @@ public class ApplicationEventsListener implements ApplicationListener<Applicatio
 			connectionPool = context.getBean(DBConnectionPool.class, initPool.apply(conectionProperties));
 
 			SchoolDBInitializer schoolDBInitializer = context.getBean(SchoolDBInitializer.class, connectionPool);
-			try {
-				schoolDBInitializer.dropTables();
-				schoolDBInitializer.createTables();
-			} catch (SQLException | IOException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				schoolDBInitializer.dropTables();
+//				schoolDBInitializer.createTables();
+//			} catch (SQLException | IOException e) {
+//				e.printStackTrace();
+//			}
 
 			SchoolDAO dao = context.getBean(SchoolDAO.class, connectionPool);
 
@@ -78,11 +78,11 @@ public class ApplicationEventsListener implements ApplicationListener<Applicatio
 				ConcurrentHashMap<String, List<Student>> enrolledStudents = entitiesGenerator
 						.randomEnrollStudentsToCourses(students, courses);
 
-				dao.insertGroups(groups);
-				dao.insertStudents(students);
-				dao.insertCourses(courses);
-				enrolledStudents.forEach((courseUuid, studentList) -> studentList.parallelStream()
-						.forEach(student -> dao.addStudentToCourse(student.getUuid(), courseUuid)));
+//				dao.insertGroups(groups);
+//				dao.insertStudents(students);
+//				dao.insertCourses(courses);
+//				enrolledStudents.forEach((courseUuid, studentList) -> studentList.parallelStream()
+//						.forEach(student -> dao.addStudentToCourse(student.getUuid(), courseUuid)));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

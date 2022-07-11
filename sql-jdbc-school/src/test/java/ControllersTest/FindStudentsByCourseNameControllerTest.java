@@ -49,8 +49,8 @@ class FindStudentsByCourseNameControllerTest {
 	}
 	
 	@Test
-	void mustReturnExpectedView_WhenGETCalled_thenMustReturnExpectedView_WhenPOSTCalled() throws Exception {
-		// GET mapping without params
+	void showChooseCourseForm_MustReturnExpectedView_WhenGetRewuest() throws Exception {
+		// Get mapping without params
 		// given
 		String courseUuid = "7894f0de-5820-49bc-8562-b1240f0587b1";
 		String courseName = "Music Theory";
@@ -63,68 +63,82 @@ class FindStudentsByCourseNameControllerTest {
 		List<Course> expectedCourses = courses;
 
 		String attributeCourseRowNoName = "courserowno";
-		Integer expectedCourseRowNo = new Integer(0);
-		
-		String GETURIPath = "/find_students_by_course_name";
-		String expectedGETView = "find_students_by_course_name_tl";
+		Integer expectedCourseRowNo = Integer.valueOf(0);
+
+		String uriPath = "/find_students_by_course_name";
+		String expectedView = "find_students_by_course_name_tl";
 
 		when(schoolDAO.getAllCourses()).thenReturn(courses);
 
 		// when
-		ResultActions actualGETResult = mockMvc.perform(get(GETURIPath));
+		ResultActions actualResult = mockMvc.perform(get(uriPath));
 
 		// then
-		actualGETResult
-				.andExpect(view().name(expectedGETView))
+		actualResult
+				.andExpect(view().name(expectedView))
 				.andExpect(status().isOk())
 				.andExpect(model().hasNoErrors())
 				.andExpect(model().attribute(attributeCoursesName, expectedCourses))
 				.andExpect(model().attribute(attributeCourseRowNoName, expectedCourseRowNo));
-		
-		InOrder daoGETOrder = Mockito.inOrder(schoolDAO);
-		daoGETOrder.verify(schoolDAO).getAllCourses();
 
-		// POST mapping with params: StudentRowNo, CourseRowNo
+		InOrder daoOrder = Mockito.inOrder(schoolDAO);
+		daoOrder.verify(schoolDAO).getAllCourses();
+	}
+
+	@Test
+	void findStudentsByCourse_MustReturnExpectedView_WhenPostRequest() throws Exception {
+		// Post mapping with params: CourseRowNo
 		// given
 		String studentUuid = "9723a706-edd1-4ea9-8629-70a91504ab2a";
 		String studentFirstName = "John";
 		String studentLastName = "Lennon";
 		Student student = new Student(studentUuid, null, studentFirstName, studentLastName);
-		
+
+		String courseUuid = "7894f0de-5820-49bc-8562-b1240f0587b1";
+		String courseName = "Music Theory";
+		String courseDescription = "For Cool Guys";
+		Course course = new Course(courseUuid, courseName, courseDescription);
+		List<Course> courses = new ArrayList<Course>();
+		courses.add(course);
+
+		String attributeCoursesName = "courses";
+		List<Course> expectedCourses = courses;
+
 		List<Student> students = new ArrayList<Student>();
 		students.add(student);
 
 		String attributeStudentsName = "students";
 		List<Student> expectedStudents = students;
-		
-		String paramCourseRowNoName = "courserowno";
-		Integer paramCourseRowNo = new Integer(1);
 
+		String paramCourseRowNoName = "courserowno";
+		Integer paramCourseRowNo = Integer.valueOf(1);
+
+		when(schoolDAO.getAllCourses()).thenReturn(courses);
 		when(schoolDAO.findStudentsByCourseID(courses.get(paramCourseRowNo - 1).getUuid())).thenReturn(students);
-				
+
 		String expectedMsgName = "msg";
-		StringBuilder expectedMsg = new StringBuilder(); 
+		StringBuilder expectedMsg = new StringBuilder();
 		expectedMsg.append("Students enlisted to course ")
 				.append(courses.get(paramCourseRowNo - 1).getCourseName())
 				.append(" !!!");
 
-		String POSTURIPath = "/find_students_by_course_name";
-		String expectedPOSTView = "finded_students_by_course_name_tl";
-		
+		String uriPath = "/find_students_by_course_name";
+		String expectedView = "finded_students_by_course_name_tl";
+
 		// when
-		ResultActions actualPOSTResult = mockMvc.perform(post(POSTURIPath)
+		ResultActions actualResult = mockMvc.perform(post(uriPath)
 				.flashAttr(paramCourseRowNoName, paramCourseRowNo));
 
 		// then
-		actualPOSTResult
-				.andExpect(view().name(expectedPOSTView))
+		actualResult
+				.andExpect(view().name(expectedView))
 				.andExpect(status().isOk())
 				.andExpect(model().hasNoErrors())
 				.andExpect(model().attribute(attributeStudentsName, expectedStudents))
 				.andExpect(model().attribute(expectedMsgName, expectedMsg.toString()));
 
-		InOrder daoPOSTOrder = Mockito.inOrder(schoolDAO);
-		daoPOSTOrder.verify(schoolDAO).findStudentsByCourseID(courses.get(paramCourseRowNo - 1).getUuid());
-	}	
-	
+		InOrder daoOrder = Mockito.inOrder(schoolDAO);
+		daoOrder.verify(schoolDAO).getAllCourses();
+		daoOrder.verify(schoolDAO).findStudentsByCourseID(courses.get(paramCourseRowNo - 1).getUuid());
+	}
 }

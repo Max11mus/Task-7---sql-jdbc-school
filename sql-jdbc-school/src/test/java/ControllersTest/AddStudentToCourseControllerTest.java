@@ -49,7 +49,7 @@ class AddStudentToCourseControllerTest {
 	}
 	
 	@Test
-	void mustReturnExpectedView_WhenGETCalled_thenMustReturnExpectedView_WhenPOSTCalled() throws Exception {
+	void showAddStudentForm_mustReturnExpectedView_WhenGetRequest() throws Exception {
 		// GET mapping without params
 		// given
 		String studentUuid = "9723a706-edd1-4ea9-8629-70a91504ab2a";
@@ -73,72 +73,93 @@ class AddStudentToCourseControllerTest {
 		List<Course> expectedCourses = courses;
 
 		String attributeStudentRowNoName = "studentrowno";
-		Integer expectedStudentRowNo = new Integer(0);
+		Integer expectedStudentRowNo = Integer.valueOf(0);
 
 		String attributeCourseRowNoName = "courserowno";
-		Integer expectedCourseRowNo = new Integer(0);
+		Integer expectedCourseRowNo = Integer.valueOf(0);
 		
-		String GETURIPath = "/add_student_to_course";
-		String expectedGETView = "add_student_to_course_tl";
+		String uriPath = "/add_student_to_course";
+		String expectedView = "add_student_to_course_tl";
 
 		when(schoolDAO.getAllStudents()).thenReturn(students);
 		when(schoolDAO.getAllCourses()).thenReturn(courses);
 
 		// when
-		ResultActions actualGETResult = mockMvc.perform(get(GETURIPath));
+		ResultActions actualResult = mockMvc.perform(get(uriPath));
 
 		// then
-		actualGETResult
-				.andExpect(view().name(expectedGETView))
+		actualResult
+				.andExpect(view().name(expectedView))
 				.andExpect(status().isOk())
 				.andExpect(model().hasNoErrors())
 				.andExpect(model().attribute(attributeStudentsName, expectedStudents))
-				.andExpect(model().attribute(attributeCoursesName, expectedCourses))
-				.andExpect(model().attribute(attributeStudentRowNoName, expectedStudentRowNo))
-				.andExpect(model().attribute(attributeCourseRowNoName, expectedCourseRowNo));
+				.andExpect(model().attribute(attributeCoursesName, expectedCourses));
 		
-		InOrder daoGETOrder = Mockito.inOrder(schoolDAO);
-		daoGETOrder.verify(schoolDAO).getAllStudents();
-		daoGETOrder.verify(schoolDAO).getAllCourses();
+		InOrder daoOrder = Mockito.inOrder(schoolDAO);
+		daoOrder.verify(schoolDAO).getAllStudents();
+		daoOrder.verify(schoolDAO).getAllCourses();
+	}
 
+	@Test
+	void saveStudent_MustReturnExpectedView_WhenPostRequest() throws Exception {
 		// POST mapping with params: StudentRowNo, CourseRowNo
 		// given
+		String studentUuid = "9723a706-edd1-4ea9-8629-70a91504ab2a";
+		String studentFirstName = "John";
+		String studentLastName = "Lennon";
+		Student student = new Student(studentUuid, null, studentFirstName, studentLastName);
+		List<Student> students = new ArrayList<Student>();
+		students.add(student);
+		String expectedAttrStudentsName = "students";
+
+		String courseUuid = "7894f0de-5820-49bc-8562-b1240f0587b1";
+		String courseName = "Music Theory";
+		String courseDescription = "For Cool Guys";
+		Course course = new Course(courseUuid, courseName, courseDescription);
+		List<Course> courses = new ArrayList<Course>();
+		courses.add(course);
+		String expectedAttrCoursesName = "courses";
+
 		String paramStudentRowNoName = "studentrowno";
-		Integer paramStudentRowNo = new Integer(1);
+		Integer paramStudentRowNo = Integer.valueOf(1);
 
 		String paramCourseRowNoName = "courserowno";
-		Integer paramCourseRowNo = new Integer(1);
-		
-				
+		Integer paramCourseRowNo = Integer.valueOf(1);
+
 		String expectedMsgName = "msg";
-		StringBuilder expectedMsg = new StringBuilder(); 
+		StringBuilder expectedMsg = new StringBuilder();
 		expectedMsg.append("Student added: ")
 				.append(student.toString())
 				.append(" to course ")
 				.append(course.toString())
 				.append(" !!!");
 
-		String POSTURIPath = "/add_student_to_course";
-		String expectedPOSTView = "student_added_to_course_tl";
-		
+		String uriPath = "/add_student_to_course";
+		String expectedView = "student_added_to_course_tl";
+
+		when(schoolDAO.getAllStudents()).thenReturn(students);
+		when(schoolDAO.getAllCourses()).thenReturn(courses);
+
 		// when
-		ResultActions actualPOSTResult = mockMvc.perform(post(POSTURIPath)
+		ResultActions actualResult = mockMvc.perform(post(uriPath)
 				.flashAttr(paramStudentRowNoName, paramStudentRowNo)
 				.flashAttr(paramCourseRowNoName, paramCourseRowNo));
 
 		// then
-		actualPOSTResult
-				.andExpect(view().name(expectedPOSTView))
+		actualResult
+				.andExpect(view().name(expectedView))
 				.andExpect(status().isOk())
 				.andExpect(model().hasNoErrors())
 				.andExpect(model().attribute(paramStudentRowNoName, paramStudentRowNo))
 				.andExpect(model().attribute(paramCourseRowNoName, paramCourseRowNo))
-				.andExpect(model().attribute(attributeStudentsName, expectedStudents))
-				.andExpect(model().attribute(attributeCoursesName, expectedCourses))
+				.andExpect(model().attribute(expectedAttrStudentsName, students))
+				.andExpect(model().attribute(expectedAttrCoursesName, courses))
 				.andExpect(model().attribute(expectedMsgName, expectedMsg.toString()));
 
-		InOrder daoPOSTOrder = Mockito.inOrder(schoolDAO);
-		daoPOSTOrder.verify(schoolDAO).addStudentToCourse(student.getUuid(), course.getUuid());
-	}	
-	
+		InOrder daoOrder = Mockito.inOrder(schoolDAO);
+		daoOrder.verify(schoolDAO).getAllStudents();
+		daoOrder.verify(schoolDAO).getAllCourses();
+		daoOrder.verify(schoolDAO).addStudentToCourse(student.getUuid(), course.getUuid());
+	}
+
 }

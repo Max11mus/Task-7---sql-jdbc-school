@@ -1,6 +1,7 @@
 package ua.com.foxminded.lms.sqljdbcschool.controllers;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -21,30 +22,29 @@ public class AddStudentToCourseController {
 	SchoolDAO dao;
 	
 	boolean posted = false;
-	List<Student> students;
-	List<Course> courses;
 
 	@GetMapping("/add_student_to_course")
 	public String showAddStudentForm(Model model) {
 		posted = false;
-		students = dao.getAllStudents();
-		courses = dao.getAllCourses();
+		List<Student> students = dao.getAllStudents();
+		List<Course> courses = dao.getAllCourses();
 
 		model.addAttribute("students", students);
 		model.addAttribute("courses", courses);
-		model.addAttribute("studentrowno", new Integer(0));
-		model.addAttribute("courserowno", new Integer(0));
 
 		return "add_student_to_course_tl";
 	}
 
 	@PostMapping("/add_student_to_course")
 	public String saveStudent(@ModelAttribute("studentrowno") Integer studentRowNo,
-			@ModelAttribute("courserowno") Integer courseRowNo, Model model) {
+							  @ModelAttribute("courserowno") Integer courseRowNo,
+							  Model model) {
 		StringBuilder msg = new StringBuilder();
 
-		if (!posted) {
+		List<Student> students = dao.getAllStudents();
+		List<Course> courses = dao.getAllCourses();
 
+		if (!posted) {
 			if (students.isEmpty()) {
 				msg.append("No students is present !!! ");
 			}

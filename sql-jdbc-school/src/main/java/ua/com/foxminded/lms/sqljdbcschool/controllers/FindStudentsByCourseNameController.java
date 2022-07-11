@@ -20,24 +20,23 @@ public class FindStudentsByCourseNameController {
 	@Lazy
 	SchoolDAO dao;
 	boolean posted = false; 
-	List<Student> students;
-	List<Course> courses;
-	
-	
+
 	@GetMapping("/find_students_by_course_name")
-	public String showAddStudentForm(Model model) {
+	public String showChooseCourseForm(Model model) {
 		posted = false;
-		courses = dao.getAllCourses();
+		List<Course> courses = dao.getAllCourses();
 		
 		model.addAttribute("courses", courses);
-		model.addAttribute("courserowno", new Integer(0));
+		model.addAttribute("courserowno", Integer.valueOf(0));
 		
 		return "find_students_by_course_name_tl";
 	}
 
 	@PostMapping("/find_students_by_course_name")
-	public String saveStudent(@ModelAttribute("courserowno") Integer courseRowNo, Model model) {
+	public String findStudentsByCourse(@ModelAttribute("courserowno") Integer courseRowNo, Model model) {
 		StringBuilder msg = new StringBuilder();
+		List<Course> courses = dao.getAllCourses();
+		List<Student> students = null;
 
 		if (!posted) {
 			if (courses.isEmpty()) {
@@ -56,7 +55,7 @@ public class FindStudentsByCourseNameController {
 				msg.append("Students enlisted to course ")
 						.append(courses.get(courseRowNo - 1).getCourseName())
 						.append(" !!!");
-			students =  dao.findStudentsByCourseID(courses.get(courseRowNo - 1).getUuid());
+				students =  dao.findStudentsByCourseID(courses.get(courseRowNo - 1).getUuid());
 			}
 			
 			posted = true;

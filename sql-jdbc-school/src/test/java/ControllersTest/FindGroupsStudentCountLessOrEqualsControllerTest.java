@@ -45,65 +45,67 @@ class FindGroupsStudentCountLessOrEqualsControllerTest {
 	void setUpTest() {
 		mockMvc = MockMvcBuilders.standaloneSetup(findGroupsStudentCountLessOrEqualsController).build();
 	}
-	
+
 	@Test
-	void mustReturnExpectedView_WhenGETCalled_thenMustReturnExpectedView_WhenPOSTCalled() throws Exception {
-		// GET mapping without params
+	void enterStudentsCountForm_mustReturnExpectedView_WhenGetRequest() throws Exception {
+		// Get mapping without params
 		// given
 		String attributeStudentCountName = "studentcount";
-		Integer attributeStudentCount = new Integer(0);
+		Integer attributeStudentCount = Integer.valueOf(0);
 		
-		String GETURIPath = "/find_groups_student_countlessorequals";
-		String expectedGETView = "find_groups_student_countlessorequals_tl";
+		String uriPath = "/find_groups_student_countlessorequals";
+		String expectedView = "find_groups_student_countlessorequals_tl";
 
 		// when
-		ResultActions actualGETResult = mockMvc.perform(get(GETURIPath));
+		ResultActions actualResult = mockMvc.perform(get(uriPath));
 
 		// then
-		actualGETResult
-				.andExpect(view().name(expectedGETView))
+		actualResult
+				.andExpect(view().name(expectedView))
 				.andExpect(status().isOk())
 				.andExpect(model().hasNoErrors())
 				.andExpect(model().attribute(attributeStudentCountName, attributeStudentCount));
-		
-		// POST mapping with params: studentCount
+	}
+
+	@Test
+	void showGroupsStudentsCountForm_MustReturnExpectedView_WhenPostRequest() throws Exception {
+		// Post mapping with params: studentCount
 		// given
 		String paramStudentCountName = "studentcount";
-		Integer paramStudentCount = new Integer(10);
+		Integer paramStudentCount = Integer.valueOf(10);
 
 		String groupUuid = "9723a706-edd1-4ea9-8629-70a91504ab2a";
 		String groupName = "IO-45";
 		Group group = new Group(groupUuid, groupName);
-		
-		String studentCountGroupsName = "studentcountgroups"; 
+
+		String studentCountGroupsName = "studentcountgroups";
 		HashMap<Group, Integer> studentCountGroups = new HashMap<>();
 		studentCountGroups.put(group, paramStudentCount);
-		
+
 		when(schoolDAO.findGroupsStudentCountLessOrEquals(paramStudentCount)).thenReturn(studentCountGroups);
-		
+
 		String expectedMsgName = "msg";
-		StringBuilder expectedMsg = new StringBuilder(); 
+		StringBuilder expectedMsg = new StringBuilder();
 		expectedMsg
 				.append("Groups with student count <= ")
 				.append(paramStudentCount);
 
-		String POSTURIPath = "/find_groups_student_countlessorequals";
-		String expectedPOSTView = "finded_groups_student_countlessorequals_tl";
-		
+		String uriPath = "/find_groups_student_countlessorequals";
+		String expectedView = "finded_groups_student_countlessorequals_tl";
+
 		// when
-		ResultActions actualPOSTResult = mockMvc.perform(post(POSTURIPath)
+		ResultActions actualResult = mockMvc.perform(post(uriPath)
 				.flashAttr(paramStudentCountName, paramStudentCount));
 
 		// then
-		actualPOSTResult
-				.andExpect(view().name(expectedPOSTView))
+		actualResult
+				.andExpect(view().name(expectedView))
 				.andExpect(status().isOk())
 				.andExpect(model().hasNoErrors())
 				.andExpect(model().attribute(studentCountGroupsName, studentCountGroups))
 				.andExpect(model().attribute(expectedMsgName, expectedMsg.toString()));
 
-		InOrder daoPOSTOrder = Mockito.inOrder(schoolDAO);
-		daoPOSTOrder.verify(schoolDAO).findGroupsStudentCountLessOrEquals(paramStudentCount);
-	}	
-	
+		InOrder daoOrder = Mockito.inOrder(schoolDAO);
+		daoOrder.verify(schoolDAO).findGroupsStudentCountLessOrEquals(paramStudentCount);
+	}
 }

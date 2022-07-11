@@ -22,19 +22,18 @@ public class FindGroupsStudentCountLessOrEqualsController {
 	HashMap<Group, Integer> studentCountGroups;
 
 	@GetMapping("/find_groups_student_countlessorequals")
-	public String showAddStudentForm(Model model) {
+	public String enterStudentsCountForm(Model model) {
 		posted = false;
-		model.addAttribute("studentcount", new Integer(0));
+		model.addAttribute("studentcount", Integer.valueOf(0));
 
 		return "find_groups_student_countlessorequals_tl";
 	}
 
 	@PostMapping("/find_groups_student_countlessorequals")
-	public String saveStudent(@ModelAttribute("studentcount") Integer studentCount, Model model) {
+	public String showGroupsStudentsCountForm(@ModelAttribute("studentcount") Integer studentCount, Model model) {
 		StringBuilder msg = new StringBuilder();
 
 		if (!posted) {
-
 			if (studentCount < 0) {
 				msg.append("Student Count ")
 						.append(studentCount)

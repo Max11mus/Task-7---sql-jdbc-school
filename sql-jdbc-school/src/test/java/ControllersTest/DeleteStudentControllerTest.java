@@ -48,7 +48,7 @@ class DeleteStudentControllerTest {
 	}
 	
 	@Test
-	void mustReturnExpectedView_WhenGETCalled_thenMustReturnExpectedView_WhenPOSTCalled() throws Exception {
+	void showAddStudentForm_MustReturnExpectedView_WhenGetRequest() throws Exception {
 		// GET mapping without params
 		// given
 		String studentUuid = "9723a706-edd1-4ea9-8629-70a91504ab2a";
@@ -62,58 +62,73 @@ class DeleteStudentControllerTest {
 		List<Student> expectedStudents = students;
 
 		String attributeStudentRowNoName = "studentrowno";
-		Integer expectedStudentRowNo = new Integer(0);
+		Integer expectedStudentRowNo = Integer.valueOf(0);
 		
-		String GETURIPath = "/delete_student";
-		String expectedGETView = "delete_student_tl";
+		String uriPath = "/delete_student";
+		String expectedView = "delete_student_tl";
 
 		when(schoolDAO.getAllStudents()).thenReturn(students);
 
 		// when
-		ResultActions actualGETResult = mockMvc.perform(get(GETURIPath));
+		ResultActions actualResult = mockMvc.perform(get(uriPath));
 
 		// then
-		actualGETResult
-				.andExpect(view().name(expectedGETView))
+		actualResult
+				.andExpect(view().name(expectedView))
 				.andExpect(status().isOk())
 				.andExpect(model().hasNoErrors())
-				.andExpect(model().attribute(attributeStudentRowNoName, expectedStudentRowNo));
+				.andExpect(model().attribute(attributeStudentsName, expectedStudents));
 		
-		InOrder daoGETOrder = Mockito.inOrder(schoolDAO);
-		daoGETOrder.verify(schoolDAO).getAllStudents();
+		InOrder daoOrder = Mockito.inOrder(schoolDAO);
+		daoOrder.verify(schoolDAO).getAllStudents();
+	}
 
+	@Test
+	void deleteStudent_mustReturnExpectedView_WhenPostRequest() throws Exception {
 		// POST mapping with params: StudentRowNo
 		// given
+		String studentUuid = "9723a706-edd1-4ea9-8629-70a91504ab2a";
+		String studentFirstName = "John";
+		String studentLastName = "Lennon";
+		Student student = new Student(studentUuid, null, studentFirstName, studentLastName);
+		List<Student> students = new ArrayList<Student>();
+		students.add(student);
+
+		String attributeStudentsName = "students";
+		List<Student> expectedStudents = students;
+
 		String paramStudentRowNoName = "studentrowno";
-		Integer paramStudentRowNo = new Integer(1);
+		Integer paramStudentRowNo = Integer.valueOf(1);
 
 		String expectedMsgName = "msg";
-		StringBuilder expectedMsg = new StringBuilder(); 
+		StringBuilder expectedMsg = new StringBuilder();
 		expectedMsg.append("Student Deleted: ")
 				.append(student.toString())
 				.append(" !!!");
 
-		String POSTURIPath = "/delete_student";
-		String expectedPOSTView = "student_deleted_tl";
-		
-		List<Student> expectedPOSTStudents = new ArrayList<>(expectedStudents);
-		expectedPOSTStudents.remove(student);
-		
+		String uriPath = "/delete_student";
+		String expectedView = "student_deleted_tl";
+
+		when(schoolDAO.getAllStudents()).thenReturn(students);
+
+		List<Student> expectedPostStudents = new ArrayList<>(expectedStudents);
+		expectedPostStudents.remove(student);
+
 		// when
-		ResultActions actualPOSTResult = mockMvc.perform(post(POSTURIPath)
+		ResultActions actualResult = mockMvc.perform(post(uriPath)
 				.flashAttr(paramStudentRowNoName, paramStudentRowNo));
 
 		// then
-		actualPOSTResult
-				.andExpect(view().name(expectedPOSTView))
+		actualResult
+				.andExpect(view().name(expectedView))
 				.andExpect(status().isOk())
 				.andExpect(model().hasNoErrors())
 				.andExpect(model().attribute(paramStudentRowNoName, paramStudentRowNo))
-				.andExpect(model().attribute(attributeStudentsName, expectedPOSTStudents))
+				.andExpect(model().attribute(attributeStudentsName, expectedPostStudents))
 				.andExpect(model().attribute(expectedMsgName, expectedMsg.toString()));
 
-		InOrder daoPOSTOrder = Mockito.inOrder(schoolDAO);
-		daoPOSTOrder.verify(schoolDAO).deleteStudent(student.getUuid());
-	}	
-	
+		InOrder daoOrder = Mockito.inOrder(schoolDAO);
+		daoOrder.verify(schoolDAO).getAllStudents();
+		daoOrder.verify(schoolDAO).deleteStudent(student.getUuid());
+	}
 }

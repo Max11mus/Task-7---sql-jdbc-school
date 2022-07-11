@@ -19,20 +19,20 @@ public class DeleteStudentController {
 	@Lazy
 	SchoolDAO dao;
 	boolean posted = false;
-	List<Student> students;
 
 	@GetMapping("/delete_student")
 	public String showAddStudentForm(Model model) {
 		posted = false;
-		students = dao.getAllStudents();
+		List<Student> students = dao.getAllStudents();
 		model.addAttribute("students", students);
-		model.addAttribute("studentrowno", new Integer(0));
 		return "delete_student_tl";
 	}
 
 	@PostMapping("/delete_student")
-	public String saveStudent(@ModelAttribute("studentrowno") Integer studentRowNo, Model model) {
+	public String deleteStudent(@ModelAttribute("studentrowno") Integer studentRowNo, Model model) {
 		StringBuilder msg = new StringBuilder();
+
+		List<Student> students = dao.getAllStudents();
 
 		if (!posted) {
 			if (!students.isEmpty()) {

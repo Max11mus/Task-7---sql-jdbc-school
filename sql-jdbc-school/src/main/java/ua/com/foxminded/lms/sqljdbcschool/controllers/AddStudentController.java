@@ -32,7 +32,6 @@ public class AddStudentController {
 			dao.insertStudent(student);
 			posted = true;
 		}
-
 		return "student_saved_tl";
 	}
 

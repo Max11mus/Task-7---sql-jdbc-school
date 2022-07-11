@@ -39,18 +39,18 @@ class HomePageControllerTest {
 	}
 	
 	@Test
-	void mustReturnExpectedView_WhenGETCalled() throws Exception {
+	void homePage_mustReturnExpectedView_WhenGetRequest() throws Exception {
 		// GET mapping without params
 		// given
-		String GETURIPath = "/";
-		String expectedGETView = "home_tl";
+		String uriPath = "/";
+		String expectedView = "home_tl";
 
 		// when
-		ResultActions actualGETResult = mockMvc.perform(get(GETURIPath));
+		ResultActions actualResult = mockMvc.perform(get(uriPath));
 
 		// then
-		actualGETResult
-				.andExpect(view().name(expectedGETView))
+		actualResult
+				.andExpect(view().name(expectedView))
 				.andExpect(status().isOk());
 	}
 	

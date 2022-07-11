@@ -47,7 +47,7 @@ class ShowAllCoursesControllerTest {
 	}
 	
 	@Test
-	void mustReturnExpectedView_WhenGETCalled() throws Exception {
+	void getAllCources_mustReturnExpectedView_WhenGetRequest() throws Exception {
 		String courseUuid = "7894f0de-5820-49bc-8562-b1240f0587b1";
 		String courseName = "Music Theory";
 		String courseDescription = "For Cool Guys";
@@ -58,23 +58,23 @@ class ShowAllCoursesControllerTest {
 		String attributeCoursesName = "courses";
 		List<Course> expectedCourses = courses;
 
-		String GETURIPath = "/get_all_courses";
-		String expectedGETView = "get_all_courses_tl";
+		String uriPath = "/get_all_courses";
+		String expectedView = "get_all_courses_tl";
 
 		when(schoolDAO.getAllCourses()).thenReturn(courses);
 
 		// when
-		ResultActions actualGETResult = mockMvc.perform(get(GETURIPath));
+		ResultActions actualResult = mockMvc.perform(get(uriPath));
 
 		// then
-		actualGETResult
-				.andExpect(view().name(expectedGETView))
+		actualResult
+				.andExpect(view().name(expectedView))
 				.andExpect(status().isOk())
 				.andExpect(model().hasNoErrors())
 				.andExpect(model().attribute(attributeCoursesName, expectedCourses));
 		
-		InOrder daoGETOrder = Mockito.inOrder(schoolDAO);
-		daoGETOrder.verify(schoolDAO).getAllCourses();
+		InOrder daoOrder = Mockito.inOrder(schoolDAO);
+		daoOrder.verify(schoolDAO).getAllCourses();
 	}	
 	
 }
