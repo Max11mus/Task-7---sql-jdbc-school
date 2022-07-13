@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import ua.com.foxminded.lms.sqljdbcschool.controllers.FindGroupsStudentCountLessOrEqualsController;
-import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
+import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
 
 @ExtendWith(SpringExtension.class)
@@ -35,7 +35,7 @@ class FindGroupsStudentCountLessOrEqualsControllerTest {
 	private MockMvc mockMvc;
 	
 	@Autowired
-	SchoolDAO schoolDAO;
+	SchoolJdbcDAO schoolDAO;
 	
 	@Autowired
 	@InjectMocks

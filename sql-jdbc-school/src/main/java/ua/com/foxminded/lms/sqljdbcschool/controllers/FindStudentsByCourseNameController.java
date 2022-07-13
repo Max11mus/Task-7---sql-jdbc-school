@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
+import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 
@@ -18,12 +18,10 @@ import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 public class FindStudentsByCourseNameController {
 	@Autowired
 	@Lazy
-	SchoolDAO dao;
-	boolean posted = false; 
+	SchoolJdbcDAO dao;
 
 	@GetMapping("/find_students_by_course_name")
 	public String showChooseCourseForm(Model model) {
-		posted = false;
 		List<Course> courses = dao.getAllCourses();
 		
 		model.addAttribute("courses", courses);
@@ -38,27 +36,23 @@ public class FindStudentsByCourseNameController {
 		List<Course> courses = dao.getAllCourses();
 		List<Student> students = null;
 
-		if (!posted) {
-			if (courses.isEmpty()) {
-				msg.append("No courses is present !!! ");
-			}
+		if (courses.isEmpty()) {
+			msg.append("No courses is present !!! ");
+		}
 
-			if (courseRowNo < 1 || courseRowNo > courses.size()) {
-				msg.append("Courses RowNo ")
-						.append(courseRowNo)
-						.append(" is out of range (1 - ")
-						.append(courses.size())
-						.append(") ");
-			}
+		if (courseRowNo < 1 || courseRowNo > courses.size()) {
+			msg.append("Courses RowNo ")
+					.append(courseRowNo)
+					.append(" is out of range (1 - ")
+					.append(courses.size())
+					.append(") ");
+		}
 
-			if (msg.length() == 0) {
-				msg.append("Students enlisted to course ")
-						.append(courses.get(courseRowNo - 1).getCourseName())
-						.append(" !!!");
-				students =  dao.findStudentsByCourseID(courses.get(courseRowNo - 1).getUuid());
-			}
-			
-			posted = true;
+		if (msg.length() == 0) {
+			msg.append("Students enlisted to course ")
+					.append(courses.get(courseRowNo - 1).getCourseName())
+					.append(" !!!");
+			students = dao.findStudentsByCourseID(courses.get(courseRowNo - 1).getUuid());
 		}
 
 		model.addAttribute("students", students);

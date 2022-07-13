@@ -1,5 +1,6 @@
 package ControllersTest;
 
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -10,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,8 +28,10 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import ua.com.foxminded.lms.sqljdbcschool.controllers.DeleteStudentController;
-import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
+import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
+
+import javax.servlet.http.HttpSession;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(loader=AnnotationConfigContextLoader.class, classes = {TestConfig.class})
@@ -36,7 +40,7 @@ class DeleteStudentControllerTest {
 	private MockMvc mockMvc;
 	
 	@Autowired
-	SchoolDAO schoolDAO;
+    SchoolJdbcDAO schoolDAO;
 	
 	@Autowired
 	@InjectMocks
@@ -48,7 +52,7 @@ class DeleteStudentControllerTest {
 	}
 	
 	@Test
-	void showAddStudentForm_MustReturnExpectedView_WhenGetRequest() throws Exception {
+	void showDeleteStudentForm_MustReturnExpectedView_WhenGetRequest() throws Exception {
 		// GET mapping without params
 		// given
 		String studentUuid = "9723a706-edd1-4ea9-8629-70a91504ab2a";
@@ -107,28 +111,79 @@ class DeleteStudentControllerTest {
 				.append(" !!!");
 
 		String uriPath = "/delete_student";
-		String expectedView = "student_deleted_tl";
+		String expectedView = "redirect:/student_deleted";
 
 		when(schoolDAO.getAllStudents()).thenReturn(students);
 
-		List<Student> expectedPostStudents = new ArrayList<>(expectedStudents);
-		expectedPostStudents.remove(student);
+		List<Student> expectedSessionStudents = new ArrayList<>(expectedStudents);
+		expectedSessionStudents.remove(student);
 
 		// when
 		ResultActions actualResult = mockMvc.perform(post(uriPath)
 				.flashAttr(paramStudentRowNoName, paramStudentRowNo));
 
 		// then
-		actualResult
+		HttpSession session = actualResult
 				.andExpect(view().name(expectedView))
-				.andExpect(status().isOk())
+				.andExpect(status().is3xxRedirection())
 				.andExpect(model().hasNoErrors())
-				.andExpect(model().attribute(paramStudentRowNoName, paramStudentRowNo))
-				.andExpect(model().attribute(attributeStudentsName, expectedPostStudents))
-				.andExpect(model().attribute(expectedMsgName, expectedMsg.toString()));
+				.andReturn()
+				.getRequest()
+				.getSession();
 
 		InOrder daoOrder = Mockito.inOrder(schoolDAO);
 		daoOrder.verify(schoolDAO).getAllStudents();
 		daoOrder.verify(schoolDAO).deleteStudent(student.getUuid());
+
+		assertEquals(expectedSessionStudents, session.getAttribute(attributeStudentsName));
+		assertEquals(expectedMsg.toString(), session.getAttribute(expectedMsgName));
+	}
+
+	@Test
+	void showDeletedStudent_mustReturnExpectedView_WhenGetRequest() throws Exception {
+		// GET mapping without params
+		// given
+		String studentUuid = "9723a706-edd1-4ea9-8629-70a91504ab2a";
+		String studentFirstName = "John";
+		String studentLastName = "Lennon";
+		Student student = new Student(studentUuid, null, studentFirstName, studentLastName);
+		List<Student> students = new ArrayList<Student>();
+		students.add(student);
+
+		String attributeStudentsName = "students";
+		List<Student> expectedStudents = students;
+
+		String paramStudentRowNoName = "studentrowno";
+		Integer paramStudentRowNo = Integer.valueOf(1);
+
+		String expectedMsgName = "msg";
+		StringBuilder expectedMsg = new StringBuilder();
+		expectedMsg.append("Student Deleted: ")
+				.append(student.toString())
+				.append(" !!!");
+
+		String uriPath = "/student_deleted";
+		String expectedView = "student_deleted_tl";
+
+		List<Student> expectedSessionStudents = new ArrayList<>(expectedStudents);
+		expectedSessionStudents.remove(student);
+
+		// when
+		ResultActions actualResult = mockMvc.perform(get(uriPath)
+				.sessionAttr(attributeStudentsName, expectedSessionStudents)
+				.sessionAttr(expectedMsgName, expectedMsg.toString()));
+
+		// then
+		HttpSession session = actualResult
+				.andExpect(view().name(expectedView))
+				.andExpect(status().isOk())
+				.andExpect(model().hasNoErrors())
+				.andExpect(model().attribute(attributeStudentsName, expectedSessionStudents))
+				.andExpect(model().attribute(expectedMsgName, expectedMsg.toString()))
+				.andReturn()
+				.getRequest()
+				.getSession();
+
+		assertEquals(session.getAttributeNames().hasMoreElements(), false);
 	}
 }

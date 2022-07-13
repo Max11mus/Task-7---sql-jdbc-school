@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,8 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
+import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 
@@ -24,7 +22,7 @@ import javax.servlet.http.HttpSession;
 public class DropoutStudentFromCourseController {
 	@Autowired
 	@Lazy
-	SchoolDAO dao;
+	SchoolJdbcDAO dao;
 
 	@GetMapping("/dropout_student_from_course/choose_student")
 	public String chooseStudent(HttpServletRequest request, Model model) {

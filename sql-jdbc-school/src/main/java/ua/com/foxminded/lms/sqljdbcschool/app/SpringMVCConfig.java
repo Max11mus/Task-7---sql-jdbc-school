@@ -12,7 +12,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import ua.com.foxminded.lms.sqljdbcschool.controllers.SpringWebControllersConfig;
-import ua.com.foxminded.lms.sqljdbcschool.dao.SpringDaoConfig;
+import ua.com.foxminded.lms.sqljdbcschool.jdbc.SpringDaoConfig;
 
 @Configuration
 @Import({ SpringDaoConfig.class, SpringWebControllersConfig.class })

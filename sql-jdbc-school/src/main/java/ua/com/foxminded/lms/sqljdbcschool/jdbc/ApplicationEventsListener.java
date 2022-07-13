@@ -1,4 +1,4 @@
-package ua.com.foxminded.lms.sqljdbcschool.dao;
+package ua.com.foxminded.lms.sqljdbcschool.jdbc;
 
 
 import java.io.IOException;
@@ -66,7 +66,7 @@ public class ApplicationEventsListener implements ApplicationListener<Applicatio
 //				e.printStackTrace();
 //			}
 
-			SchoolDAO dao = context.getBean(SchoolDAO.class, connectionPool);
+			SchoolJdbcDAO dao = context.getBean(SchoolJdbcDAO.class, connectionPool);
 
 			EntitiesGenerator entitiesGenerator;
 			try {

@@ -1,5 +1,6 @@
 package ControllersTest;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -22,8 +23,10 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import ua.com.foxminded.lms.sqljdbcschool.controllers.AddStudentController;
-import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
+import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
+
+import javax.servlet.http.HttpSession;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(loader=AnnotationConfigContextLoader.class, classes = {TestConfig.class})
@@ -32,7 +35,7 @@ class AddStudentControllerTest {
 	private MockMvc mockMvc;
 	
 	@Autowired
-	SchoolDAO schoolDAO;
+    SchoolJdbcDAO schoolDAO;
 	
 	@Autowired
 	@InjectMocks
@@ -74,20 +77,53 @@ class AddStudentControllerTest {
 		String paramStudentName = "student";
 
 		String uriPath = "/add_student";
-		String expectedView = "student_saved_tl";
+		String expectedView = "redirect:/student_saved";
 
 		// when
 		ResultActions actualResult = mockMvc.perform(post(uriPath)
 				.flashAttr(paramStudentName, student));
 
 		// then
-		actualResult
+		HttpSession session = actualResult
 				.andExpect(view().name(expectedView))
-				.andExpect(status().isOk())
-				.andExpect(model().hasNoErrors());
+				.andExpect(status().is3xxRedirection())
+				.andExpect(model().hasNoErrors())
+				.andReturn()
+				.getRequest()
+				.getSession();
 
 		InOrder daoOrder = Mockito.inOrder(schoolDAO);
 		daoOrder.verify(schoolDAO).insertStudent(student);
+
+		assertEquals(student, session.getAttribute(paramStudentName));
 	}
-	
+
+	@Test
+	void showSavedStudent_mustReturnExpectedView_WhenGetRequest() throws Exception {
+		// GET mapping without params
+		// given
+		String studentUuid = "9723a706-edd1-4ea9-8629-70a91504ab2a";
+		String studentFirstName = "John";
+		String studentLastName = "Lennon";
+		Student student = new Student(studentUuid, null, studentFirstName, studentLastName);
+		String attributeStudentName = "student";
+
+		String uriPath = "/student_saved";
+		String expectedView = "student_saved_tl";
+
+		// when
+		ResultActions actualResult = mockMvc.perform(get(uriPath)
+				.sessionAttr(attributeStudentName, student));
+
+		// then
+		HttpSession session = actualResult.andExpect(view().name(expectedView))
+				.andExpect(status().isOk())
+				.andExpect(model().hasNoErrors())
+				.andExpect(model().attribute(attributeStudentName, student))
+				.andReturn()
+				.getRequest()
+				.getSession();
+
+		assertEquals(session.getAttributeNames().hasMoreElements(), false);
+	}
 }

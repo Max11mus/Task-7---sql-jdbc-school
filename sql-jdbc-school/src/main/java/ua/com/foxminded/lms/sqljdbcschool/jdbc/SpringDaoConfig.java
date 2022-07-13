@@ -1,4 +1,4 @@
-package ua.com.foxminded.lms.sqljdbcschool.dao;
+package ua.com.foxminded.lms.sqljdbcschool.jdbc;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -9,7 +9,7 @@ import ua.com.foxminded.lms.sqljdbcschool.utils.DBConnectionPool;
 
 
 @Configuration
-@ComponentScan(basePackages = "ua.com.foxminded.lms.sqljdbcschool.dao")
+@ComponentScan(basePackages = "ua.com.foxminded.lms.sqljdbcschool.jdbc")
 public class SpringDaoConfig {
 
 	@Bean

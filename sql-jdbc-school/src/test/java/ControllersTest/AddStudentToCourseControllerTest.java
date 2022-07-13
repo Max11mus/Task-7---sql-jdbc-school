@@ -1,5 +1,6 @@
 package ControllersTest;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -10,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,9 +28,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import ua.com.foxminded.lms.sqljdbcschool.controllers.AddStudentToCourseController;
-import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
+import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
+
+import javax.servlet.http.HttpSession;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(loader=AnnotationConfigContextLoader.class, classes = {TestConfig.class})
@@ -37,7 +41,7 @@ class AddStudentToCourseControllerTest {
 	private MockMvc mockMvc;
 	
 	@Autowired
-	SchoolDAO schoolDAO;
+	SchoolJdbcDAO schoolDAO;
 	
 	@Autowired
 	@InjectMocks
@@ -101,7 +105,7 @@ class AddStudentToCourseControllerTest {
 	}
 
 	@Test
-	void saveStudent_MustReturnExpectedView_WhenPostRequest() throws Exception {
+	void addStudentToCourse_MustReturnExpectedView_WhenPostRequest() throws Exception {
 		// POST mapping with params: StudentRowNo, CourseRowNo
 		// given
 		String studentUuid = "9723a706-edd1-4ea9-8629-70a91504ab2a";
@@ -135,7 +139,7 @@ class AddStudentToCourseControllerTest {
 				.append(" !!!");
 
 		String uriPath = "/add_student_to_course";
-		String expectedView = "student_added_to_course_tl";
+		String expectedView = "redirect:/student_added_to_course";
 
 		when(schoolDAO.getAllStudents()).thenReturn(students);
 		when(schoolDAO.getAllCourses()).thenReturn(courses);
@@ -146,20 +150,81 @@ class AddStudentToCourseControllerTest {
 				.flashAttr(paramCourseRowNoName, paramCourseRowNo));
 
 		// then
-		actualResult
+		HttpSession session = actualResult
 				.andExpect(view().name(expectedView))
-				.andExpect(status().isOk())
+				.andExpect(status().is3xxRedirection())
 				.andExpect(model().hasNoErrors())
 				.andExpect(model().attribute(paramStudentRowNoName, paramStudentRowNo))
 				.andExpect(model().attribute(paramCourseRowNoName, paramCourseRowNo))
-				.andExpect(model().attribute(expectedAttrStudentsName, students))
-				.andExpect(model().attribute(expectedAttrCoursesName, courses))
-				.andExpect(model().attribute(expectedMsgName, expectedMsg.toString()));
+				.andReturn()
+				.getRequest()
+				.getSession();
 
 		InOrder daoOrder = Mockito.inOrder(schoolDAO);
 		daoOrder.verify(schoolDAO).getAllStudents();
 		daoOrder.verify(schoolDAO).getAllCourses();
 		daoOrder.verify(schoolDAO).addStudentToCourse(student.getUuid(), course.getUuid());
+
+		assertEquals(session.getAttribute(expectedAttrStudentsName) , students);
+		assertEquals(session.getAttribute(expectedAttrCoursesName) , courses);
+		assertEquals(session.getAttribute(expectedMsgName) , expectedMsg.toString());
+	}
+
+	void showAddedToCourseStudent_MustReturnExpectedView_WhenGetRequest() throws Exception {
+		// Get mapping without params:
+		// given
+		String studentUuid = "9723a706-edd1-4ea9-8629-70a91504ab2a";
+		String studentFirstName = "John";
+		String studentLastName = "Lennon";
+		Student student = new Student(studentUuid, null, studentFirstName, studentLastName);
+		List<Student> students = new ArrayList<Student>();
+		students.add(student);
+		String expectedAttrStudentsName = "students";
+
+		String courseUuid = "7894f0de-5820-49bc-8562-b1240f0587b1";
+		String courseName = "Music Theory";
+		String courseDescription = "For Cool Guys";
+		Course course = new Course(courseUuid, courseName, courseDescription);
+		List<Course> courses = new ArrayList<Course>();
+		courses.add(course);
+		String expectedAttrCoursesName = "courses";
+
+		String paramStudentRowNoName = "studentrowno";
+		Integer paramStudentRowNo = Integer.valueOf(1);
+
+		String paramCourseRowNoName = "courserowno";
+		Integer paramCourseRowNo = Integer.valueOf(1);
+
+		String expectedMsgName = "msg";
+		StringBuilder expectedMsg = new StringBuilder();
+		expectedMsg.append("Student added: ")
+				.append(student.toString())
+				.append(" to course ")
+				.append(course.toString())
+				.append(" !!!");
+
+		String uriPath = "/student_added_to_course";
+		String expectedView = "student_added_to_course_tl";
+
+		// when
+		ResultActions actualResult = mockMvc.perform(get(uriPath)
+				.sessionAttr(expectedAttrStudentsName, students)
+				.sessionAttr(expectedAttrStudentsName, students)
+				.sessionAttr(expectedMsgName, expectedMsg.toString()));
+
+		// then
+		HttpSession session = actualResult
+				.andExpect(view().name(expectedView))
+				.andExpect(status().isOk())
+				.andExpect(model().hasNoErrors())
+				.andExpect(model().attribute(expectedAttrStudentsName, students))
+				.andExpect(model().attribute(expectedAttrCoursesName, courses))
+				.andExpect(model().attribute(expectedMsgName, expectedMsg.toString()))
+				.andReturn()
+				.getRequest()
+				.getSession();
+
+		assertEquals(session.getAttributeNames().hasMoreElements(), false);
 	}
 
 }

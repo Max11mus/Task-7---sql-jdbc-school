@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 import ua.com.foxminded.lms.sqljdbcschool.controllers.SpringWebControllersConfig;
-import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
+import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 import ua.com.foxminded.lms.sqljdbcschool.utils.DBConnectionPool;
 
 @Configuration
@@ -15,6 +15,6 @@ public class TestConfig {
 	DBConnectionPool dBConnectionPool;
 
 	@MockBean
-	SchoolDAO schoolDAO;
+	SchoolJdbcDAO schoolDAO;
 
 }
