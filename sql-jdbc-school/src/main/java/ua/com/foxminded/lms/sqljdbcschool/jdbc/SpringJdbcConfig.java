@@ -10,7 +10,7 @@ import ua.com.foxminded.lms.sqljdbcschool.utils.DBConnectionPool;
 
 @Configuration
 @ComponentScan(basePackages = "ua.com.foxminded.lms.sqljdbcschool.jdbc")
-public class SpringDaoConfig {
+public class SpringJdbcConfig {
 
 	@Bean
 	@Lazy

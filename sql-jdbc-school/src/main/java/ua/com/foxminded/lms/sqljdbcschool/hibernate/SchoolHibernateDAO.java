@@ -1,5 +1,8 @@
 package ua.com.foxminded.lms.sqljdbcschool.hibernate;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
@@ -8,7 +11,10 @@ import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 import java.util.HashMap;
 import java.util.List;
 
-public class SchoolHibernateDAO implements SchoolDAO {
+@Component
+class SchoolHibernateDAO implements SchoolDAO {
+@Autowired
+HibernateSessionFactory sessionFactory;
 
     @Override
     public void insertGroups(List<Group> groups) {

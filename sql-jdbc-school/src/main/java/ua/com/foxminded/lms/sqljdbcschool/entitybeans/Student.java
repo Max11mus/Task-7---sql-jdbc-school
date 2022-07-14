@@ -1,98 +1,101 @@
 package ua.com.foxminded.lms.sqljdbcschool.entitybeans;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-
+import javax.persistence.*;
 import java.util.Objects;
 import java.util.UUID;
 
 @Entity
-@Table(name="student")
+@Table(name = "student")
 public class Student implements Comparable<Student> {
-	@Column(name="uuid")
-	private String uuid;
-	@Column(name="group_uuid")
-	private String groupUuid;
-	@Column(name="first_name")
-	private String firstName;
-	@Column(name="last_name")
-	private String lastName;
+    @Id
+    @Column(name = "uuid", length = 36, nullable = false)
+    private String uuid;
 
-	public Student() {
-		uuid = UUID.randomUUID().toString();
-		groupUuid = null;
-		firstName = "";
-		lastName = "";
-	}
+    @OneToOne
+    @JoinColumn(nullable = true)
+//    @Column(name = "group_uuid", length = 36, nullable = true)
+    private String groupUuid;
 
-	public Student(String id, String groupId, String studentFirstName, String studentLastName) {
-		super();
-		this.uuid = id;
-		this.groupUuid = groupId;
-		this.firstName = studentFirstName;
-		this.lastName = studentLastName;
-	}
+    @Column(name = "first_name", length = 20, nullable = false)
+    private String firstName;
 
-	public String getUuid() {
-		return uuid;
-	}
+    @Column(name = "last_name", length = 20, nullable = false)
+    private String lastName;
 
-	public void setUuid(String id) {
-		this.uuid = id;
-	}
+    public Student() {
+        uuid = UUID.randomUUID().toString();
+        groupUuid = null;
+        firstName = "";
+        lastName = "";
+    }
 
-	public String getGroupUuid() {
-		return groupUuid;
-	}
+    public Student(String id, String groupId, String studentFirstName, String studentLastName) {
+        super();
+        this.uuid = id;
+        this.groupUuid = groupId;
+        this.firstName = studentFirstName;
+        this.lastName = studentLastName;
+    }
 
-	public void setGroupUuid(String groupId) {
-		this.groupUuid = groupId;
-	}
+    public String getUuid() {
+        return uuid;
+    }
 
-	public String getFirstName() {
-		return firstName;
-	}
+    public void setUuid(String id) {
+        this.uuid = id;
+    }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+    public String getGroupUuid() {
+        return groupUuid;
+    }
 
-	public String getLastName() {
-		return lastName;
-	}
+    public void setGroupUuid(String groupId) {
+        this.groupUuid = groupId;
+    }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+    public String getFirstName() {
+        return firstName;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(uuid);
-	}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Student other = (Student) obj;
-		return Objects.equals(groupUuid, other.groupUuid) && Objects.equals(uuid, other.uuid)
-				&& Objects.equals(firstName, other.firstName) && Objects.equals(lastName, other.lastName);
-	}
+    public String getLastName() {
+        return lastName;
+    }
 
-	@Override
-	public String toString() {
-		return "Student [uuid=" + uuid + ", groupUuid=" + groupUuid + ", studentFirstName=" + firstName
-				+ ", studentLastName=" + lastName + "]";
-	}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-	@Override
-	public int compareTo(Student o) {
-		return uuid.compareTo(o.getUuid().toString());
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Student other = (Student) obj;
+        return Objects.equals(groupUuid, other.groupUuid) && Objects.equals(uuid, other.uuid)
+                && Objects.equals(firstName, other.firstName) && Objects.equals(lastName, other.lastName);
+    }
+
+    @Override
+    public String toString() {
+        return "Student [uuid=" + uuid + ", groupUuid=" + groupUuid + ", studentFirstName=" + firstName
+                + ", studentLastName=" + lastName + "]";
+    }
+
+    @Override
+    public int compareTo(Student o) {
+        return uuid.compareTo(o.getUuid().toString());
+    }
 
 }
