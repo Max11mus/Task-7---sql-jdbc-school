@@ -1,11 +1,20 @@
 package ua.com.foxminded.lms.sqljdbcschool.entitybeans;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+
 import java.util.Objects;
 import java.util.UUID;
 
+@Entity
+@Table(name="course")
 public class Course implements Comparable<Course> {
+	@Column(name="uuid")
 	private String uuid;
+	@Column(name="course_name")
 	private String courseName;
+	@Column(name="course_description")
 	private String courseDescription;
 
 	public Course() {

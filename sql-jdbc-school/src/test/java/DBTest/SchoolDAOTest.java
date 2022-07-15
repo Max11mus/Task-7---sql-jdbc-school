@@ -27,17 +27,17 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import ua.com.foxminded.lms.sqljdbcschool.dao.DBConnectionPool;
-import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
+import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
+import ua.com.foxminded.lms.sqljdbcschool.utils.DBConnectionPool;
 import ua.com.foxminded.lms.sqljdbcschool.utils.FileLoader;
 
 class SchoolDAOTest extends DataSourceBasedDBTestCase {
 	static Properties dbProperties;
 	static DBConnectionPool pool;
-	static SchoolDAO dao;
+	static SchoolJdbcDAO dao;
 	static Connection connection;
 
 	@Override
@@ -83,7 +83,7 @@ class SchoolDAOTest extends DataSourceBasedDBTestCase {
 		dbProperties = new Properties();
 		dbProperties.load(fileLoader.loadProperties(ClassLoader.getSystemResource("db.h2.properties")));
 		pool = new DBConnectionPool(dbProperties);
-		dao = new SchoolDAO(pool);
+		dao = new SchoolJdbcDAO(pool);
 	}
 
 	@BeforeEach

@@ -9,6 +9,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.springframework.core.io.ClassPathResource;
+
 public class DataGenerator {
 	private static ArrayList<String> courseNamesPool;
 	private static ArrayList<String> namesPool;
@@ -34,9 +36,9 @@ public class DataGenerator {
 			
 			
 	public DataGenerator() throws IOException {
-		courseNamesPool = loadFromPlainTextFile("courses.txt");
-		namesPool = loadFromPlainTextFile("names.txt");
-		surnamesPool = loadFromPlainTextFile("surnames.txt");
+		courseNamesPool = loadFromPlainTextFile("/courses.txt");
+		namesPool = loadFromPlainTextFile("/names.txt");
+		surnamesPool = loadFromPlainTextFile("/surnames.txt");
 	}
 
 	public ArrayList<String> getCourseNames(int quantity) throws IOException {
@@ -78,7 +80,7 @@ public class DataGenerator {
 	}
 	
 	private ArrayList<String> loadFromPlainTextFile(String fileName) throws IOException {
-		URL namesUrl = ClassLoader.getSystemResource(fileName);
+		URL namesUrl = ClassPathResource.class.getResource(fileName);
 		FileLoader fileLoader = new FileLoader();
 		return new ArrayList<String>(fileLoader.loadTextLines(namesUrl).stream().collect(Collectors.toList()));
 	}
