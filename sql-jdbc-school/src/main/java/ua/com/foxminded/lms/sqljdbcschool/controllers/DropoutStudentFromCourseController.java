@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
@@ -21,11 +22,12 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class DropoutStudentFromCourseController {
 	@Autowired
-	@Lazy
-	SchoolJdbcDAO dao;
+	ChooseDaoEngine chooseDaoEngine;
 
 	@GetMapping("/dropout_student_from_course/choose_student")
 	public String chooseStudent(HttpServletRequest request, Model model) {
+		SchoolDAO dao = chooseDaoEngine.getCurrentDaoEngine();
+
 		List<Student> students = dao.getAllStudents();
 
 		HttpSession session = request.getSession();
@@ -38,6 +40,8 @@ public class DropoutStudentFromCourseController {
 	public String chooseStudentCourse(HttpServletRequest request,
 									  @RequestParam("studentrowno") Integer studentRowNo,
 									  Model model) {
+		SchoolDAO dao = chooseDaoEngine.getCurrentDaoEngine();
+
 		HttpSession session = request.getSession();
 		List<Student> students = (List<Student>) session.getAttribute("students");
 		if (students == null) {
@@ -59,6 +63,8 @@ public class DropoutStudentFromCourseController {
 	public String dropoutStudentFromCourse(HttpServletRequest request,
 										   @ModelAttribute("courserowno") Integer courseRowNo,
 										   Model model) {
+		SchoolDAO dao = chooseDaoEngine.getCurrentDaoEngine();
+
 		HttpSession session = request.getSession();
 		Student student = (Student) session.getAttribute("student");
 		if (student == null) {

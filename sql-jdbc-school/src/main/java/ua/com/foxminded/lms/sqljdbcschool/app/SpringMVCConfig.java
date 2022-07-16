@@ -12,10 +12,11 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import ua.com.foxminded.lms.sqljdbcschool.controllers.SpringWebControllersConfig;
+import ua.com.foxminded.lms.sqljdbcschool.hibernate.HibernateSpringConfig;
 import ua.com.foxminded.lms.sqljdbcschool.jdbc.SpringJdbcConfig;
 
 @Configuration
-@Import({ SpringJdbcConfig.class, SpringWebControllersConfig.class })
+@Import({ SpringJdbcConfig.class, SpringWebControllersConfig.class, HibernateSpringConfig.class})
 @EnableWebMvc
 
 public class SpringMVCConfig implements WebApplicationInitializer {

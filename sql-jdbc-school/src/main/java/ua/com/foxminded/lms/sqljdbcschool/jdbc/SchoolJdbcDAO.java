@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -131,7 +132,8 @@ public class SchoolJdbcDAO implements SchoolDAO {
 		courses.parallelStream().forEach(this::insertCourse);
 	}
 
-	private void insertCourse(Course course) {
+	@Override
+	public void insertCourse(Course course) {
 		CheckForNull.check(course);
 
 		String query = "INSERT INTO course " + EOL 
@@ -274,7 +276,7 @@ public class SchoolJdbcDAO implements SchoolDAO {
 	}
 
 	@Override
-	public HashMap<Group, Integer> findGroupsStudentCountLessOrEquals(int studentCount) {
+	public Map<Group, Integer> findGroupsStudentCountLessOrEquals(int studentCount) {
 		HashMap<Group, Integer> studentCountGroups = new HashMap<Group, Integer>(); 
 		
 		String query = "SELECT " + EOL 

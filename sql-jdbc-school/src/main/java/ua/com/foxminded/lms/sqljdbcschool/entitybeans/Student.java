@@ -11,9 +11,12 @@ public class Student implements Comparable<Student> {
     @Column(name = "uuid", length = 36, nullable = false)
     private String uuid;
 
-    @OneToOne
-    @JoinColumn(nullable = true)
-//    @Column(name = "group_uuid", length = 36, nullable = true)
+    @Access(AccessType.PROPERTY)
+    @ManyToOne
+    @JoinColumn(name = "group_uuid")
+    private Group group; // Used only  in Hibernate DAO
+
+    @Transient
     private String groupUuid;
 
     @Column(name = "first_name", length = 20, nullable = false)
@@ -24,6 +27,7 @@ public class Student implements Comparable<Student> {
 
     public Student() {
         uuid = UUID.randomUUID().toString();
+        group = null; // Used only  in Hibernate DAO
         groupUuid = null;
         firstName = "";
         lastName = "";
@@ -69,6 +73,19 @@ public class Student implements Comparable<Student> {
         this.lastName = lastName;
     }
 
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+        if (this.group != null) {
+            this.groupUuid = this.group.getUuid();
+        } else {
+            this.groupUuid = null;
+        }
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(uuid);
@@ -83,8 +100,10 @@ public class Student implements Comparable<Student> {
         if (getClass() != obj.getClass())
             return false;
         Student other = (Student) obj;
-        return Objects.equals(groupUuid, other.groupUuid) && Objects.equals(uuid, other.uuid)
-                && Objects.equals(firstName, other.firstName) && Objects.equals(lastName, other.lastName);
+        return Objects.equals(uuid, other.uuid)
+                && Objects.equals(groupUuid, other.groupUuid)
+                && Objects.equals(firstName, other.firstName)
+                && Objects.equals(lastName, other.lastName);
     }
 
     @Override
