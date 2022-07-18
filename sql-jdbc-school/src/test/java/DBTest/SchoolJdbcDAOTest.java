@@ -34,7 +34,7 @@ import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 import ua.com.foxminded.lms.sqljdbcschool.utils.DBConnectionPool;
 import ua.com.foxminded.lms.sqljdbcschool.utils.FileLoader;
 
-class SchoolDAOTest extends DataSourceBasedDBTestCase {
+class SchoolJdbcDAOTest extends DataSourceBasedDBTestCase {
 	static Properties dbProperties;
 	static DBConnectionPool pool;
 	static SchoolJdbcDAO dao;

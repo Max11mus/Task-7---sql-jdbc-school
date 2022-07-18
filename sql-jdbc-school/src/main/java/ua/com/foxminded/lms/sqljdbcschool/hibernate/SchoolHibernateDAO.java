@@ -308,19 +308,6 @@ public class SchoolHibernateDAO implements SchoolDAO {
 
     @Override
     public List<Course> findStudentCourses(String studentUuid) {
-//        String query = "SELECT " + EOL
-//                + "course.uuid," + EOL
-//                + "course.course_name," + EOL
-//                + "course.course_description," + EOL
-//                + "students_on_course.student_uuid" + EOL
-//                + "FROM" + EOL
-//                + "course" + EOL
-//                + "RIGHT JOIN" + EOL
-//                + "students_on_course" + EOL
-//                + "ON" + EOL
-//                + " course.uuid = students_on_course.course_uuid " + EOL
-//                + "WHERE" + EOL
-//                + " students_on_course.student_uuid = ? " + EOL;
         Session session = null;
         Transaction transaction = null;
         List<Course> courses = null;
