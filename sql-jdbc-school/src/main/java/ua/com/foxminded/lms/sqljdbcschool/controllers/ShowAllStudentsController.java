@@ -5,9 +5,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
-import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 
 @Controller
 @Lazy

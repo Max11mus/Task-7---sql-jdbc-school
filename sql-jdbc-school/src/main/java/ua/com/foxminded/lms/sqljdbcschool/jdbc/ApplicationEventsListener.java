@@ -1,14 +1,6 @@
 package ua.com.foxminded.lms.sqljdbcschool.jdbc;
 
 
-import java.io.IOException;
-import java.net.URL;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ApplicationContextEvent;
@@ -16,13 +8,20 @@ import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
-
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 import ua.com.foxminded.lms.sqljdbcschool.utils.DBConnectionPool;
 import ua.com.foxminded.lms.sqljdbcschool.utils.EntitiesGenerator;
 import ua.com.foxminded.lms.sqljdbcschool.utils.FileLoader;
+
+import java.io.IOException;
+import java.net.URL;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 @Component
 public class ApplicationEventsListener implements ApplicationListener<ApplicationContextEvent> {

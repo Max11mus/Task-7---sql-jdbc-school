@@ -4,7 +4,6 @@ import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

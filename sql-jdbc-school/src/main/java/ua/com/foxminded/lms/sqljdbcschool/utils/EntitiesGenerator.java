@@ -1,15 +1,15 @@
 package ua.com.foxminded.lms.sqljdbcschool.utils;
 
+import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
+import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
+import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
-
-import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
-import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
-import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 
 public class EntitiesGenerator {
 private	DataGenerator dataGenerator;
