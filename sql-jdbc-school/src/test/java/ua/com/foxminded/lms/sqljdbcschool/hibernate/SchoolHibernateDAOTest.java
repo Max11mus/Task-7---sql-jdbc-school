@@ -1,15 +1,4 @@
-package DBTest;
-
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Properties;
-
-import javax.sql.DataSource;
+package ua.com.foxminded.lms.sqljdbcschool.hibernate;
 
 import org.dbunit.Assertion;
 import org.dbunit.DataSourceBasedDBTestCase;
@@ -26,18 +15,35 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.web.WebAppConfiguration;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 import ua.com.foxminded.lms.sqljdbcschool.utils.DBConnectionPool;
 import ua.com.foxminded.lms.sqljdbcschool.utils.FileLoader;
 
-class SchoolJdbcDAOTest extends DataSourceBasedDBTestCase {
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
+
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {TestConfig.class})
+@WebAppConfiguration
+class SchoolHibernateDAOTest extends DataSourceBasedDBTestCase {
 	static Properties dbProperties;
 	static DBConnectionPool pool;
-	static SchoolJdbcDAO dao;
+	@Autowired
+	SchoolHibernateDAO dao;
 	static Connection connection;
 
 	@Override
@@ -82,8 +88,6 @@ class SchoolJdbcDAOTest extends DataSourceBasedDBTestCase {
 		FileLoader fileLoader = new FileLoader();
 		dbProperties = new Properties();
 		dbProperties.load(fileLoader.loadProperties(ClassLoader.getSystemResource("db.h2.properties")));
-		pool = new DBConnectionPool(dbProperties);
-		dao = new SchoolJdbcDAO(pool);
 	}
 
 	@BeforeEach

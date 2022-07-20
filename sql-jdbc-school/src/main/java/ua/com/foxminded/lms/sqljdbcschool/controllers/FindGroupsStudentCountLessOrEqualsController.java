@@ -8,13 +8,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
+import ua.com.foxminded.lms.sqljdbcschool.hibernate.SchoolHibernateDAO;
 
 import java.util.Map;
 
 @Controller
 public class FindGroupsStudentCountLessOrEqualsController {
 	@Autowired
-	ChooseDaoEngine chooseDaoEngine;
+	SchoolHibernateDAO dao;
 
 	Map<Group, Integer> studentCountGroups;
 
@@ -27,8 +28,6 @@ public class FindGroupsStudentCountLessOrEqualsController {
 
 	@PostMapping("/find_groups_student_countlessorequals")
 	public String showGroupsStudentsCountForm(@ModelAttribute("studentcount") Integer studentCount, Model model) {
-		SchoolDAO dao = chooseDaoEngine.getCurrentDaoEngine();
-
 		StringBuilder msg = new StringBuilder();
 
 		if (studentCount < 0) {

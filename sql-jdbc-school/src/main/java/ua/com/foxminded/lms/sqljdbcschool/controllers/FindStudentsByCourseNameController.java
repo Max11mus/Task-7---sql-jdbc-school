@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
+import ua.com.foxminded.lms.sqljdbcschool.hibernate.SchoolHibernateDAO;
 
 import java.util.List;
 
 @Controller
 public class FindStudentsByCourseNameController {
 	@Autowired
-	ChooseDaoEngine chooseDaoEngine;
+	SchoolHibernateDAO dao;
 
 	@GetMapping("/find_students_by_course_name")
 	public String showChooseCourseForm(Model model) {
-		SchoolDAO dao = chooseDaoEngine.getCurrentDaoEngine();
 		List<Course> courses = dao.getAllCourses();
 		
 		model.addAttribute("courses", courses);
@@ -30,8 +30,6 @@ public class FindStudentsByCourseNameController {
 
 	@PostMapping("/find_students_by_course_name")
 	public String findStudentsByCourse(@ModelAttribute("courserowno") Integer courseRowNo, Model model) {
-		SchoolDAO dao = chooseDaoEngine.getCurrentDaoEngine();
-
 		StringBuilder msg = new StringBuilder();
 		List<Course> courses = dao.getAllCourses();
 		List<Student> students = null;

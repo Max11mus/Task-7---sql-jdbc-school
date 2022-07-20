@@ -18,8 +18,8 @@ public class Group implements Comparable<Group> {
     private String groupName;
 
     public Group() {
-        uuid = UUID.randomUUID().toString();
-        groupName = "";
+        this.uuid = UUID.randomUUID().toString();
+        this.groupName = "";
     }
 
     public Group(String id, String squadName) {

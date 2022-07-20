@@ -1,10 +1,16 @@
 package ua.com.foxminded.lms.sqljdbcschool.entitybeans;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -21,16 +27,27 @@ public class Course implements Comparable<Course> {
 	@Column(name = "course_description", length = 1024, nullable = false)
     private String courseDescription;
 
+    @ManyToMany(mappedBy = "courses")
+    private Set<Student> students = new HashSet<>();
+
     public Course() {
-        uuid = UUID.randomUUID().toString();
-        courseName = "";
-        courseDescription = "";
+        this.uuid = UUID.randomUUID().toString();
+        this.courseName = "";
+        this.courseDescription = "";
     }
 
     public Course(String id, String courseName, String courseDescription) {
         this.uuid = id;
         this.courseName = courseName;
         this.courseDescription = courseDescription;
+    }
+
+    public Set<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(Set<Student> students) {
+        this.students = students;
     }
 
     public String getUuid() {

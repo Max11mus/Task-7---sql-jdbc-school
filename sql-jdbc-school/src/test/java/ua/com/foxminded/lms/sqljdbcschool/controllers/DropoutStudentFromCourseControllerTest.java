@@ -1,4 +1,4 @@
-package ControllersTest;
+package ua.com.foxminded.lms.sqljdbcschool.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import ua.com.foxminded.lms.sqljdbcschool.controllers.DropoutStudentFromCourseController;
+import ua.com.foxminded.lms.sqljdbcschool.hibernate.SchoolHibernateDAO;
 import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
@@ -40,7 +40,7 @@ class DropoutStudentFromCourseControllerTest {
 	private MockMvc mockMvc;
 	
 	@Autowired
-	SchoolJdbcDAO schoolDAO;
+	SchoolHibernateDAO schoolDAO;
 	
 	@Autowired
 	@InjectMocks

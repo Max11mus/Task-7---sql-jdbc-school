@@ -1,141 +1,124 @@
 package ua.com.foxminded.lms.sqljdbcschool.hibernate;
 
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
-import ua.com.foxminded.lms.sqljdbcschool.entitybeans.*;
+import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
+import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
+import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
 public class SchoolHibernateDAO implements SchoolDAO {
-    @Autowired
-    HibernateSessionFactory sessionFactory;
+    private static final EntityManagerFactory entityManagerFactory
+            = Persistence.createEntityManagerFactory("ua.com.foxminded.lms.sql_school");
 
     @Override
     public void insertGroups(List<Group> groups) {
-        groups.parallelStream().forEach(this::insertGroup);
+        groups.forEach(this::insertGroup);
     }
 
     @Override
     public void insertGroup(Group group) {
-        Session session = null;
-        Transaction transaction = null;
+        EntityManager entityManager = null;
 
         try {
-            session = sessionFactory.getSessionFactory().openSession();
-            transaction = session.beginTransaction();
+            entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
 
-            session.save(group);
+            entityManager.persist(group);
 
-            transaction.commit();
+            entityManager.getTransaction().commit();
 
         } catch (Exception e) {
-            try {
-                transaction.rollback();
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-            throw new RuntimeException(e);
+           throw new RuntimeException(e);
         } finally {
-            if (session != null) {
-                session.close();
+            if (entityManager != null) {
+                entityManager.close();
             }
         }
     }
 
     @Override
     public void insertStudents(List<Student> students) {
-        students.parallelStream().forEach(this::insertStudent);
+        students.forEach(this::insertStudent);
     }
 
     @Override
     public void insertStudent(Student student) {
-        Session session = null;
-        Transaction transaction = null;
+        EntityManager entityManager = null;
 
         try {
-            session = sessionFactory.getSessionFactory().openSession();
-            transaction = session.beginTransaction();
+            entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
 
-            session.save(student);
+            entityManager.persist(student);
 
-            transaction.commit();
+            entityManager.getTransaction().commit();
 
         } catch (Exception e) {
             try {
-                transaction.rollback();
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-            throw new RuntimeException(e);
-        } finally {
-            if (session != null) {
-                session.close();
+                throw new RuntimeException(e);
+            } finally {
+                if (entityManager != null) {
+                    entityManager.close();
+                }
             }
         }
     }
 
     @Override
     public void insertCourses(List<Course> courses) {
-        courses.parallelStream().forEach(this::insertCourse);
+        courses.forEach(this::insertCourse);
     }
 
     @Override
     public void insertCourse(Course course) {
-        Session session = null;
-        Transaction transaction = null;
+        EntityManager entityManager = null;
 
         try {
-            session = sessionFactory.getSessionFactory().openSession();
-            transaction = session.beginTransaction();
+            entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
 
-            session.save(course);
+            entityManager.persist(course);
 
-            transaction.commit();
+            entityManager.getTransaction().commit();
 
         } catch (Exception e) {
-            try {
-                transaction.rollback();
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
             throw new RuntimeException(e);
         } finally {
-            if (session != null) {
-                session.close();
+            if (entityManager != null) {
+                entityManager.close();
             }
         }
     }
 
     @Override
     public List<Student> getAllStudents() {
-        Session session = null;
-        Transaction transaction = null;
+        EntityManager entityManager = null;
         List<Student> students = null;
 
         try {
-            session = sessionFactory.getSessionFactory().openSession();
-            transaction = session.beginTransaction();
+            entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
 
-            students = session.createQuery("FROM Student", Student.class).getResultList();
+            students = entityManager
+                    .createQuery("SELECT entity FROM Student entity", Student.class)
+                    .getResultList();
 
-            transaction.commit();
+            entityManager.getTransaction().commit();
 
         } catch (Exception e) {
-            try {
-                transaction.rollback();
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
             throw new RuntimeException(e);
         } finally {
-            if (session != null) {
-                session.close();
+            if (entityManager != null) {
+                entityManager.close();
             }
         }
 
@@ -144,48 +127,39 @@ public class SchoolHibernateDAO implements SchoolDAO {
 
     @Override
     public void deleteStudent(String studentUuid) {
-        Session session = null;
-        Transaction transaction = null;
+        EntityManager entityManager = null;
+        Student student = null;
 
         try {
-            session = sessionFactory.getSessionFactory().openSession();
-            transaction = session.beginTransaction();
+            entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
 
-            session.createQuery("DELETE FROM StudentsOnCourse AS entity  WHERE entity.id.studentUuid =:id")
-                    .setParameter("id", studentUuid)
-                    .executeUpdate();
+            student = entityManager.find(Student.class, studentUuid);
+            if (student != null) {
+                entityManager.remove(student);
+            }
 
-            session.createQuery("DELETE FROM Student entity  WHERE entity.uuid =:id")
-                    .setParameter("id", studentUuid)
-                    .executeUpdate();
-
-            transaction.commit();
+            entityManager.getTransaction().commit();
 
         } catch (Exception e) {
-            try {
-                transaction.rollback();
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
             throw new RuntimeException(e);
         } finally {
-            if (session != null) {
-                session.close();
+            if (entityManager != null) {
+                entityManager.close();
             }
         }
     }
 
     @Override
     public Map<Group, Integer> findGroupsStudentCountLessOrEquals(int studentCount) {
-        Session session = null;
-        Transaction transaction = null;
+        EntityManager entityManager = null;
         Map<Group, Integer> groupStudentCount = null;
 
         try {
-            session = sessionFactory.getSessionFactory().openSession();
-            transaction = session.beginTransaction();
+            entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
 
-            List<Object[]> results = session.createQuery(
+            List<Object[]> results = entityManager.createQuery(
                     "SELECT g.uuid, g.groupName, count(*) " +
                             " FROM Group g" +
                             " INNER JOIN Student s " +
@@ -200,18 +174,13 @@ public class SchoolHibernateDAO implements SchoolDAO {
                             object -> new Group((String) object[0], (String) object[1]),
                             object -> ((Long) object[2]).intValue()));
 
-            transaction.commit();
+            entityManager.getTransaction().commit();
 
         } catch (Exception e) {
-            try {
-                transaction.rollback();
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
             throw new RuntimeException(e);
         } finally {
-            if (session != null) {
-                session.close();
+            if (entityManager != null) {
+                entityManager.close();
             }
         }
 
@@ -220,44 +189,24 @@ public class SchoolHibernateDAO implements SchoolDAO {
 
     @Override
     public List<Student> findStudentsByCourseID(String courseUuid) {
-        Session session = null;
-        Transaction transaction = null;
+        EntityManager entityManager = null;
         List<Student> students = null;
 
         try {
-            session = sessionFactory.getSessionFactory().openSession();
-            transaction = session.beginTransaction();
+            entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
 
-            List<Object[]> results = session.createQuery(
-                            "SELECT sc.id.courseUuid, s.uuid, s.firstName, s.lastName, s.group.uuid " +
-                                    " FROM StudentsOnCourse sc" +
-                                    " INNER JOIN Student s " +
-                                    " ON sc.id.studentUuid = s.uuid" +
-                                    " where sc.id.courseUuid = :courseid")
-                    .setParameter("courseid", courseUuid)
-                    .getResultList();
-
-            students = results
-                    .parallelStream()
-                    .map(object -> new Student(
-                            (String) object[1],
-                            (object.length < 5) ? null : (String) object[4],
-                            (String) object[2],
-                            (String) object[3]))
-                    .collect(Collectors.toList());
-
-            transaction.commit();
+            Course course = entityManager.find(Course.class, courseUuid);
+            if (course != null) {
+                students = new ArrayList<>(course.getStudents());
+            }
+            entityManager.getTransaction().commit();
 
         } catch (Exception e) {
-            try {
-                transaction.rollback();
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
             throw new RuntimeException(e);
         } finally {
-            if (session != null) {
-                session.close();
+            if (entityManager != null) {
+                entityManager.close();
             }
         }
 
@@ -266,82 +215,54 @@ public class SchoolHibernateDAO implements SchoolDAO {
 
     @Override
     public void addStudentToCourse(String studentId, String courseId) {
-        Session session = null;
-        Transaction transaction = null;
+        EntityManager entityManager = null;
+        Student student = null;
+        Course course =null;
 
         try {
-            session = sessionFactory.getSessionFactory().openSession();
-            transaction = session.beginTransaction();
+            entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
 
-            Student student = session.get(Student.class, studentId);
-            Course course = session.get(Course.class, courseId);
+            student = entityManager.find(Student.class, studentId);
+            course = entityManager.find(Course.class, courseId);
 
-            if (course != null && student != null) {
-                StudentsOnCourse studentsOnCourse = new StudentsOnCourse();
-                studentsOnCourse.setStudent(student);
-                studentsOnCourse.setCourse(course);
-
-                StudentsOnCourseId studentsOnCourseId = new StudentsOnCourseId();
-                studentsOnCourseId.setCourseUuid(courseId);
-                studentsOnCourseId.setStudentUuid(studentId);
-                studentsOnCourse.setId(studentsOnCourseId);
-
-                session.saveOrUpdate(studentsOnCourse);
+            if (student != null && course != null) {
+                course.getStudents().add(student);
+                student.getCourses().add(course);
+                entityManager.merge(student);
             }
 
-            transaction.commit();
+            entityManager.getTransaction().commit();
 
         } catch (Exception e) {
-            try {
-                transaction.rollback();
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
             throw new RuntimeException(e);
         } finally {
-            if (session != null) {
-                session.close();
+            if (entityManager != null) {
+                entityManager.close();
             }
         }
-
     }
 
     @Override
     public List<Course> findStudentCourses(String studentUuid) {
-        Session session = null;
-        Transaction transaction = null;
+        EntityManager entityManager = null;
         List<Course> courses = null;
 
         try {
-            session = sessionFactory.getSessionFactory().openSession();
-            transaction = session.beginTransaction();
+            entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
 
-            List<Object[]> results = session.createQuery(
-                            "SELECT c, sc.id.studentUuid " +
-                                    " FROM Course c " +
-                                    " RIGHT JOIN StudentsOnCourse sc " +
-                                    " ON c.uuid = sc.id.courseUuid" +
-                                    " WHERE sc.id.studentUuid =:studentid")
-                    .setParameter("studentid", studentUuid)
-                    .getResultList();
-
-            courses = results
-                    .parallelStream()
-                    .map(object -> (Course) object[0])
-                    .collect(Collectors.toList());
-
-            transaction.commit();
+            Student student = entityManager.find(Student.class, studentUuid);
+            if (student != null) {
+                courses = new ArrayList<>(student.getCourses());
+            }
+            entityManager.getTransaction().commit();
 
         } catch (Exception e) {
-            try {
-                transaction.rollback();
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
             throw new RuntimeException(e);
         } finally {
-            if (session != null) {
-                session.close();
+            if (entityManager != null) {
+                entityManager.close();
             }
         }
 
@@ -350,72 +271,58 @@ public class SchoolHibernateDAO implements SchoolDAO {
 
     @Override
     public List<Course> getAllCourses() {
-        Session session = null;
-        Transaction transaction = null;
+        EntityManager entityManager = null;
         List<Course> courses = null;
 
         try {
-            session = sessionFactory.getSessionFactory().openSession();
-            transaction = session.beginTransaction();
+            entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
 
-            courses = session.createQuery("FROM Course", Course.class).getResultList();
+            courses = entityManager
+                    .createQuery("SELECT entity FROM Course entity", Course.class)
+                    .getResultList();
 
-            transaction.commit();
+            entityManager.getTransaction().commit();
 
         } catch (Exception e) {
-            try {
-                transaction.rollback();
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
+                throw new RuntimeException(e);
+            } finally {
+                if (entityManager != null) {
+                    entityManager.close();
+                }
             }
-            throw new RuntimeException(e);
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
 
-        return courses;
-    }
+            return courses;
+        }
 
     @Override
     public void dropoutStudentFromCourse(String studentUuid, String courseUuid) {
-        Session session = null;
-        Transaction transaction = null;
+        EntityManager entityManager = null;
+        Student student = null;
+        Course course =null;
 
         try {
-            session = sessionFactory.getSessionFactory().openSession();
-            transaction = session.beginTransaction();
+            entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
 
-            Student student = session.get(Student.class, studentUuid);
-            Course course = session.get(Course.class, courseUuid);
+            student = entityManager.find(Student.class, studentUuid);
+            course = entityManager.find(Course.class, courseUuid);
 
-            if (course != null && student != null) {
-                StudentsOnCourseId studentsOnCourseId = new StudentsOnCourseId();
-                studentsOnCourseId.setCourseUuid(courseUuid);
-                studentsOnCourseId.setStudentUuid(studentUuid);
-
-                StudentsOnCourse studentsOnCourse = session.get(StudentsOnCourse.class, studentsOnCourseId);
-
-                session.delete(studentsOnCourse);
+            if (student != null && course != null) {
+                course.getStudents().remove(student);
+                student.getCourses().remove(course);
+                entityManager.merge(student);
             }
 
-            transaction.commit();
+            entityManager.getTransaction().commit();
 
         } catch (Exception e) {
-            try {
-                transaction.rollback();
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
             throw new RuntimeException(e);
         } finally {
-            if (session != null) {
-                session.close();
+            if (entityManager != null) {
+                entityManager.close();
             }
         }
-
-
     }
 
 }

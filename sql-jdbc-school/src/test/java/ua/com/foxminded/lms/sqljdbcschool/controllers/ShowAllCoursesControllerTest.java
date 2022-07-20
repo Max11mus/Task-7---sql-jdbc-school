@@ -1,4 +1,4 @@
-package ControllersTest;
+package ua.com.foxminded.lms.sqljdbcschool.controllers;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import ua.com.foxminded.lms.sqljdbcschool.controllers.ShowAllCoursesController;
+import ua.com.foxminded.lms.sqljdbcschool.hibernate.SchoolHibernateDAO;
 import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 
@@ -35,7 +35,7 @@ class ShowAllCoursesControllerTest {
 	private MockMvc mockMvc;
 	
 	@Autowired
-	SchoolJdbcDAO schoolDAO;
+	SchoolHibernateDAO schoolDAO;
 	
 	@Autowired
 	@InjectMocks

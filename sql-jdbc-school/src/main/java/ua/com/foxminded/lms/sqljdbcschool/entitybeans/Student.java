@@ -1,7 +1,20 @@
 package ua.com.foxminded.lms.sqljdbcschool.entitybeans;
 
-import javax.persistence.*;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -14,7 +27,7 @@ public class Student implements Comparable<Student> {
     @Access(AccessType.PROPERTY)
     @ManyToOne
     @JoinColumn(name = "group_uuid")
-    private Group group; // Used only  in Hibernate DAO
+    private Group group;
 
     @Transient
     private String groupUuid;
@@ -25,12 +38,19 @@ public class Student implements Comparable<Student> {
     @Column(name = "last_name", length = 20, nullable = false)
     private String lastName;
 
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "students_on_course",
+            joinColumns = {@JoinColumn(name = "student_uuid")},
+            inverseJoinColumns = {@JoinColumn(name = "course_uuid")})
+    private Set<Course> courses=  new HashSet<>();
+
     public Student() {
-        uuid = UUID.randomUUID().toString();
-        group = null; // Used only  in Hibernate DAO
-        groupUuid = null;
-        firstName = "";
-        lastName = "";
+        this.uuid = UUID.randomUUID().toString();
+        this.group = null;
+        this.groupUuid = null;
+        this.firstName = "";
+        this.lastName = "";
     }
 
     public Student(String id, String groupId, String studentFirstName, String studentLastName) {
@@ -84,6 +104,14 @@ public class Student implements Comparable<Student> {
         } else {
             this.groupUuid = null;
         }
+    }
+
+    public Set<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(Set<Course> courses) {
+        this.courses = courses;
     }
 
     @Override

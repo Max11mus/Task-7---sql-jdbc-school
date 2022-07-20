@@ -1,29 +1,5 @@
-package DBTest;
+package ua.com.foxminded.lms.sqljdbcschool.hibernate;
 
-import org.dbunit.Assertion;
-import org.dbunit.DataSourceBasedDBTestCase;
-import org.dbunit.dataset.*;
-import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
-import org.dbunit.operation.DatabaseOperation;
-import org.h2.jdbcx.JdbcDataSource;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
-import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
-import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
-import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
-import ua.com.foxminded.lms.sqljdbcschool.hibernate.SchoolHibernateDAO;
-import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
-import ua.com.foxminded.lms.sqljdbcschool.utils.DBConnectionPool;
-import ua.com.foxminded.lms.sqljdbcschool.utils.FileLoader;
-
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -33,14 +9,35 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestConfig.class})
-@WebAppConfiguration
-class SchoolHibernateDAOTest extends DataSourceBasedDBTestCase {
+import javax.sql.DataSource;
+
+import org.dbunit.Assertion;
+import org.dbunit.DataSourceBasedDBTestCase;
+import org.dbunit.dataset.CompositeDataSet;
+import org.dbunit.dataset.FilteredDataSet;
+import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.ITable;
+import org.dbunit.dataset.ReplacementDataSet;
+import org.dbunit.dataset.SortedTable;
+import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
+import org.dbunit.operation.DatabaseOperation;
+import org.h2.jdbcx.JdbcDataSource;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
+import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
+import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
+import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
+import ua.com.foxminded.lms.sqljdbcschool.utils.DBConnectionPool;
+import ua.com.foxminded.lms.sqljdbcschool.utils.FileLoader;
+
+class SchoolJdbcDAOTest extends DataSourceBasedDBTestCase {
 	static Properties dbProperties;
 	static DBConnectionPool pool;
-	@Autowired
-	SchoolHibernateDAO dao;
+	static SchoolJdbcDAO dao;
 	static Connection connection;
 
 	@Override
@@ -85,6 +82,8 @@ class SchoolHibernateDAOTest extends DataSourceBasedDBTestCase {
 		FileLoader fileLoader = new FileLoader();
 		dbProperties = new Properties();
 		dbProperties.load(fileLoader.loadProperties(ClassLoader.getSystemResource("db.h2.properties")));
+		pool = new DBConnectionPool(dbProperties);
+		dao = new SchoolJdbcDAO(pool);
 	}
 
 	@BeforeEach

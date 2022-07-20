@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
+import ua.com.foxminded.lms.sqljdbcschool.hibernate.SchoolHibernateDAO;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -15,7 +16,7 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class AddStudentController {
 	@Autowired
-	ChooseDaoEngine chooseDaoEngine;
+	SchoolHibernateDAO	dao;
 
 	@GetMapping("/add_student")
 	public String showAddStudentForm(Model model) {
@@ -41,7 +42,6 @@ public class AddStudentController {
 
 	@PostMapping("/add_student")
 	public String saveStudent(HttpServletRequest request, @ModelAttribute("student") Student student) {
-		SchoolDAO dao = chooseDaoEngine.getCurrentDaoEngine();
 		dao.insertStudent(student);
 
 		HttpSession session = request.getSession();

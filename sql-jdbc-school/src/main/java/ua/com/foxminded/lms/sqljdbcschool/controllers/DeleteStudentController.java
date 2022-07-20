@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
+import ua.com.foxminded.lms.sqljdbcschool.hibernate.SchoolHibernateDAO;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -16,12 +17,10 @@ import java.util.List;
 @Controller
 public class DeleteStudentController {
 	@Autowired
-	ChooseDaoEngine chooseDaoEngine;
+	SchoolHibernateDAO dao;
 
 	@GetMapping("/delete_student")
 	public String showDeleteStudentForm(Model model) {
-		SchoolDAO dao = chooseDaoEngine.getCurrentDaoEngine();
-
 		List<Student> students = dao.getAllStudents();
 		model.addAttribute("students", students);
 		return "delete_student_tl";
@@ -29,8 +28,6 @@ public class DeleteStudentController {
 
 	@PostMapping("/delete_student")
 	public String deleteStudent(HttpServletRequest request, @ModelAttribute("studentrowno") Integer studentRowNo) {
-		SchoolDAO dao = chooseDaoEngine.getCurrentDaoEngine();
-
 		StringBuilder msg = new StringBuilder();
 		HttpSession session = request.getSession();
 
