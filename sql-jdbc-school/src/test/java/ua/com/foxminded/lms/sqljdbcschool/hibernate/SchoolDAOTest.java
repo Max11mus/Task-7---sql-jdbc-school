@@ -14,15 +14,19 @@ import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
+import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
+import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 import ua.com.foxminded.lms.sqljdbcschool.utils.DBConnectionPool;
 import ua.com.foxminded.lms.sqljdbcschool.utils.FileLoader;
 
@@ -35,16 +39,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Stream;
 
 @ExtendWith(SpringExtension.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ContextConfiguration(classes = {TestConfig.class})
-@WebAppConfiguration
-class SchoolHibernateDAOTest extends DataSourceBasedDBTestCase {
+class SchoolDAOTest extends DataSourceBasedDBTestCase{
 	static Properties dbProperties;
-	static DBConnectionPool pool;
-	@Autowired
-	SchoolHibernateDAO dao;
 	static Connection connection;
+
+	@Autowired
+	SchoolJdbcDAO schoolJdbcDAO;
+
+	@Autowired
+	SchoolHibernateDAO hibernateDAO;
+
+	private Stream<Arguments> provideDaoImplementaions() {
+		return Stream.of(Arguments.of(hibernateDAO),
+				Arguments.of(schoolJdbcDAO)
+		);
+	}
 
 	@Override
 	protected DataSource getDataSource() {
@@ -101,8 +115,9 @@ class SchoolHibernateDAOTest extends DataSourceBasedDBTestCase {
 		super.tearDown();
 	}
 
-	@Test
-	void insertGroups__AfterInsert_DataMustBeSameAsExpected() throws Exception {
+	@ParameterizedTest
+	@MethodSource("provideDaoImplementaions")
+	void insertGroups_AfterInsert_DataMustBeSameAsExpected(SchoolDAO dao) throws Exception {
 
 		IDataSet databaseDataSet = getConnection().createDataSet();
 
@@ -133,8 +148,9 @@ class SchoolHibernateDAOTest extends DataSourceBasedDBTestCase {
 		Assertion.assertEquals(sortedExpected, sortedActual);
 	}
 
-	@Test
-	void insertStudents__AfterInsert_DataMustBeSameAsExpected() throws Exception {
+	@ParameterizedTest
+	@MethodSource("provideDaoImplementaions")
+	void insertStudents_AfterInsert_DataMustBeSameAsExpected(SchoolDAO dao) throws Exception {
 
 		IDataSet databaseDataSet = getConnection().createDataSet();
 
@@ -174,8 +190,9 @@ class SchoolHibernateDAOTest extends DataSourceBasedDBTestCase {
 		Assertion.assertEquals(sortedExpected, sortedActual);
 	}
 
-	@Test
-	void insertCourses_AfterInsert_DataMustBeSameAsExpected() throws Exception {
+	@ParameterizedTest
+	@MethodSource("provideDaoImplementaions")
+	void insertCourses_AfterInsert_DataMustBeSameAsExpected(SchoolDAO dao) throws Exception {
 
 		IDataSet databaseDataSet = getConnection().createDataSet();
 		
@@ -204,8 +221,9 @@ class SchoolHibernateDAOTest extends DataSourceBasedDBTestCase {
 		Assertion.assertEquals(sortedExpected, sortedActual);
 	}
 
-	@Test
-	void getAllStudents__AfterReading_DataMustBeSameAsExpected() throws SQLException, Exception {
+	@ParameterizedTest
+	@MethodSource("provideDaoImplementaions")
+	void getAllStudents_AfterReading_DataMustBeSameAsExpected(SchoolDAO dao) throws SQLException, Exception {
 		
 		List<Student> students = dao.getAllStudents();
 		Collections.sort(students);
@@ -229,8 +247,9 @@ class SchoolHibernateDAOTest extends DataSourceBasedDBTestCase {
 		assertEquals(students, expectedStudents);
 	}
 
-	@Test
-	void getAllCourses_AfterReading_DataMustBeSameAsExpected() throws Exception {
+	@ParameterizedTest
+	@MethodSource("provideDaoImplementaions")
+	void getAllCourses_AfterReading_DataMustBeSameAsExpected(SchoolDAO dao) throws Exception {
 
 		List<Course> Courses = dao.getAllCourses();
 		Collections.sort(Courses);
@@ -253,8 +272,9 @@ class SchoolHibernateDAOTest extends DataSourceBasedDBTestCase {
 		assertEquals(Courses, expectedCourses);
 	}
 
-	@Test
-	void findStudentCourses_AfterFinding_DataMustBeSameAsExpected() throws SQLException {
+	@ParameterizedTest
+	@MethodSource("provideDaoImplementaions")
+	void findStudentCourses_AfterFinding_DataMustBeSameAsExpected(SchoolDAO dao) throws SQLException {
 		
 		String studentUUID = "4a350a4e-68ff-452a-add0-0da4df4a2fe3";
 		List<Course> studentCousres = dao.findStudentCourses(studentUUID);
@@ -283,8 +303,9 @@ class SchoolHibernateDAOTest extends DataSourceBasedDBTestCase {
 		assertEquals(studentCousres, expectedStudentCousres);
 	}
 
-	@Test
-	void deleteStudent_AfterDeleting_DataMustBeSameAsExpected() throws SQLException, Exception {
+	@ParameterizedTest
+	@MethodSource("provideDaoImplementaions")
+	void deleteStudent_AfterDeleting_DataMustBeSameAsExpected(SchoolDAO dao) throws SQLException, Exception {
 		
 		IDataSet databaseDataSet = getConnection().createDataSet();
 		
@@ -313,8 +334,9 @@ class SchoolHibernateDAOTest extends DataSourceBasedDBTestCase {
 		Assertion.assertEquals(sortedExpected, sortedActual);
 	}
 	
-	@Test
-	void addStudentToCourse_AfterAdding_DataMustBeSameAsExpected() throws SQLException, Exception {
+	@ParameterizedTest
+	@MethodSource("provideDaoImplementaions")
+	void addStudentToCourse_AfterAdding_DataMustBeSameAsExpected(SchoolDAO dao) throws SQLException, Exception {
 
 		IDataSet databaseDataSet = getConnection().createDataSet();
 
@@ -336,8 +358,9 @@ class SchoolHibernateDAOTest extends DataSourceBasedDBTestCase {
 		Assertion.assertEquals(sortedExpected, sortedActual);
 	}
 
-	@Test
-	void dropoutStudentFromCourse_AfterDropout_DataMustBeSameAsExpected() throws SQLException, Exception {
+	@ParameterizedTest
+	@MethodSource("provideDaoImplementaions")
+	void dropoutStudentFromCourse_AfterDropout_DataMustBeSameAsExpected(SchoolDAO dao) throws SQLException, Exception {
 		
 		IDataSet databaseDataSet = getConnection().createDataSet();
 
@@ -358,4 +381,6 @@ class SchoolHibernateDAOTest extends DataSourceBasedDBTestCase {
 
 		Assertion.assertEquals(sortedExpected, sortedActual);
 	}
+
+
 }
