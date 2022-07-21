@@ -1,6 +1,7 @@
 package ua.com.foxminded.lms.sqljdbcschool.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +20,7 @@ import java.util.List;
 @Controller
 public class DropoutStudentFromCourseController {
 	@Autowired
-	SchoolHibernateDAO dao;
+	SchoolDAO dao;
 
 	@GetMapping("/dropout_student_from_course/choose_student")
 	public String chooseStudent(HttpServletRequest request, Model model) {

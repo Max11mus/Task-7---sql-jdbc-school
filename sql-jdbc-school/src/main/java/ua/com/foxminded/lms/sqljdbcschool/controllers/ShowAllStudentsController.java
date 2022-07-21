@@ -9,10 +9,10 @@ import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.hibernate.SchoolHibernateDAO;
 
 @Controller
-@Lazy
+
 public class ShowAllStudentsController {
 	@Autowired
-	SchoolHibernateDAO dao;
+	SchoolDAO dao;
 	
 	@GetMapping("/get_all_students")
 	public String getAllStudents(Model model) {

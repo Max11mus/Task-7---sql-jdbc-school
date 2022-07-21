@@ -1,5 +1,7 @@
 package ua.com.foxminded.lms.sqljdbcschool.hibernate;
 
+import org.hibernate.HibernateException;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
@@ -15,6 +17,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
+@Primary
 public class SchoolHibernateDAO implements SchoolDAO {
     private static final EntityManagerFactory entityManagerFactory
             = Persistence.createEntityManagerFactory("ua.com.foxminded.lms.sql_school");
@@ -36,8 +39,9 @@ public class SchoolHibernateDAO implements SchoolDAO {
 
             entityManager.getTransaction().commit();
 
-        } catch (Exception e) {
-           throw new RuntimeException(e);
+        } catch (HibernateException e) {
+            entityManager.getTransaction().rollback();
+
         } finally {
             if (entityManager != null) {
                 entityManager.close();
@@ -62,13 +66,12 @@ public class SchoolHibernateDAO implements SchoolDAO {
 
             entityManager.getTransaction().commit();
 
-        } catch (Exception e) {
-            try {
-                throw new RuntimeException(e);
-            } finally {
-                if (entityManager != null) {
-                    entityManager.close();
-                }
+        } catch (HibernateException e) {
+            entityManager.getTransaction().rollback();
+
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
             }
         }
     }
@@ -90,8 +93,9 @@ public class SchoolHibernateDAO implements SchoolDAO {
 
             entityManager.getTransaction().commit();
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (HibernateException e) {
+            entityManager.getTransaction().rollback();
+
         } finally {
             if (entityManager != null) {
                 entityManager.close();
@@ -114,8 +118,9 @@ public class SchoolHibernateDAO implements SchoolDAO {
 
             entityManager.getTransaction().commit();
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (HibernateException e) {
+            entityManager.getTransaction().rollback();
+
         } finally {
             if (entityManager != null) {
                 entityManager.close();
@@ -141,8 +146,9 @@ public class SchoolHibernateDAO implements SchoolDAO {
 
             entityManager.getTransaction().commit();
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (HibernateException e) {
+            entityManager.getTransaction().rollback();
+
         } finally {
             if (entityManager != null) {
                 entityManager.close();
@@ -160,12 +166,12 @@ public class SchoolHibernateDAO implements SchoolDAO {
             entityManager.getTransaction().begin();
 
             List<Object[]> results = entityManager.createQuery(
-                    "SELECT g.uuid, g.groupName, count(*) " +
-                            " FROM Group g" +
-                            " INNER JOIN Student s " +
-                            " ON g.uuid = s.group.uuid" +
-                            " GROUP BY g.uuid " +
-                            " HAVING count(*) <= :studentCount")
+                            "SELECT g.uuid, g.groupName, count(*) " +
+                                    " FROM Group g" +
+                                    " INNER JOIN Student s " +
+                                    " ON g.uuid = s.group.uuid" +
+                                    " GROUP BY g.uuid " +
+                                    " HAVING count(*) <= :studentCount")
                     .setParameter("studentCount", (long) studentCount)
                     .getResultList();
 
@@ -176,8 +182,9 @@ public class SchoolHibernateDAO implements SchoolDAO {
 
             entityManager.getTransaction().commit();
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (HibernateException e) {
+            entityManager.getTransaction().rollback();
+
         } finally {
             if (entityManager != null) {
                 entityManager.close();
@@ -202,8 +209,9 @@ public class SchoolHibernateDAO implements SchoolDAO {
             }
             entityManager.getTransaction().commit();
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (HibernateException e) {
+            entityManager.getTransaction().rollback();
+
         } finally {
             if (entityManager != null) {
                 entityManager.close();
@@ -217,7 +225,7 @@ public class SchoolHibernateDAO implements SchoolDAO {
     public void addStudentToCourse(String studentId, String courseId) {
         EntityManager entityManager = null;
         Student student = null;
-        Course course =null;
+        Course course = null;
 
         try {
             entityManager = entityManagerFactory.createEntityManager();
@@ -234,8 +242,9 @@ public class SchoolHibernateDAO implements SchoolDAO {
 
             entityManager.getTransaction().commit();
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (HibernateException e) {
+            entityManager.getTransaction().rollback();
+
         } finally {
             if (entityManager != null) {
                 entityManager.close();
@@ -258,8 +267,9 @@ public class SchoolHibernateDAO implements SchoolDAO {
             }
             entityManager.getTransaction().commit();
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (HibernateException e) {
+            entityManager.getTransaction().rollback();
+
         } finally {
             if (entityManager != null) {
                 entityManager.close();
@@ -284,22 +294,23 @@ public class SchoolHibernateDAO implements SchoolDAO {
 
             entityManager.getTransaction().commit();
 
-        } catch (Exception e) {
-                throw new RuntimeException(e);
-            } finally {
-                if (entityManager != null) {
-                    entityManager.close();
-                }
-            }
+        } catch (HibernateException e) {
+            entityManager.getTransaction().rollback();
 
-            return courses;
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
         }
+
+        return courses;
+    }
 
     @Override
     public void dropoutStudentFromCourse(String studentUuid, String courseUuid) {
         EntityManager entityManager = null;
         Student student = null;
-        Course course =null;
+        Course course = null;
 
         try {
             entityManager = entityManagerFactory.createEntityManager();
@@ -316,8 +327,9 @@ public class SchoolHibernateDAO implements SchoolDAO {
 
             entityManager.getTransaction().commit();
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (HibernateException e) {
+            entityManager.getTransaction().rollback();
+
         } finally {
             if (entityManager != null) {
                 entityManager.close();

@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.hibernate.SchoolHibernateDAO;
 import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
@@ -38,9 +39,9 @@ import javax.servlet.http.HttpSession;
 @WebAppConfiguration
 class DropoutStudentFromCourseControllerTest {
 	private MockMvc mockMvc;
-	
+
 	@Autowired
-	SchoolHibernateDAO schoolDAO;
+	SchoolDAO dao;
 	
 	@Autowired
 	@InjectMocks
@@ -78,7 +79,7 @@ class DropoutStudentFromCourseControllerTest {
 		String uriPath = "/dropout_student_from_course/choose_student";
 		String expectedView = "dropout_student_from_course_choose_student_tl";
 
-		when(schoolDAO.getAllStudents()).thenReturn(students);
+		when(dao.getAllStudents()).thenReturn(students);
 
 		// when
 		ResultActions actualResult = mockMvc.perform(get(uriPath));
@@ -95,8 +96,8 @@ class DropoutStudentFromCourseControllerTest {
 
 		assertEquals((List<Student>) session.getAttribute(attributeStudentsName) , expectedStudents);
 
-		InOrder daoOrder = Mockito.inOrder(schoolDAO);
-		daoOrder.verify(schoolDAO).getAllStudents();
+		InOrder daoOrder = Mockito.inOrder(dao);
+		daoOrder.verify(dao).getAllStudents();
 
 	}
 
@@ -130,7 +131,7 @@ class DropoutStudentFromCourseControllerTest {
 		String uriPathWithParam = "/dropout_student_from_course/choose_course";
 		String expectedView = "dropout_student_from_course_choose_course_tl";
 
-		when(schoolDAO.findStudentCourses(student.getUuid())).thenReturn(courses);
+		when(dao.findStudentCourses(student.getUuid())).thenReturn(courses);
 
 		// when
 		ResultActions actualResult = mockMvc.perform(get(uriPathWithParam)
@@ -150,8 +151,8 @@ class DropoutStudentFromCourseControllerTest {
 		assertEquals((Student) session.getAttribute(attributeStudentName) , expectedStudent);
 		assertEquals((List<Course>) session.getAttribute(attributeCoursesName) , expectedCourses);
 
-		InOrder daoOrder = Mockito.inOrder(schoolDAO);
-		daoOrder.verify(schoolDAO).findStudentCourses(student.getUuid());
+		InOrder daoOrder = Mockito.inOrder(dao);
+		daoOrder.verify(dao).findStudentCourses(student.getUuid());
 	}
 
 	@Test
@@ -210,7 +211,7 @@ class DropoutStudentFromCourseControllerTest {
 
 		assertEquals(session.getAttributeNames().hasMoreElements(), false);
 
-		InOrder daoOrder = Mockito.inOrder(schoolDAO);
-		daoOrder.verify(schoolDAO).dropoutStudentFromCourse(student.getUuid(), course.getUuid());
+		InOrder daoOrder = Mockito.inOrder(dao);
+		daoOrder.verify(dao).dropoutStudentFromCourse(student.getUuid(), course.getUuid());
 	}
 }

@@ -1,7 +1,9 @@
 package ua.com.foxminded.lms.sqljdbcschool.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
@@ -17,10 +19,10 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-@Lazy
 public class SchoolJdbcDAO implements SchoolDAO {
 	static private String EOL = System.lineSeparator();
 	@Autowired
+	@Lazy
 	private DBConnectionPool connectionPool;
 
 	public SchoolJdbcDAO(DBConnectionPool connectionPool) {

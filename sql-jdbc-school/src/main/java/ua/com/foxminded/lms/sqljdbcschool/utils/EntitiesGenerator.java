@@ -78,7 +78,7 @@ public void randomEnrollStudentsToGroups(List<Student> students, List<Group> gro
 			.forEach(i -> studentsWithGroups.add(students.get(i)));
 	for (Student student : studentsWithGroups) {
 		randomIndex = randomGenerator.ints(0, groups.size()).findFirst().getAsInt();
-		student.setGroupUuid(groups.get(randomIndex).getUuid());
+		student.setGroup(groups.get(randomIndex));
 	}
 }
 

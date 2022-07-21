@@ -1,6 +1,7 @@
 package ua.com.foxminded.lms.sqljdbcschool.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +16,7 @@ import java.util.Map;
 @Controller
 public class FindGroupsStudentCountLessOrEqualsController {
 	@Autowired
-	SchoolHibernateDAO dao;
+	SchoolDAO dao;
 
 	Map<Group, Integer> studentCountGroups;
 

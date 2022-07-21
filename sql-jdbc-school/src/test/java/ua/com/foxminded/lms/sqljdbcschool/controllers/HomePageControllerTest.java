@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.hibernate.SchoolHibernateDAO;
 import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 
@@ -25,9 +26,9 @@ import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 @WebAppConfiguration
 class HomePageControllerTest {
 	private MockMvc mockMvc;
-	
+
 	@Autowired
-	SchoolHibernateDAO schoolDAO;
+	SchoolDAO dao;
 	
 	@Autowired
 	@InjectMocks

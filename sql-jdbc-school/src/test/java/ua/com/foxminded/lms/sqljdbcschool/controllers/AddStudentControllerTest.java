@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.hibernate.SchoolHibernateDAO;
 import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
@@ -33,9 +34,9 @@ import javax.servlet.http.HttpSession;
 @WebAppConfiguration
 class AddStudentControllerTest {
 	private MockMvc mockMvc;
-	
+
 	@Autowired
-	SchoolHibernateDAO schoolDAO;
+	SchoolDAO dao;
 	
 	@Autowired
 	@InjectMocks
@@ -92,8 +93,8 @@ class AddStudentControllerTest {
 				.getRequest()
 				.getSession();
 
-		InOrder daoOrder = Mockito.inOrder(schoolDAO);
-		daoOrder.verify(schoolDAO).insertStudent(student);
+		InOrder daoOrder = Mockito.inOrder(dao);
+		daoOrder.verify(dao).insertStudent(student);
 
 		assertEquals(student, session.getAttribute(paramStudentName));
 	}

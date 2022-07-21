@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.hibernate.SchoolHibernateDAO;
 import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
@@ -33,9 +34,9 @@ import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 @WebAppConfiguration
 class ShowAllCoursesControllerTest {
 	private MockMvc mockMvc;
-	
+
 	@Autowired
-	SchoolHibernateDAO schoolDAO;
+	SchoolDAO dao;
 	
 	@Autowired
 	@InjectMocks
@@ -61,7 +62,7 @@ class ShowAllCoursesControllerTest {
 		String uriPath = "/get_all_courses";
 		String expectedView = "get_all_courses_tl";
 
-		when(schoolDAO.getAllCourses()).thenReturn(courses);
+		when(dao.getAllCourses()).thenReturn(courses);
 
 		// when
 		ResultActions actualResult = mockMvc.perform(get(uriPath));
@@ -73,8 +74,8 @@ class ShowAllCoursesControllerTest {
 				.andExpect(model().hasNoErrors())
 				.andExpect(model().attribute(attributeCoursesName, expectedCourses));
 		
-		InOrder daoOrder = Mockito.inOrder(schoolDAO);
-		daoOrder.verify(schoolDAO).getAllCourses();
+		InOrder daoOrder = Mockito.inOrder(dao);
+		daoOrder.verify(dao).getAllCourses();
 	}	
 	
 }
