@@ -16,7 +16,7 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class AddStudentController {
 	@Autowired
-	SchoolHibernateDAO	dao;
+	SchoolDAO dao;
 
 	@GetMapping("/add_student")
 	public String showAddStudentForm(Model model) {

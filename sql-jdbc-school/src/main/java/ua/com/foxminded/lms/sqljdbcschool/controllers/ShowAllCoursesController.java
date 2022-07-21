@@ -12,7 +12,7 @@ import ua.com.foxminded.lms.sqljdbcschool.hibernate.SchoolHibernateDAO;
 @Lazy
 public class ShowAllCoursesController {
 	@Autowired
-	SchoolHibernateDAO dao;
+	SchoolDAO dao;
 	
 	@GetMapping("/get_all_courses")
 	public String getAllCources(Model model) {

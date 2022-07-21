@@ -18,7 +18,7 @@ import java.util.List;
 @Controller
 public class AddStudentToCourseController {
 	@Autowired
-	SchoolHibernateDAO dao;
+	SchoolDAO dao;
 	
 	@GetMapping("/add_student_to_course")
 	public String showAddStudentForm(Model model) {

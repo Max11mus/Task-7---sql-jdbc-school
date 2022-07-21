@@ -15,7 +15,7 @@ import java.util.Map;
 @Controller
 public class FindGroupsStudentCountLessOrEqualsController {
 	@Autowired
-	SchoolHibernateDAO dao;
+	SchoolDAO dao;
 
 	Map<Group, Integer> studentCountGroups;
 

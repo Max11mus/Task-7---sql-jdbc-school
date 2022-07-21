@@ -17,7 +17,7 @@ import java.util.List;
 @Controller
 public class DeleteStudentController {
 	@Autowired
-	SchoolHibernateDAO dao;
+	SchoolDAO dao;
 
 	@GetMapping("/delete_student")
 	public String showDeleteStudentForm(Model model) {

@@ -16,7 +16,7 @@ import java.util.List;
 @Controller
 public class FindStudentsByCourseNameController {
 	@Autowired
-	SchoolHibernateDAO dao;
+	SchoolDAO dao;
 
 	@GetMapping("/find_students_by_course_name")
 	public String showChooseCourseForm(Model model) {

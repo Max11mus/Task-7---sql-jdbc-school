@@ -19,7 +19,7 @@ import java.util.List;
 @Controller
 public class DropoutStudentFromCourseController {
 	@Autowired
-	SchoolHibernateDAO dao;
+	SchoolDAO dao;
 
 	@GetMapping("/dropout_student_from_course/choose_student")
 	public String chooseStudent(HttpServletRequest request, Model model) {
