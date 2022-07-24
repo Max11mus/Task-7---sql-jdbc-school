@@ -1,18 +1,10 @@
 package ua.com.foxminded.lms.sqljdbcschool.jdbc;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
-
 import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
@@ -20,11 +12,17 @@ import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 import ua.com.foxminded.lms.sqljdbcschool.utils.CheckForNull;
 import ua.com.foxminded.lms.sqljdbcschool.utils.DBConnectionPool;
 
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Component
-@Lazy
 public class SchoolJdbcDAO implements SchoolDAO {
 	static private String EOL = System.lineSeparator();
 	@Autowired
+	@Lazy
 	private DBConnectionPool connectionPool;
 
 	public SchoolJdbcDAO(DBConnectionPool connectionPool) {
@@ -131,7 +129,8 @@ public class SchoolJdbcDAO implements SchoolDAO {
 		courses.parallelStream().forEach(this::insertCourse);
 	}
 
-	private void insertCourse(Course course) {
+	@Override
+	public void insertCourse(Course course) {
 		CheckForNull.check(course);
 
 		String query = "INSERT INTO course " + EOL 
@@ -274,7 +273,7 @@ public class SchoolJdbcDAO implements SchoolDAO {
 	}
 
 	@Override
-	public HashMap<Group, Integer> findGroupsStudentCountLessOrEquals(int studentCount) {
+	public Map<Group, Integer> findGroupsStudentCountLessOrEquals(int studentCount) {
 		HashMap<Group, Integer> studentCountGroups = new HashMap<Group, Integer>(); 
 		
 		String query = "SELECT " + EOL 

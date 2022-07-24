@@ -1,4 +1,4 @@
-package ControllersTest;
+package ua.com.foxminded.lms.sqljdbcschool.controllers;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -25,7 +25,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import ua.com.foxminded.lms.sqljdbcschool.controllers.FindStudentsByCourseNameController;
+import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
+import ua.com.foxminded.lms.sqljdbcschool.hibernate.SchoolHibernateDAO;
 import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
@@ -35,9 +36,9 @@ import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 @WebAppConfiguration
 class FindStudentsByCourseNameControllerTest {
 	private MockMvc mockMvc;
-	
+
 	@Autowired
-	SchoolJdbcDAO schoolDAO;
+	SchoolDAO dao;
 	
 	@Autowired
 	@InjectMocks
@@ -68,7 +69,7 @@ class FindStudentsByCourseNameControllerTest {
 		String uriPath = "/find_students_by_course_name";
 		String expectedView = "find_students_by_course_name_tl";
 
-		when(schoolDAO.getAllCourses()).thenReturn(courses);
+		when(dao.getAllCourses()).thenReturn(courses);
 
 		// when
 		ResultActions actualResult = mockMvc.perform(get(uriPath));
@@ -81,8 +82,8 @@ class FindStudentsByCourseNameControllerTest {
 				.andExpect(model().attribute(attributeCoursesName, expectedCourses))
 				.andExpect(model().attribute(attributeCourseRowNoName, expectedCourseRowNo));
 
-		InOrder daoOrder = Mockito.inOrder(schoolDAO);
-		daoOrder.verify(schoolDAO).getAllCourses();
+		InOrder daoOrder = Mockito.inOrder(dao);
+		daoOrder.verify(dao).getAllCourses();
 	}
 
 	@Test
@@ -113,8 +114,8 @@ class FindStudentsByCourseNameControllerTest {
 		String paramCourseRowNoName = "courserowno";
 		Integer paramCourseRowNo = Integer.valueOf(1);
 
-		when(schoolDAO.getAllCourses()).thenReturn(courses);
-		when(schoolDAO.findStudentsByCourseID(courses.get(paramCourseRowNo - 1).getUuid())).thenReturn(students);
+		when(dao.getAllCourses()).thenReturn(courses);
+		when(dao.findStudentsByCourseID(courses.get(paramCourseRowNo - 1).getUuid())).thenReturn(students);
 
 		String expectedMsgName = "msg";
 		StringBuilder expectedMsg = new StringBuilder();
@@ -137,8 +138,8 @@ class FindStudentsByCourseNameControllerTest {
 				.andExpect(model().attribute(attributeStudentsName, expectedStudents))
 				.andExpect(model().attribute(expectedMsgName, expectedMsg.toString()));
 
-		InOrder daoOrder = Mockito.inOrder(schoolDAO);
-		daoOrder.verify(schoolDAO).getAllCourses();
-		daoOrder.verify(schoolDAO).findStudentsByCourseID(courses.get(paramCourseRowNo - 1).getUuid());
+		InOrder daoOrder = Mockito.inOrder(dao);
+		daoOrder.verify(dao).getAllCourses();
+		daoOrder.verify(dao).findStudentsByCourseID(courses.get(paramCourseRowNo - 1).getUuid());
 	}
 }

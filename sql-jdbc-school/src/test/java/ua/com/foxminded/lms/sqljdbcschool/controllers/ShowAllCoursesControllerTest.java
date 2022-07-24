@@ -1,4 +1,4 @@
-package ControllersTest;
+package ua.com.foxminded.lms.sqljdbcschool.controllers;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -24,46 +24,45 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import ua.com.foxminded.lms.sqljdbcschool.controllers.ShowAllStudentsController;
+import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
+import ua.com.foxminded.lms.sqljdbcschool.hibernate.SchoolHibernateDAO;
 import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
-import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
+import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(loader=AnnotationConfigContextLoader.class, classes = {TestConfig.class})
 @WebAppConfiguration
-class ShowAllStudentsControllerTest {
+class ShowAllCoursesControllerTest {
 	private MockMvc mockMvc;
-	
+
 	@Autowired
-	SchoolJdbcDAO schoolDAO;
+	SchoolDAO dao;
 	
 	@Autowired
 	@InjectMocks
-	ShowAllStudentsController showAllStudentsController;
+	ShowAllCoursesController showAllCoursesController;
 	
 	@BeforeEach
 	void setUpTest() {
-		mockMvc = MockMvcBuilders.standaloneSetup(showAllStudentsController).build();
+		mockMvc = MockMvcBuilders.standaloneSetup(showAllCoursesController).build();
 	}
 	
 	@Test
-	void getAllStudent_MustReturnExpectedView_WhenGetRequest() throws Exception {
-		// GET mapping without params
-		// given
-		String studentUuid = "9723a706-edd1-4ea9-8629-70a91504ab2a";
-		String studentFirstName = "John";
-		String studentLastName = "Lennon";
-		Student student = new Student(studentUuid, null, studentFirstName, studentLastName);
-		List<Student> students = new ArrayList<Student>();
-		students.add(student);
+	void getAllCources_mustReturnExpectedView_WhenGetRequest() throws Exception {
+		String courseUuid = "7894f0de-5820-49bc-8562-b1240f0587b1";
+		String courseName = "Music Theory";
+		String courseDescription = "For Cool Guys";
+		Course course = new Course(courseUuid, courseName, courseDescription);
+		List<Course> courses = new ArrayList<Course>();
+		courses.add(course);
 
-		String attributeStudentsName = "students";
-		List<Student> expectedStudents = students;
+		String attributeCoursesName = "courses";
+		List<Course> expectedCourses = courses;
 
-		String uriPath = "/get_all_students";
-		String expectedView = "get_all_students_tl";
+		String uriPath = "/get_all_courses";
+		String expectedView = "get_all_courses_tl";
 
-		when(schoolDAO.getAllStudents()).thenReturn(students);
+		when(dao.getAllCourses()).thenReturn(courses);
 
 		// when
 		ResultActions actualResult = mockMvc.perform(get(uriPath));
@@ -73,10 +72,10 @@ class ShowAllStudentsControllerTest {
 				.andExpect(view().name(expectedView))
 				.andExpect(status().isOk())
 				.andExpect(model().hasNoErrors())
-				.andExpect(model().attribute(attributeStudentsName, expectedStudents));
+				.andExpect(model().attribute(attributeCoursesName, expectedCourses));
 		
-		InOrder daoOrder = Mockito.inOrder(schoolDAO);
-		daoOrder.verify(schoolDAO).getAllStudents();
+		InOrder daoOrder = Mockito.inOrder(dao);
+		daoOrder.verify(dao).getAllCourses();
 	}	
 	
 }

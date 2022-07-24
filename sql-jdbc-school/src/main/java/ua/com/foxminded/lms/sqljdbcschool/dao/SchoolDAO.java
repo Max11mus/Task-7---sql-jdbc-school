@@ -4,33 +4,36 @@ import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface SchoolDAO {
-    void insertGroups(List<Group> groups);
+    public void insertGroups(List<Group> groups);
 
-    void insertGroup(Group group);
+    public void insertGroup(Group group);
 
-    void insertStudents(List<Student> students);
+    public void insertStudents(List<Student> students);
 
-    void insertStudent(Student student);
+    public void insertStudent(Student student);
 
-    void insertCourses(List<Course> courses);
+    public void insertCourses(List<Course> courses);
 
-    List<Student> getAllStudents();
+    public void insertCourse(Course course);
 
-    void deleteStudent(String studentUuid);
+    public List<Student> getAllStudents();
 
-    HashMap<Group, Integer> findGroupsStudentCountLessOrEquals(int studentCount);
+    public void deleteStudent(String studentUuid);
 
-    List<Course> getAllCourses();
+    public Map<Group, Integer> findGroupsStudentCountLessOrEquals(int studentCount);
 
-    List<Student> findStudentsByCourseID(String courseUuid);
+    public List<Course> getAllCourses();
 
-    void addStudentToCourse(String studentId, String courseId);
+    public List<Student> findStudentsByCourseID(String courseUuid);
 
-    List<Course> findStudentCourses(String studentUuid);
+    public void addStudentToCourse(String studentId, String courseId);
 
-    void dropoutStudentFromCourse(String studentUuid, String courseUuid);
+    public List<Course> findStudentCourses(String studentUuid);
+
+    public void dropoutStudentFromCourse(String studentUuid, String courseUuid);
+
 }

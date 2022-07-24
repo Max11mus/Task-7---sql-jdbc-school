@@ -5,14 +5,14 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
+import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
+import ua.com.foxminded.lms.sqljdbcschool.hibernate.SchoolHibernateDAO;
 
 @Controller
-@Lazy
+
 public class ShowAllStudentsController {
 	@Autowired
-	SchoolJdbcDAO dao;
+	SchoolDAO dao;
 	
 	@GetMapping("/get_all_students")
 	public String getAllStudents(Model model) {

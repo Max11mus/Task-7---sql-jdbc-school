@@ -1,10 +1,10 @@
 package ua.com.foxminded.lms.sqljdbcschool.app;
 
-import java.io.File;
-import java.io.IOException;
-
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
+
+import java.io.File;
+import java.io.IOException;
 
 public class SchoolDBApp {
 	private static int PORT = 7777;

@@ -1,4 +1,4 @@
-package ControllersTest;
+package ua.com.foxminded.lms.sqljdbcschool.controllers;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
@@ -11,7 +11,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +26,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import ua.com.foxminded.lms.sqljdbcschool.controllers.DeleteStudentController;
+import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
+import ua.com.foxminded.lms.sqljdbcschool.hibernate.SchoolHibernateDAO;
 import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
 
@@ -38,9 +38,9 @@ import javax.servlet.http.HttpSession;
 @WebAppConfiguration
 class DeleteStudentControllerTest {
 	private MockMvc mockMvc;
-	
+
 	@Autowired
-    SchoolJdbcDAO schoolDAO;
+	SchoolDAO dao;
 	
 	@Autowired
 	@InjectMocks
@@ -71,7 +71,7 @@ class DeleteStudentControllerTest {
 		String uriPath = "/delete_student";
 		String expectedView = "delete_student_tl";
 
-		when(schoolDAO.getAllStudents()).thenReturn(students);
+		when(dao.getAllStudents()).thenReturn(students);
 
 		// when
 		ResultActions actualResult = mockMvc.perform(get(uriPath));
@@ -83,8 +83,8 @@ class DeleteStudentControllerTest {
 				.andExpect(model().hasNoErrors())
 				.andExpect(model().attribute(attributeStudentsName, expectedStudents));
 		
-		InOrder daoOrder = Mockito.inOrder(schoolDAO);
-		daoOrder.verify(schoolDAO).getAllStudents();
+		InOrder daoOrder = Mockito.inOrder(dao);
+		daoOrder.verify(dao).getAllStudents();
 	}
 
 	@Test
@@ -113,7 +113,7 @@ class DeleteStudentControllerTest {
 		String uriPath = "/delete_student";
 		String expectedView = "redirect:/student_deleted";
 
-		when(schoolDAO.getAllStudents()).thenReturn(students);
+		when(dao.getAllStudents()).thenReturn(students);
 
 		List<Student> expectedSessionStudents = new ArrayList<>(expectedStudents);
 		expectedSessionStudents.remove(student);
@@ -131,9 +131,9 @@ class DeleteStudentControllerTest {
 				.getRequest()
 				.getSession();
 
-		InOrder daoOrder = Mockito.inOrder(schoolDAO);
-		daoOrder.verify(schoolDAO).getAllStudents();
-		daoOrder.verify(schoolDAO).deleteStudent(student.getUuid());
+		InOrder daoOrder = Mockito.inOrder(dao);
+		daoOrder.verify(dao).getAllStudents();
+		daoOrder.verify(dao).deleteStudent(student.getUuid());
 
 		assertEquals(expectedSessionStudents, session.getAttribute(attributeStudentsName));
 		assertEquals(expectedMsg.toString(), session.getAttribute(expectedMsgName));

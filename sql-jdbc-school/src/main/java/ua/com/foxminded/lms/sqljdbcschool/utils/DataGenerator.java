@@ -1,5 +1,7 @@
 package ua.com.foxminded.lms.sqljdbcschool.utils;
 
+import org.springframework.core.io.ClassPathResource;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -8,8 +10,6 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.springframework.core.io.ClassPathResource;
 
 public class DataGenerator {
 	private static ArrayList<String> courseNamesPool;

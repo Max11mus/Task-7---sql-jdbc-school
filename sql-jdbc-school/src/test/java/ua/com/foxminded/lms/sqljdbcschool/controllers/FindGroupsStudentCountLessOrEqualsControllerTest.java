@@ -1,4 +1,4 @@
-package ControllersTest;
+package ua.com.foxminded.lms.sqljdbcschool.controllers;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -24,7 +24,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import ua.com.foxminded.lms.sqljdbcschool.controllers.FindGroupsStudentCountLessOrEqualsController;
+import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
+import ua.com.foxminded.lms.sqljdbcschool.hibernate.SchoolHibernateDAO;
 import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
 
@@ -33,9 +34,9 @@ import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Group;
 @WebAppConfiguration
 class FindGroupsStudentCountLessOrEqualsControllerTest {
 	private MockMvc mockMvc;
-	
+
 	@Autowired
-	SchoolJdbcDAO schoolDAO;
+	SchoolDAO dao;
 	
 	@Autowired
 	@InjectMocks
@@ -82,7 +83,7 @@ class FindGroupsStudentCountLessOrEqualsControllerTest {
 		HashMap<Group, Integer> studentCountGroups = new HashMap<>();
 		studentCountGroups.put(group, paramStudentCount);
 
-		when(schoolDAO.findGroupsStudentCountLessOrEquals(paramStudentCount)).thenReturn(studentCountGroups);
+		when(dao.findGroupsStudentCountLessOrEquals(paramStudentCount)).thenReturn(studentCountGroups);
 
 		String expectedMsgName = "msg";
 		StringBuilder expectedMsg = new StringBuilder();
@@ -105,7 +106,7 @@ class FindGroupsStudentCountLessOrEqualsControllerTest {
 				.andExpect(model().attribute(studentCountGroupsName, studentCountGroups))
 				.andExpect(model().attribute(expectedMsgName, expectedMsg.toString()));
 
-		InOrder daoOrder = Mockito.inOrder(schoolDAO);
-		daoOrder.verify(schoolDAO).findGroupsStudentCountLessOrEquals(paramStudentCount);
+		InOrder daoOrder = Mockito.inOrder(dao);
+		daoOrder.verify(dao).findGroupsStudentCountLessOrEquals(paramStudentCount);
 	}
 }

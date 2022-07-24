@@ -7,19 +7,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
+import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
+import ua.com.foxminded.lms.sqljdbcschool.hibernate.SchoolHibernateDAO;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @Controller
 public class AddStudentController {
 	@Autowired
-	@Lazy
-	SchoolJdbcDAO dao;
+	SchoolDAO dao;
 
 	@GetMapping("/add_student")
 	public String showAddStudentForm(Model model) {

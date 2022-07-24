@@ -1,4 +1,4 @@
-package ControllersTest;
+package ua.com.foxminded.lms.sqljdbcschool.controllers;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -11,7 +11,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +26,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import ua.com.foxminded.lms.sqljdbcschool.controllers.AddStudentToCourseController;
+import ua.com.foxminded.lms.sqljdbcschool.dao.SchoolDAO;
+import ua.com.foxminded.lms.sqljdbcschool.hibernate.SchoolHibernateDAO;
 import ua.com.foxminded.lms.sqljdbcschool.jdbc.SchoolJdbcDAO;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Course;
 import ua.com.foxminded.lms.sqljdbcschool.entitybeans.Student;
@@ -39,9 +39,9 @@ import javax.servlet.http.HttpSession;
 @WebAppConfiguration
 class AddStudentToCourseControllerTest {
 	private MockMvc mockMvc;
-	
+
 	@Autowired
-	SchoolJdbcDAO schoolDAO;
+	SchoolDAO dao;
 	
 	@Autowired
 	@InjectMocks
@@ -85,8 +85,8 @@ class AddStudentToCourseControllerTest {
 		String uriPath = "/add_student_to_course";
 		String expectedView = "add_student_to_course_tl";
 
-		when(schoolDAO.getAllStudents()).thenReturn(students);
-		when(schoolDAO.getAllCourses()).thenReturn(courses);
+		when(dao.getAllStudents()).thenReturn(students);
+		when(dao.getAllCourses()).thenReturn(courses);
 
 		// when
 		ResultActions actualResult = mockMvc.perform(get(uriPath));
@@ -99,9 +99,9 @@ class AddStudentToCourseControllerTest {
 				.andExpect(model().attribute(attributeStudentsName, expectedStudents))
 				.andExpect(model().attribute(attributeCoursesName, expectedCourses));
 		
-		InOrder daoOrder = Mockito.inOrder(schoolDAO);
-		daoOrder.verify(schoolDAO).getAllStudents();
-		daoOrder.verify(schoolDAO).getAllCourses();
+		InOrder daoOrder = Mockito.inOrder(dao);
+		daoOrder.verify(dao).getAllStudents();
+		daoOrder.verify(dao).getAllCourses();
 	}
 
 	@Test
@@ -141,8 +141,8 @@ class AddStudentToCourseControllerTest {
 		String uriPath = "/add_student_to_course";
 		String expectedView = "redirect:/student_added_to_course";
 
-		when(schoolDAO.getAllStudents()).thenReturn(students);
-		when(schoolDAO.getAllCourses()).thenReturn(courses);
+		when(dao.getAllStudents()).thenReturn(students);
+		when(dao.getAllCourses()).thenReturn(courses);
 
 		// when
 		ResultActions actualResult = mockMvc.perform(post(uriPath)
@@ -160,10 +160,10 @@ class AddStudentToCourseControllerTest {
 				.getRequest()
 				.getSession();
 
-		InOrder daoOrder = Mockito.inOrder(schoolDAO);
-		daoOrder.verify(schoolDAO).getAllStudents();
-		daoOrder.verify(schoolDAO).getAllCourses();
-		daoOrder.verify(schoolDAO).addStudentToCourse(student.getUuid(), course.getUuid());
+		InOrder daoOrder = Mockito.inOrder(dao);
+		daoOrder.verify(dao).getAllStudents();
+		daoOrder.verify(dao).getAllCourses();
+		daoOrder.verify(dao).addStudentToCourse(student.getUuid(), course.getUuid());
 
 		assertEquals(session.getAttribute(expectedAttrStudentsName) , students);
 		assertEquals(session.getAttribute(expectedAttrCoursesName) , courses);
